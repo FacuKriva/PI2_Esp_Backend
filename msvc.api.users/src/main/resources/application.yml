@@ -23,10 +23,10 @@ spring:
     hibernate:
       format_sql: false
   #Lectura del archivo sql
-#  sql:
-#    init:
-#      mode: always
-#      data-locations-classpath: import.sql
+  sql:
+    init:
+      mode: always
+      data-locations-classpath: import.sql
 logging:
   level:
     org:
