@@ -1,0 +1,25 @@
+package com.digital.money.msvc.api.users.entities;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "roles")
+public class Role {
+
+    @Id
+    @JsonProperty("role_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true, name = "role_id")
+    private Integer roleId;
+
+    @Column(unique = true, nullable = false, length = 10)
+    private String name;
+}
