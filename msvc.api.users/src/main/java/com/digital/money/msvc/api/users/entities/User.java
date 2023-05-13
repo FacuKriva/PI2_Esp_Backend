@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
+import java.math.BigInteger;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,15 +27,20 @@ public class User {
     @Column(name = "last_name", length = 40, nullable = false)
     private String lastName;
 
-    @Column(name = "cvu", unique = true, nullable = false)
-    @Length(min = 22, max = 50)
-    private String cvu;
+    @Column(name = "cvu", unique = true, nullable = false, length = 22)
+    private BigInteger cvu;
+
+    @Column(name = "alias", unique = true, nullable = false)
+    private String alias;
 
     @Column(name = "dni", unique = true, length = 10, nullable = false)
     private Long dni;
 
     @Column(name = "email", length = 60, unique = true, nullable = false)
     private String email;
+
+    @Column(name = "phone", length = 10, nullable = false)
+    private Integer phone;
 
     @Column(name = "password", length = 120, nullable = false)
     private String password;
@@ -43,9 +50,6 @@ public class User {
 
     @Column(name = "attempts", nullable = false)
     private int attempts;
-
-    @Column(name = "phone", length = 10, nullable = false)
-    private Integer phone;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "role_id", nullable = false)
