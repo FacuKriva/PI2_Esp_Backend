@@ -2,17 +2,14 @@ package com.digital.money.msvc.api.users.controllers;
 
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
-import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
+import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import com.digital.money.msvc.api.users.services.impl.UserService;
 import jakarta.validation.Valid;
+import jakarta.ws.rs.QueryParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.Objects;
 
 @RestController
@@ -36,5 +33,24 @@ public class UserController {
 
         UserDTO userDTO = userService.createUser(userRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
+    }
+
+    @GetMapping("/dni")
+    public ResponseEntity<?> findByDni(@RequestParam("dni") Long dni) throws UserNotFoundException {
+        return ResponseEntity.ok(userService.getUserByDni(dni));
+    }
+
+    @GetMapping("/email")
+    public ResponseEntity<?> findByEmail(@RequestParam("email") String email) throws UserNotFoundException {
+        return ResponseEntity.ok(userService.getUserByEmail(email));
+    }
+
+    @PutMapping("/update/attempts/{dni}")
+    public ResponseEntity<?> updateUserAttempts(@PathVariable Long dni,
+                                                @RequestParam("enabled") boolean enabled,
+                                                @RequestParam("attempts") int attempts) throws UserNotFoundException {
+
+        userService.updateAttempsFromUser(dni, enabled, attempts);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
