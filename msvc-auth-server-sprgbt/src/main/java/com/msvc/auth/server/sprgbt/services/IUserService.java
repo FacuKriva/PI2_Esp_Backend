@@ -6,5 +6,5 @@ public interface IUserService {
 
     UserDTO findUseByEmail(String email);
 
-    void updateUser(Long userId, boolean enabled, int attempts);
+    void updateUser(Long dni, boolean enabled, int attempts);
 }

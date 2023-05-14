@@ -57,7 +57,7 @@ public class AuthenticationSuccessErrorHandler implements AuthenticationEventPub
                 userResponse.setEnabled(false);
                 log.info(String.format("Maximum attempts allowed, the user %s was disabled", userResponse.getName()));
             }
-            updateUserAttemp(userResponse.getUserId(), userResponse);
+            updateUserAttemp(userResponse.getDni(), userResponse);
 
         } catch (FeignException e) {
             log.error(String.format("The user %s is not registered in the system", authentication.getName()));
