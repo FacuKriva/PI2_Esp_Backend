@@ -1,5 +1,6 @@
 package com.digital.money.msvc.api.users.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,12 +19,14 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("user_id")
     @Column(name = "user_id")
     private Long userId;
 
     @Column(name = "name", length = 30, nullable = false)
     private String name;
 
+    @JsonProperty("last_name")
     @Column(name = "last_name", length = 40, nullable = false)
     private String lastName;
 

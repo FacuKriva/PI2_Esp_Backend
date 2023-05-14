@@ -40,8 +40,8 @@ public class UserService implements IUserService {
                     .format("The user %s is already registered in the database", userRequestDTO.getName()));
         }
 
-        Role role = roleRepository.findById(userRequestDTO.getRoleId()).orElseThrow(() ->
-                new Exception(String.format("The role with Id %d does not exist", userRequestDTO.getRoleId())));
+        Role role = roleRepository.findById(userRequestDTO.getRole().getRoleId()).orElseThrow(() ->
+                new Exception(String.format("The role with Id %d does not exist", userRequestDTO.getRole().getRoleId())));
 
         User userEntity = userMapper.mapToEntity(userRequestDTO);
         userEntity.setEmail(userRequestDTO.getEmail().toLowerCase());

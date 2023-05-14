@@ -1,6 +1,6 @@
 package com.digital.money.msvc.api.users.controllers.requestDto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.digital.money.msvc.api.users.dtos.RoleDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -27,7 +27,6 @@ public class UserRequestDTO {
     private String lastName;
 
     @NotNull(message = "The dni cannot be null or empty")
-    @Size(max = 10, message = "maximum number of characters 10")
     private Long dni;
 
     @Email
@@ -39,11 +38,9 @@ public class UserRequestDTO {
     @Size(max = 30, message = "maximum number of characters 30")
     private String password;
 
-    @NotBlank(message = "The phone cannot be null or empty ")
-    @Size(max = 10, message = "maximum number of characters 10")
+    @NotNull(message = "The phone cannot be null or empty ")
     private Integer phone;
 
-    @JsonProperty("role_id")
     @NotNull(message = "The role_id cannot be null")
-    private int roleId;
+    private RoleDTO role;
 }

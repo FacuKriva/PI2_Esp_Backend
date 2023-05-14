@@ -1,5 +1,7 @@
 package com.digital.money.msvc.api.users.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -16,7 +18,6 @@ import java.math.BigInteger;
 public class UserDTO {
 
     @JsonProperty("user_id")
-    @NotNull(message = "the userId cannot be null or empty")
     private Long userId;
 
     private String name;
@@ -32,7 +33,15 @@ public class UserDTO {
 
     private String email;
 
+    @JsonIgnore
+    private String password;
+
     private Integer phone;
 
     private Boolean enabled;
+
+    @JsonIgnore
+    private int attempts;
+
+    private RoleDTO role;
 }
