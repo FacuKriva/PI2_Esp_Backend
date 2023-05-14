@@ -5,14 +5,14 @@ spring:
   application:
     name: msvc-users-api
 
-  #Conexion a DB MySQL
+  # Conexion a DB MySQL
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/user_db?useUnicode=true&characterEncoding=utf8&useSSL=false&requireSSL=false
     username: root
     password: 1234
 
-  #JPA - Hibernate
+  # JPA - Hibernate
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: false
@@ -22,7 +22,7 @@ spring:
   properties:
     hibernate:
       format_sql: false
-  #Lectura del archivo sql
+  # Lectura del archivo sql
   sql:
     init:
       mode: always
@@ -32,3 +32,9 @@ logging:
     org:
       hibernate:
         SQL: debug
+
+  # Eureka
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

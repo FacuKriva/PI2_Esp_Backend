@@ -16,7 +16,6 @@ public class Role {
 
     @Id
     @JsonProperty("role_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, name = "role_id")
     private Integer roleId;
 
