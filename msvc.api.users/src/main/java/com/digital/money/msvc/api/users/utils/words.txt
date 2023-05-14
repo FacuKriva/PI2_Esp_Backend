@@ -1,0 +1,100 @@
+Libro
+Escritorio
+Teléfono
+Mesa
+Lápiz
+Silla
+Computadora
+Papel
+Cafetera
+Reloj
+Cuaderno
+Piso
+Gato
+Perro
+Pared
+Cama
+Ventana
+Puerta
+Jardín
+Árbol
+Flor
+Tienda
+Avión
+Barco
+Auto
+Camión
+Bicicleta
+Estufa
+Refrigerador
+Microondas
+Tostadora
+Vaso
+Taza
+Plato
+Cuchillo
+Tenedor
+Cuchara
+Lavadora
+Secadora
+Escoba
+Aspiradora
+Polvo
+Cocina
+Sala
+Dormitorio
+Baño
+Espejo
+Toalla
+Jabón
+Champú
+Cepillo
+Peine
+Perfume
+Maquillaje
+Zapato
+Camisa
+Pantalón
+Vestido
+Bufanda
+Sombrero
+Guantes
+Lentes
+Anillo
+Reloj de pulsera
+Collar
+Pendientes
+Bolsa
+Cartera
+Dinero
+Tarjeta de crédito
+Celular
+Auriculares
+Televisión
+Altavoz
+Consola de videojuegos
+Pelota
+Raqueta
+Bate
+Guante de béisbol
+Balón de fútbol
+Camiseta de fútbol
+Pantalón corto de baloncesto
+Zapatos deportivos
+Botella de agua
+Barra de granola
+Fruta
+Verdura
+Carne
+Pollo
+Pescado
+Arroz
+Fideos
+Sopa
+Pizza
+Hamburguesa
+Papas fritas
+Ensalada
+Sándwich
+Pastel
+Helado
