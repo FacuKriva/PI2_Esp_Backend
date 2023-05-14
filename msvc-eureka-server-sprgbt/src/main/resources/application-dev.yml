@@ -1,0 +1,12 @@
+# Application Config
+spring:
+ application:
+  name: eureka-server
+server:
+  port: ${PORT:8761}
+
+#Configuracion para que no se autoregistre como cliente.
+eureka:
+  client:
+    fetch-registry: false
+    register-with-eureka: false
