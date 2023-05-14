@@ -82,4 +82,20 @@ public class UserService implements IUserService {
 
         return userMapper.mapToDto(user);
     }
+
+    @Transactional
+    @Override
+    public void updateAttempsFromUser(Long userId, boolean enabled, int attempts) throws UserNotFoundException {
+        Optional<User> userEntity = userRepository.findByUserId(userId);
+
+        if (userEntity.isEmpty()) {
+            throw new UserNotFoundException("The user is not registered");
+        }
+
+        User user = userEntity.get();
+        user.setEnabled(enabled);
+        user.setAttempts(attempts);
+
+        userRepository.save(user);
+    }
 }

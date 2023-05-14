@@ -9,4 +9,5 @@ public interface IUserService {
     UserDTO createUser(UserRequestDTO userRequestDTO) throws Exception;
     UserDTO getUserByEmail(String email) throws UserNotFoundException;
     UserDTO getUserByDni(Long dni) throws UserNotFoundException;
+    void updateAttempsFromUser(Long userId, boolean enabled, int attempts) throws UserNotFoundException;
 }

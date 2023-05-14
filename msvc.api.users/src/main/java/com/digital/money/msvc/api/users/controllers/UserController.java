@@ -45,4 +45,13 @@ public class UserController {
     public ResponseEntity<?> findByEmail(@RequestParam("email") String email) throws UserNotFoundException {
         return ResponseEntity.ok(userService.getUserByEmail(email));
     }
+
+    @PutMapping("/update/attempts/{dni}")
+    public ResponseEntity<?> updateUserAttempts(@PathVariable("dni") Long dni,
+                                                @PathVariable boolean enabled,
+                                                @PathVariable int attempts) throws UserNotFoundException {
+
+        userService.updateAttempsFromUser(dni, enabled, attempts);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }
