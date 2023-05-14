@@ -1,6 +1,7 @@
 package com.digital.money.msvc.api.users.services.impl;
 
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
+import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.entities.Role;
 import com.digital.money.msvc.api.users.entities.User;
@@ -72,7 +73,7 @@ public class UserService implements IUserService {
 
     @Transactional(readOnly = true)
     @Override
-    public UserDTO getUserByEmail(String email) throws UserNotFoundException {
+    public AuthUserDTO getUserByEmail(String email) throws UserNotFoundException {
         String emailInLowercase = email.toLowerCase();
 
         User user = userRepository.findByEmail(emailInLowercase).orElseThrow(
@@ -80,13 +81,13 @@ public class UserService implements IUserService {
                         .format("The user with email %s was not found", email))
         );
 
-        return userMapper.mapToDto(user);
+        return userMapper.mapToAuthUserDto(user);
     }
 
     @Transactional
     @Override
     public void updateAttempsFromUser(Long userId, boolean enabled, int attempts) throws UserNotFoundException {
-        Optional<User> userEntity = userRepository.findByUserId(userId);
+        Optional<User> userEntity = userRepository.findByDni(userId);
 
         if (userEntity.isEmpty()) {
             throw new UserNotFoundException("The user is not registered");

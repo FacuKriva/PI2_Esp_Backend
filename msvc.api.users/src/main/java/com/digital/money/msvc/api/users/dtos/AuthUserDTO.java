@@ -1,18 +1,17 @@
-package com.msvc.auth.server.sprgbt.dtos;
+package com.digital.money.msvc.api.users.dtos;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
-
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
-
+public class AuthUserDTO {
 
     @JsonProperty("user_id")
     private Long userId;
@@ -34,7 +33,7 @@ public class UserDTO {
 
     private Integer phone;
 
-    private boolean enabled;
+    private Boolean enabled;
 
     private int attempts;
 
