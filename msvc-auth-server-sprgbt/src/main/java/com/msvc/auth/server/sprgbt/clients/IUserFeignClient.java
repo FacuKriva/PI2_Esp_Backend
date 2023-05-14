@@ -1,15 +1,21 @@
 package com.msvc.auth.server.sprgbt.clients;
 
-import com.msvc.auth.server.sprgbt.clients.request.UserRequestDTO;
 import com.msvc.auth.server.sprgbt.dtos.UserDTO;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.ws.rs.QueryParam;
 
 @FeignClient(name = "msvc-users-api")
 public interface IUserFeignClient {
 
-    @PutMapping("/users/update/attempts/{user_id}")
-    void updateUserAttempts(@PathVariable("user_id") Long userId, @RequestBody UserRequestDTO userDto);
+    @PutMapping("/users/update/attempts/{dni}")
+    void updateUserAttempts(@PathVariable Long dni,
+                            @QueryParam("enabled") boolean enabled,
+                            @QueryParam("attempts") int attempts);
 
     @GetMapping("/users/email")
     UserDTO findByEmail(@RequestParam String email);

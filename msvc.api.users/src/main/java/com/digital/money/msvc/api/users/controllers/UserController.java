@@ -2,15 +2,14 @@ package com.digital.money.msvc.api.users.controllers;
 
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
-import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import com.digital.money.msvc.api.users.services.impl.UserService;
 import jakarta.validation.Valid;
+import jakarta.ws.rs.QueryParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.Objects;
 
 @RestController
@@ -47,9 +46,9 @@ public class UserController {
     }
 
     @PutMapping("/update/attempts/{dni}")
-    public ResponseEntity<?> updateUserAttempts(@PathVariable("dni") Long dni,
-                                                @PathVariable boolean enabled,
-                                                @PathVariable int attempts) throws UserNotFoundException {
+    public ResponseEntity<?> updateUserAttempts(@PathVariable Long dni,
+                                                @QueryParam("enabled") boolean enabled,
+                                                @QueryParam("attempts") int attempts) throws UserNotFoundException {
 
         userService.updateAttempsFromUser(dni, enabled, attempts);
         return new ResponseEntity(HttpStatus.OK);

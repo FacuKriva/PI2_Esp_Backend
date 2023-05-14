@@ -1,6 +1,5 @@
 package com.msvc.auth.server.sprgbt.security.events;
 
-import com.msvc.auth.server.sprgbt.clients.request.UserRequestDTO;
 import com.msvc.auth.server.sprgbt.dtos.UserDTO;
 import com.msvc.auth.server.sprgbt.services.IUserService;
 import feign.FeignException;
@@ -69,15 +68,7 @@ public class AuthenticationSuccessErrorHandler implements AuthenticationEventPub
         return this.userService.findUseByEmail(email);
     }
 
-    private void updateUserAttemp(Long userId, UserDTO userDto) {
-        UserRequestDTO userRequest = UserRequestDTO.builder()
-                .name(userDto.getName())
-                .email(userDto.getEmail())
-                .password(userDto.getPassword())
-                .enabled(userDto.isEnabled())
-                .attempts(userDto.getAttempts())
-                .build();
-
-        this.userService.updateUser(userId, userRequest);
+    private void updateUserAttemp(Long dni, UserDTO userDto) {
+        this.userService.updateUser(dni, userDto.isEnabled(), userDto.getAttempts());
     }
 }

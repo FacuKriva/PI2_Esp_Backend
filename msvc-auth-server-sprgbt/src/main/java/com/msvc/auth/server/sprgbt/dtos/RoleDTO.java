@@ -13,9 +13,9 @@ import lombok.ToString;
 @ToString
 public class RoleDTO {
 
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = RoleDTO.class)
     @JsonProperty("role_id")
     private int roleId;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String name;
 }

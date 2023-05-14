@@ -1,7 +1,6 @@
 package com.msvc.auth.server.sprgbt.services;
 
 import com.msvc.auth.server.sprgbt.clients.IUserFeignClient;
-import com.msvc.auth.server.sprgbt.clients.request.UserRequestDTO;
 import com.msvc.auth.server.sprgbt.dtos.UserDTO;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +60,7 @@ public class UserService implements IUserService, UserDetailsService {
     }
 
     @Override
-    public void updateUser(Long userId, UserRequestDTO userDto) {
-        this.userClient.updateUserAttempts(userId, userDto);
+    public void updateUser(Long dni, boolean enabled, int attempts) {
+        this.userClient.updateUserAttempts(dni, enabled, attempts);
     }
 }
