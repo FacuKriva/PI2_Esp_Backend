@@ -60,6 +60,18 @@ public class UserService implements IUserService {
 
     @Transactional(readOnly = true)
     @Override
+    public UserDTO getUserByDni(Long dni) throws UserNotFoundException {
+
+        User user = userRepository.findByDni(dni).orElseThrow(
+                () -> new UserNotFoundException(String
+                        .format("The user with dni %d was not found", dni))
+        );
+
+        return userMapper.mapToDto(user);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public UserDTO getUserByEmail(String email) throws UserNotFoundException {
         String emailInLowercase = email.toLowerCase();
 

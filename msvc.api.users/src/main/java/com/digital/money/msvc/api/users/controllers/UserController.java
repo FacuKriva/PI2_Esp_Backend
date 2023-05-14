@@ -36,6 +36,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
     }
 
+    @GetMapping("/dni")
+    public ResponseEntity<?> findByDni(@RequestParam("dni") Long dni) throws UserNotFoundException {
+        return ResponseEntity.ok(userService.getUserByDni(dni));
+    }
+
     @GetMapping("/email")
     public ResponseEntity<?> findByEmail(@RequestParam("email") String email) throws UserNotFoundException {
         return ResponseEntity.ok(userService.getUserByEmail(email));

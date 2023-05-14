@@ -7,6 +7,6 @@ import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 public interface IUserService {
 
     UserDTO createUser(UserRequestDTO userRequestDTO) throws Exception;
-
     UserDTO getUserByEmail(String email) throws UserNotFoundException;
+    UserDTO getUserByDni(Long dni) throws UserNotFoundException;
 }
