@@ -39,7 +39,7 @@ public class AuthenticationSuccessErrorHandler implements AuthenticationEventPub
 
         if (userResponse.getAttempts() > 0) {
             userResponse.setAttempts(0);
-            updateUserAttemp(userResponse.getUserId(), userResponse);
+            updateUserAttemp(userResponse.getDni(), userResponse);
         }
     }
 
