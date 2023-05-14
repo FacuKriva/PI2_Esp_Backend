@@ -14,8 +14,8 @@ public interface IUserFeignClient {
 
     @PutMapping("/users/update/attempts/{dni}")
     void updateUserAttempts(@PathVariable Long dni,
-                            @QueryParam("enabled") boolean enabled,
-                            @QueryParam("attempts") int attempts);
+                            @RequestParam("enabled") boolean enabled,
+                            @RequestParam("attempts") int attempts);
 
     @GetMapping("/users/email")
     UserDTO findByEmail(@RequestParam String email);

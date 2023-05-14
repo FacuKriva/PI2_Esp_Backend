@@ -47,8 +47,8 @@ public class UserController {
 
     @PutMapping("/update/attempts/{dni}")
     public ResponseEntity<?> updateUserAttempts(@PathVariable Long dni,
-                                                @QueryParam("enabled") boolean enabled,
-                                                @QueryParam("attempts") int attempts) throws UserNotFoundException {
+                                                @RequestParam("enabled") boolean enabled,
+                                                @RequestParam("attempts") int attempts) throws UserNotFoundException {
 
         userService.updateAttempsFromUser(dni, enabled, attempts);
         return new ResponseEntity(HttpStatus.OK);
