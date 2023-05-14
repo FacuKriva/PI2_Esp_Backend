@@ -2,7 +2,6 @@ package com.msvc.gateway.api.sprgbt.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -19,7 +18,6 @@ public class SpringSecurityConfig {
         return http.authorizeExchange()
                 .pathMatchers("/security/oauth/**").permitAll()
                 .pathMatchers("/users/**").hasRole("ADMIN")
-                .pathMatchers(HttpMethod.POST,"/api/v1/upload").hasRole("ADMIN")
                 .anyExchange().authenticated()
                 .and().addFilterAt(authenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .csrf().disable()

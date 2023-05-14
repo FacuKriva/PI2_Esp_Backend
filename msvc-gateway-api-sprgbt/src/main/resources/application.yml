@@ -12,7 +12,3 @@ spring:
             - Path=/security/**
           filters:
             - StripPrefix=1
-        - id: documentRoute
-          uri: lb://msvc-documents-api-sprgbt
-          predicates:
-            - Path=/api/v1/**

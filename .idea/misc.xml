@@ -5,6 +5,7 @@
       <list>
         <option value="$PROJECT_DIR$/msvc.api.users/pom.xml" />
         <option value="$PROJECT_DIR$/msvc-auth-server-sprgbt/pom.xml" />
+        <option value="$PROJECT_DIR$/msvc-gateway-api-sprgbt/pom.xml" />
       </list>
     </option>
   </component>
