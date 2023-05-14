@@ -1,6 +1,7 @@
 package com.digital.money.msvc.api.users.mappers;
 
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
+import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.entities.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +27,15 @@ public class UserMapper {
 
         log.info("*** userEntity {}", userEntity);
         UserDTO dto = objectMapper.convertValue(userEntity, UserDTO.class);
+        log.info("*** UserDTO {}", dto);
+
+        return dto;
+    }
+
+    public AuthUserDTO mapToAuthUserDto(User userEntity) {
+
+        log.info("*** userEntity {}", userEntity);
+        AuthUserDTO dto = objectMapper.convertValue(userEntity, AuthUserDTO.class);
         log.info("*** UserDTO {}", dto);
 
         return dto;
