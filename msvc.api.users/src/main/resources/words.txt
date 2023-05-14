@@ -61,28 +61,28 @@ Sombrero
 Guantes
 Lentes
 Anillo
-Reloj de pulsera
+Reloj
 Collar
 Pendientes
 Bolsa
 Cartera
 Dinero
-Tarjeta de crédito
+Tarjeta
 Celular
 Auriculares
 Televisión
 Altavoz
-Consola de videojuegos
+Consola
 Pelota
 Raqueta
 Bate
-Guante de béisbol
-Balón de fútbol
-Camiseta de fútbol
-Pantalón corto de baloncesto
-Zapatos deportivos
-Botella de agua
-Barra de granola
+Guante
+Balón
+Camiseta
+Pantalón
+Zapatos
+Botella
+Barra
 Fruta
 Verdura
 Carne
@@ -93,7 +93,7 @@ Fideos
 Sopa
 Pizza
 Hamburguesa
-Papas fritas
+Papas
 Ensalada
 Sándwich
 Pastel
