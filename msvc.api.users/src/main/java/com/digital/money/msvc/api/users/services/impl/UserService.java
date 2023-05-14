@@ -1,6 +1,7 @@
 package com.digital.money.msvc.api.users.services.impl;
 
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
+import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.entities.Role;
 import com.digital.money.msvc.api.users.entities.User;
 import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
@@ -30,7 +31,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void createUser(UserRequestDTO userRequestDTO) throws Exception {
+    public UserDTO createUser(UserRequestDTO userRequestDTO) throws Exception {
 
         Optional<User> userEntityResponse = userRepository.findByDni(userRequestDTO.getDni());
 
@@ -51,6 +52,6 @@ public class UserService implements IUserService {
         userEntity.setRole(role);
         userEntity.setPassword(bcrypt.encode(userEntity.getPassword()));
 
-        userRepository.save(userEntity);
+        return userMapper.mapToDto(userRepository.save(userEntity));
     }
 }

@@ -1,6 +1,7 @@
 package com.digital.money.msvc.api.users.controllers;
 
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
+import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
 import com.digital.money.msvc.api.users.services.impl.UserService;
 import jakarta.validation.Valid;
@@ -33,7 +34,7 @@ public class UserController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        userService.createUser(userRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonMap("message", "user created successfully"));
+        UserDTO userDTO = userService.createUser(userRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
     }
 }

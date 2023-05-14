@@ -1,9 +1,9 @@
 package com.digital.money.msvc.api.users.services;
 
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
-import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
+import com.digital.money.msvc.api.users.dtos.UserDTO;
 
 public interface IUserService {
 
-    void createUser(UserRequestDTO userRequestDTO) throws Exception;
+    UserDTO createUser(UserRequestDTO userRequestDTO) throws Exception;
 }
