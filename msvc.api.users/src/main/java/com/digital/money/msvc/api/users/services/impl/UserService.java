@@ -5,6 +5,7 @@ import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.entities.Role;
 import com.digital.money.msvc.api.users.entities.User;
 import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
+import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import com.digital.money.msvc.api.users.mappers.UserMapper;
 import com.digital.money.msvc.api.users.repositorys.IRoleRepository;
 import com.digital.money.msvc.api.users.repositorys.IUserRepository;
@@ -12,6 +13,7 @@ import com.digital.money.msvc.api.users.services.IUserService;
 import com.digital.money.msvc.api.users.utils.KeysGenerator;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -30,6 +32,7 @@ public class UserService implements IUserService {
         this.bcrypt = bcrypt;
     }
 
+    @Transactional
     @Override
     public UserDTO createUser(UserRequestDTO userRequestDTO) throws Exception {
 
@@ -53,5 +56,18 @@ public class UserService implements IUserService {
         userEntity.setPassword(bcrypt.encode(userEntity.getPassword()));
 
         return userMapper.mapToDto(userRepository.save(userEntity));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public UserDTO getUserByEmail(String email) throws UserNotFoundException {
+        String emailInLowercase = email.toLowerCase();
+
+        User user = userRepository.findByEmail(emailInLowercase).orElseThrow(
+                () -> new UserNotFoundException(String
+                        .format("The user with email %s was not found", email))
+        );
+
+        return userMapper.mapToDto(user);
     }
 }
