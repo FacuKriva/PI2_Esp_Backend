@@ -1,5 +1,6 @@
 package com.digital.money.msvc.api.users.exceptions;
 
+import jakarta.ws.rs.InternalServerErrorException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
