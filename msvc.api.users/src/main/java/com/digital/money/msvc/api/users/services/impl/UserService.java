@@ -40,9 +40,10 @@ public class UserService implements IUserService {
     @Override
     public UserDTO createUser(UserRequestDTO userRequestDTO) throws Exception {
 
-        Optional<User> userEntityResponse = userRepository.findByDni(userRequestDTO.getDni());
+        Optional<User> entityResponseDni = userRepository.findByDni(userRequestDTO.getDni());
+        Optional<User> entityResponseEmail = userRepository.findByEmail(userRequestDTO.getEmail());
 
-        if (userEntityResponse.isPresent()) {
+        if (entityResponseDni.isPresent() || entityResponseEmail.isPresent()) {
             throw new HasAlreadyBeenRegistred(String
                     .format("The user %s is already registered", userRequestDTO.getName()));
         }
