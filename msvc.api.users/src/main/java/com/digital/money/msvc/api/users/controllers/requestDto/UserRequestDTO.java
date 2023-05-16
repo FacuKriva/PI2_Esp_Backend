@@ -41,6 +41,6 @@ public class UserRequestDTO {
     @NotNull(message = "The phone cannot be null or empty ")
     private Integer phone;
 
-    @NotNull(message = "The role_id cannot be null")
-    private RoleDTO role;
+//    @NotNull(message = "The role_id cannot be null")
+//    private RoleDTO role;
 }
