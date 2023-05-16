@@ -38,10 +38,12 @@ public class UserDTO {
 
     private Integer phone;
 
+    @JsonIgnore
     private Boolean enabled;
 
     @JsonIgnore
     private int attempts;
 
+    @JsonIgnore
     private RoleDTO role;
 }

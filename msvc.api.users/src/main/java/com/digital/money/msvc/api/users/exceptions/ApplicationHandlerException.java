@@ -1,5 +1,6 @@
 package com.digital.money.msvc.api.users.exceptions;
 
+import jakarta.ws.rs.InternalServerErrorException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -60,6 +61,18 @@ public class ApplicationHandlerException extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ExceptionResponse> handlingAllExceptions(Exception ex, WebRequest request) {
+
+        ExceptionResponse er = ExceptionResponse.builder()
+                .date(LocalDateTime.now())
+                .message(ex.getMessage())
+                .details(request.getDescription(false))
+                .build();
+
+        return new ResponseEntity<ExceptionResponse>(er, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(InternalServerError.class)
+    public final ResponseEntity<ExceptionResponse> internalServerError(Exception ex, WebRequest request) {
 
         ExceptionResponse er = ExceptionResponse.builder()
                 .date(LocalDateTime.now())

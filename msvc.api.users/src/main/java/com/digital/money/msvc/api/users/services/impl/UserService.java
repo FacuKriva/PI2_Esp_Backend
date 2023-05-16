@@ -6,6 +6,7 @@ import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.entities.Role;
 import com.digital.money.msvc.api.users.entities.User;
 import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
+import com.digital.money.msvc.api.users.exceptions.InternalServerError;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import com.digital.money.msvc.api.users.mappers.UserMapper;
 import com.digital.money.msvc.api.users.repositorys.IRoleRepository;
@@ -16,11 +17,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.Optional;
 
 @Service
 public class UserService implements IUserService {
 
+    private static final int ROLE_USER = 2;
     private final IUserRepository userRepository;
     private final IRoleRepository roleRepository;
     private final UserMapper userMapper;
@@ -41,11 +44,10 @@ public class UserService implements IUserService {
 
         if (userEntityResponse.isPresent()) {
             throw new HasAlreadyBeenRegistred(String
-                    .format("The user %s is already registered in the database", userRequestDTO.getName()));
+                    .format("The user %s is already registered", userRequestDTO.getName()));
         }
 
-        Role role = roleRepository.findById(userRequestDTO.getRole().getRoleId()).orElseThrow(() ->
-                new Exception(String.format("The role with Id %d does not exist", userRequestDTO.getRole().getRoleId())));
+        Role role = roleRepository.findById(ROLE_USER).get();
 
         User userEntity = userMapper.mapToEntity(userRequestDTO);
         userEntity.setEmail(userRequestDTO.getEmail().toLowerCase());
