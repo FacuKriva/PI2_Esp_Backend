@@ -58,7 +58,7 @@ public class UserService implements IUserService {
         User userEntity = userMapper.mapToEntity(userRequestDTO);
         userEntity.setEmail(userRequestDTO.getEmail().toLowerCase());
         userEntity.setCvu(KeysGenerator.generateCvu());
-        userEntity.setAlias("uwu.onichan.owo");
+        userEntity.setAlias(KeysGenerator.generateAlias());
         userEntity.setEnabled(true);
         userEntity.setAttempts(0);
         userEntity.setRole(role);
