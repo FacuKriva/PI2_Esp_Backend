@@ -12,11 +12,6 @@
         <module name="msvc-gateway-api-sprgbt" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="msvc-auth-server-sprgbt" target="17" />
-      <module name="msvc-gateway-api-sprgbt" target="17" />
-      <module name="msvc.api.users" target="17" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

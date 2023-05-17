@@ -4,10 +4,10 @@ import com.digital.money.msvc.api.users.controllers.requestDto.ResendCodeDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
+import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import com.digital.money.msvc.api.users.services.impl.UserService;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.QueryParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -59,18 +59,33 @@ public class UserController {
     }
 
     @PutMapping("/resend")
-    public ResponseEntity<?> resendVerificationMail(@RequestBody ResendCodeDTO mail){
+    public ResponseEntity<?> resendVerificationMail(@RequestBody ResendCodeDTO mail) {
 
         userService.sendVerificationMail(mail.getMail());
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @PutMapping("/verificate")
-    public ResponseEntity<?> verificateCode(@RequestBody VerficationRequestDTO verficationRequestDTO){
+    public ResponseEntity<?> verificateCode(@RequestBody VerficationRequestDTO verficationRequestDTO) {
 
         userService.verificateUser(verficationRequestDTO);
         return ResponseEntity.ok("Mail verificado correctamente");
     }
 
+    @PutMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
 
+        userService.forgotPassword(email);
+        return ResponseEntity.ok("Se ha enviado un correo para cambiar la contraseña");
+    }
+
+    @PutMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(
+            @RequestParam("email") String email,
+            @RequestParam("New-Password") String newPassword)
+            throws PasswordNotChangedException {
+
+        userService.resetPassword(email, newPassword);
+        return ResponseEntity.ok("Contraseña cambiada correctamente");
+    }
 }

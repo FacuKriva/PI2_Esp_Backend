@@ -43,4 +43,23 @@ public class EmailServiceImpl implements IEmailService {
 
         }
     }
+
+    @Override
+    public void sendForgotPasswordEmail(User user, String link) {
+        try {
+            String  receptor = user.getEmail();
+            String asunto ="Recuperar contraseña";
+            String texto= "Hola "+user.getName()+", este mail confirma que se ha solicitado recuperar la contraseña de su cuenta en Digital Money.\nPara poder recuperar su contraseña por favor ingrese al siguiente link: "+link;
+
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setFrom(emisor);
+            simpleMailMessage.setTo(receptor);
+            simpleMailMessage.setSubject(asunto);
+            simpleMailMessage.setText(texto);
+
+            javaMailSender.send(simpleMailMessage);
+        }
+        catch (Exception e){ }
+    }
+
 }

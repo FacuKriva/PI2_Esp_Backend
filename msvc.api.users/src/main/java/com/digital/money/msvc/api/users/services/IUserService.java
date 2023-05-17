@@ -4,6 +4,7 @@ import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
+import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 
 public interface IUserService {
@@ -15,4 +16,8 @@ public interface IUserService {
 
     void sendVerificationMail(String email);
     String verificateUser(VerficationRequestDTO verficationRequestDTO);
+
+    void forgotPassword(String email);
+
+    void resetPassword(String email, String password) throws PasswordNotChangedException;
 }
