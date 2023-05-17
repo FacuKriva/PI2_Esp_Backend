@@ -46,4 +46,7 @@ public class UserDTO {
 
     @JsonIgnore
     private RoleDTO role;
+
+    @JsonIgnore
+    private Boolean verified;
 }

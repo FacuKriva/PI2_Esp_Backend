@@ -1,6 +1,8 @@
 package com.digital.money.msvc.api.users.controllers;
 
+import com.digital.money.msvc.api.users.controllers.requestDto.ResendCodeDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import com.digital.money.msvc.api.users.services.impl.UserService;
@@ -31,6 +33,8 @@ public class UserController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
+        System.out.println("hola");
+
         UserDTO userDTO = userService.createUser(userRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
     }
@@ -53,4 +57,20 @@ public class UserController {
         userService.updateAttempsFromUser(dni, enabled, attempts);
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    @PutMapping("/resend")
+    public ResponseEntity<?> resendVerificationMail(@RequestBody ResendCodeDTO mail){
+
+        userService.sendVerificationMail(mail.getMail());
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PutMapping("/verificate")
+    public ResponseEntity<?> verificateCode(@RequestBody VerficationRequestDTO verficationRequestDTO){
+
+        userService.verificateUser(verficationRequestDTO);
+        return ResponseEntity.ok("Mail verificado correctamente");
+    }
+
+
 }

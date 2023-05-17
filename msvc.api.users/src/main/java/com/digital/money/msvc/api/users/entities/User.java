@@ -58,4 +58,24 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+    private Boolean verified;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", cvu='" + cvu + '\'' +
+                ", alias='" + alias + '\'' +
+                ", dni=" + dni +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", phone=" + phone +
+                ", enabled=" + enabled +
+                ", attempts=" + attempts +
+                ", role=" + role +
+                ", verified=" + verified +
+                '}';
+    }
 }

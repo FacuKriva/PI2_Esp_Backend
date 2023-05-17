@@ -1,12 +1,13 @@
 package com.digital.money.msvc.api.users.services.impl;
 
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.entities.Role;
 import com.digital.money.msvc.api.users.entities.User;
+import com.digital.money.msvc.api.users.entities.Verified;
 import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
-import com.digital.money.msvc.api.users.exceptions.InternalServerError;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import com.digital.money.msvc.api.users.mappers.UserMapper;
 import com.digital.money.msvc.api.users.repositorys.IRoleRepository;
@@ -17,7 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -28,12 +29,16 @@ public class UserService implements IUserService {
     private final IRoleRepository roleRepository;
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder bcrypt;
+    private final EmailServiceImpl emailService;
+    private final VerificationServiceImpl verificationService;
 
-    public UserService(IUserRepository userRepository, IRoleRepository roleRepository, UserMapper userMapper, BCryptPasswordEncoder bcrypt) {
+    public UserService(IUserRepository userRepository, IRoleRepository roleRepository, UserMapper userMapper, BCryptPasswordEncoder bcrypt, EmailServiceImpl emailService, VerificationServiceImpl verificationService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userMapper = userMapper;
         this.bcrypt = bcrypt;
+        this.emailService = emailService;
+        this.verificationService = verificationService;
     }
 
     @Transactional
@@ -53,13 +58,19 @@ public class UserService implements IUserService {
         User userEntity = userMapper.mapToEntity(userRequestDTO);
         userEntity.setEmail(userRequestDTO.getEmail().toLowerCase());
         userEntity.setCvu(KeysGenerator.generateCvu());
-        userEntity.setAlias(KeysGenerator.generateAlias());
+        userEntity.setAlias("hola.pepito.pepe");
         userEntity.setEnabled(true);
         userEntity.setAttempts(0);
         userEntity.setRole(role);
         userEntity.setPassword(bcrypt.encode(userEntity.getPassword()));
+        userEntity.setVerified(false);
+        User userSaved = userRepository.save(userEntity);
 
-        return userMapper.mapToDto(userRepository.save(userEntity));
+        System.out.println(userSaved);
+
+        sendVerificationMail(userEntity.getEmail());
+
+        return userMapper.mapToDto(userSaved);
     }
 
     @Transactional(readOnly = true)
@@ -101,5 +112,31 @@ public class UserService implements IUserService {
         user.setAttempts(attempts);
 
         userRepository.save(user);
+    }
+
+    @Override
+    public void sendVerificationMail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
+        Integer codigo = verificationService.createVerificationCode(user.getUserId());
+        emailService.sendMail(user,codigo);
+    }
+
+    @Override
+    public String verificateUser(VerficationRequestDTO verficationRequestDTO) {
+
+        String email = verficationRequestDTO.getMail();
+        User user = userRepository.findByEmail(email).get();
+
+        Verified verified = new Verified(user.getUserId(), verficationRequestDTO.getVerificationCode());
+        Boolean checkedCode = verificationService.verificateCode(verified);
+
+        if(!checkedCode)
+            return "Código erroneo";
+
+        user.setVerified(true);
+
+        userRepository.save(user);
+
+        return "Cuenta verificada";
     }
 }
