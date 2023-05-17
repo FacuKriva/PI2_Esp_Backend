@@ -37,5 +37,7 @@ public class AuthUserDTO {
 
     private int attempts;
 
+    private Boolean verified;
+
     private RoleDTO role;
 }
