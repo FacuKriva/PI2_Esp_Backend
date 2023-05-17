@@ -1,12 +1,10 @@
 package com.digital.money.msvc.api.users.services.impl;
 
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
-import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.entities.Role;
 import com.digital.money.msvc.api.users.entities.User;
-import com.digital.money.msvc.api.users.entities.Verified;
 import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import com.digital.money.msvc.api.users.mappers.UserMapper;
@@ -18,7 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -37,8 +34,6 @@ public class UserService implements IUserService {
         this.roleRepository = roleRepository;
         this.userMapper = userMapper;
         this.bcrypt = bcrypt;
-        this.emailService = emailService;
-        this.verificationService = verificationService;
     }
 
     @Transactional
@@ -58,7 +53,7 @@ public class UserService implements IUserService {
         User userEntity = userMapper.mapToEntity(userRequestDTO);
         userEntity.setEmail(userRequestDTO.getEmail().toLowerCase());
         userEntity.setCvu(KeysGenerator.generateCvu());
-        userEntity.setAlias("hola.pepito.pepe");
+        userEntity.setAlias(KeysGenerator.generateAlias());
         userEntity.setEnabled(true);
         userEntity.setAttempts(0);
         userEntity.setRole(role);
