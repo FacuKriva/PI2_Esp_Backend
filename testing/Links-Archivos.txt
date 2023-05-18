@@ -12,6 +12,5 @@ https://docs.google.com/spreadsheets/d/1AkpN6rtgpJZSMWjQeb23wbbCTLlmNYJ2NlAMTv9l
 Reporte Defectos: 
 https://docs.google.com/spreadsheets/d/1DJy0ZeScOy-pOA58itMwGnd9VQIj5H3lyV7cM15ZpGQ/edit?usp=sharing
 
-
 Reporte Testing:
-https://docs.google.com/spreadsheets/d/1cnxSTaJJhjT9oHQ1i2Qzh952Vhrj6Bb-pa82GIIRY68/edit?usp=sharing
+https://docs.google.com/spreadsheets/d/1HOt1BrVWLWsM00EWdXlSdVkIeBGn8IuvENwKZd1sXEk/edit?usp=sharing
