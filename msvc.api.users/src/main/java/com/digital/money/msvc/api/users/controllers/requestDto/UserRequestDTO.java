@@ -35,7 +35,7 @@ public class UserRequestDTO {
     private String email;
 
     @NotBlank(message = "The password cannot be null or empty ")
-    @Size(max = 30, message = "maximum number of characters 30")
+    @Size(min = 8, max = 30, message = "minimum number of characters 8, maximum number of characters 30")
     private String password;
 
     @NotNull(message = "The phone cannot be null or empty ")
