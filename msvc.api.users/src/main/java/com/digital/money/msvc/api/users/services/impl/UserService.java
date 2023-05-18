@@ -170,8 +170,20 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void resetPassword(String email, String newPassword) throws PasswordNotChangedException {
-        User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
+    public void resetPassword(String recoveryLink, String newPassword) throws PasswordNotChangedException {
+
+        System.out.println(recoveryLink);
+
+        Boolean codigoVerificado = verificationService.verificateRecoveryLink(recoveryLink);
+
+        if (!codigoVerificado)
+            throw new PasswordNotChangedException("El link ingresado no existe");
+
+        String strUserId = recoveryLink.substring(0, recoveryLink.length()-6);
+        Long userId = Long.parseLong(strUserId);
+
+        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+
         if (bcrypt.matches(newPassword, user.getPassword())) {
             throw new PasswordNotChangedException("La contraseña no puede ser la misma que la anterior");
         }

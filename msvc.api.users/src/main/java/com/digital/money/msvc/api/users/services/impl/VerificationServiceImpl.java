@@ -3,6 +3,7 @@ package com.digital.money.msvc.api.users.services.impl;
 import com.digital.money.msvc.api.users.entities.Verified;
 import com.digital.money.msvc.api.users.repositorys.IVerificationRepository;
 import com.digital.money.msvc.api.users.services.IVerificationService;
+import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +58,24 @@ public class VerificationServiceImpl implements IVerificationService {
 
             verificationRepository.save(verified);
 
-            return "http://localhost:8080/users/recoverPassword/"+userId+"/"+numero;
+            return "http://localhost:8080/users/reset-password/"+userId+numero;
     }
+
+    public Boolean verificateRecoveryLink(String recoveryLink){
+
+        String strUserId = recoveryLink.substring(0, recoveryLink.length()-6);
+        String strRecoveryCode = recoveryLink.substring(recoveryLink.length()-6);
+
+        Long userId = Long.parseLong(strUserId);
+        Integer recoveryCode = Integer.parseInt(strRecoveryCode);
+
+        Verified verified = verificationRepository.findById(userId).orElseThrow(NotFoundException::new);
+
+        if(verified.getUserId().equals(userId) && verified.getVerificationCode().equals(recoveryCode))
+            return Boolean.TRUE;
+
+        return Boolean.FALSE;
+
+    }
+
 }

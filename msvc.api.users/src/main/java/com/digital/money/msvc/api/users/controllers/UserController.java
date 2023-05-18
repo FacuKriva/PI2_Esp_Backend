@@ -1,5 +1,6 @@
 package com.digital.money.msvc.api.users.controllers;
 
+import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.ResendCodeDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
@@ -75,17 +76,17 @@ public class UserController {
     @PutMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
 
-
+        userService.forgotPassword(email);
         return ResponseEntity.ok("Se ha enviado un correo para cambiar la contraseña");
     }
 
-    @PutMapping("/reset-password")
+    @PutMapping("/reset-password/{recoveryCode}")
     public ResponseEntity<?> resetPassword(
-            @RequestParam("email") String email,
-            @RequestParam("New-Password") String newPassword)
+            @PathVariable("recoveryCode") String recoveryCode,
+            @RequestBody NewPassDTO newPassword)
             throws PasswordNotChangedException {
 
-        userService.resetPassword(email, newPassword);
+        userService.resetPassword(recoveryCode, newPassword.getPass());
         return ResponseEntity.ok("Contraseña cambiada correctamente");
     }
 }

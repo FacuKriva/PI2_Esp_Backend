@@ -21,5 +21,5 @@ public interface IUserService {
     ResponseEntity<String> verificateUser(VerficationRequestDTO verficationRequestDTO, String token) throws JSONException;
 
     void forgotPassword(String email);
-    void resetPassword(String email, String password) throws PasswordNotChangedException;
+    void resetPassword(String recoveryCode, String password) throws PasswordNotChangedException;
 }

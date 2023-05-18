@@ -8,4 +8,5 @@ public interface IVerificationService {
     Boolean verificateCode(Verified verified);
 
     String createRecoverPasswordLink(Long userId);
+    Boolean verificateRecoveryLink(String link);
 }
