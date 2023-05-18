@@ -8,6 +8,7 @@ import com.digital.money.msvc.api.users.entities.Role;
 import com.digital.money.msvc.api.users.entities.User;
 import com.digital.money.msvc.api.users.entities.Verified;
 import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
+import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import com.digital.money.msvc.api.users.mappers.UserMapper;
 import com.digital.money.msvc.api.users.repositorys.IRoleRepository;
@@ -62,7 +63,7 @@ public class UserService implements IUserService {
         User userEntity = userMapper.mapToEntity(userRequestDTO);
         userEntity.setEmail(userRequestDTO.getEmail().toLowerCase());
         userEntity.setCvu(KeysGenerator.generateCvu());
-        userEntity.setAlias("owo.onichan.uwu");
+        userEntity.setAlias(KeysGenerator.generateAlias());
         userEntity.setEnabled(true);
         userEntity.setAttempts(0);
         userEntity.setRole(role);
@@ -157,5 +158,22 @@ public class UserService implements IUserService {
 
     private static String decodeToken(String token) {
         return new String(Base64.getUrlDecoder().decode(token));
+    }
+
+    @Override
+    public void forgotPassword(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
+        String link = verificationService.createRecoverPasswordLink(user.getUserId());
+        emailService.sendForgotPasswordEmail(user,link);
+    }
+
+    @Override
+    public void resetPassword(String email, String newPassword) throws PasswordNotChangedException {
+        User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
+        if (bcrypt.matches(newPassword, user.getPassword())) {
+            throw new PasswordNotChangedException("La contraseña no puede ser la misma que la anterior");
+        }
+        user.setPassword(bcrypt.encode(newPassword));
+        userRepository.save(user);
     }
 }

@@ -1,6 +1,5 @@
 package com.digital.money.msvc.api.users.services.impl;
 
-import com.digital.money.msvc.api.users.entities.User;
 import com.digital.money.msvc.api.users.entities.Verified;
 import com.digital.money.msvc.api.users.repositorys.IVerificationRepository;
 import com.digital.money.msvc.api.users.services.IVerificationService;
@@ -43,5 +42,21 @@ public class VerificationServiceImpl implements IVerificationService {
 
         return Boolean.TRUE;
 
+    }
+
+    @Override
+    public String createRecoverPasswordLink(Long userId) {
+
+            int min = 123123, max = 987987;
+
+            Double dNumeroRand = Math.random()*(max-min)+min;
+
+            Integer numero = dNumeroRand.intValue();
+
+            Verified verified = new Verified(userId,numero);
+
+            verificationRepository.save(verified);
+
+            return "http://localhost:8080/users/recoverPassword/"+userId+"/"+numero;
     }
 }

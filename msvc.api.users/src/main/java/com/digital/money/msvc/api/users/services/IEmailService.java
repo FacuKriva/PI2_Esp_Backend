@@ -6,4 +6,5 @@ public interface IEmailService {
 
     void sendVericationMail(User user, Integer codigo);
 
+    void sendForgotPasswordEmail(User user, String link);
 }

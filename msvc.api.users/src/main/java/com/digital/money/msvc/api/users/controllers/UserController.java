@@ -4,6 +4,7 @@ import com.digital.money.msvc.api.users.controllers.requestDto.ResendCodeDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
+import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import com.digital.money.msvc.api.users.services.impl.UserService;
 import jakarta.validation.Valid;
@@ -73,5 +74,20 @@ public class UserController {
         return ResponseEntity.ok("Mail verificado correctamente");
     }
 
+    @PutMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
 
+        userService.forgotPassword(email);
+        return ResponseEntity.ok("Se ha enviado un correo para cambiar la contraseña");
+    }
+
+    @PutMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(
+            @RequestParam("email") String email,
+            @RequestParam("New-Password") String newPassword)
+            throws PasswordNotChangedException {
+
+        userService.resetPassword(email, newPassword);
+        return ResponseEntity.ok("Contraseña cambiada correctamente");
+    }
 }
