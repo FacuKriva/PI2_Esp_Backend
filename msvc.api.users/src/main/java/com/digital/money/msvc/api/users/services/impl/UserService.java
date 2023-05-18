@@ -18,6 +18,8 @@ import com.digital.money.msvc.api.users.utils.KeysGenerator;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -127,7 +129,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public String verificateUser(VerficationRequestDTO verficationRequestDTO, String token) throws JSONException {
+    public ResponseEntity <String> verificateUser(VerficationRequestDTO verficationRequestDTO, String token) throws JSONException {
 
         String[] jwtParts = token.split("\\.");
         JSONObject payload = new JSONObject(decodeToken(jwtParts[1]));
@@ -139,13 +141,13 @@ public class UserService implements IUserService {
         Boolean checkedCode = verificationService.verificateCode(verified);
 
         if(!checkedCode)
-            return "Código erroneo";
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Código incorrecto.");
 
         user.setVerified(true);
 
         userRepository.save(user);
 
-        return "Cuenta verificada";
+        return ResponseEntity.status(HttpStatus.OK).body("Mail verificado correctamente");
     }
 
     public void resendVerificationMail(String token) throws JSONException {

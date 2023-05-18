@@ -7,6 +7,7 @@ import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import org.json.JSONException;
+import org.springframework.http.ResponseEntity;
 
 public interface IUserService {
 
@@ -17,7 +18,7 @@ public interface IUserService {
 
     void sendVerificationMail(String email);
     void resendVerificationMail(String token) throws JSONException;
-    String verificateUser(VerficationRequestDTO verficationRequestDTO, String token) throws JSONException, JSONException;
+    ResponseEntity<String> verificateUser(VerficationRequestDTO verficationRequestDTO, String token) throws JSONException;
 
     void forgotPassword(String email);
     void resetPassword(String email, String password) throws PasswordNotChangedException;

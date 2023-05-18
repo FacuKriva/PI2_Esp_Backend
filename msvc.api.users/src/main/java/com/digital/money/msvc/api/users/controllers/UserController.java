@@ -69,15 +69,13 @@ public class UserController {
 
     @PutMapping("/verificate")
     public ResponseEntity<?> verificateCode(@RequestBody VerficationRequestDTO verficationRequestDTO, @RequestHeader("Authorization") String token) throws JSONException {
-
-        userService.verificateUser(verficationRequestDTO, token);
-        return ResponseEntity.ok("Mail verificado correctamente");
+        return userService.verificateUser(verficationRequestDTO, token);
     }
 
     @PutMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
 
-        userService.forgotPassword(email);
+
         return ResponseEntity.ok("Se ha enviado un correo para cambiar la contraseña");
     }
 

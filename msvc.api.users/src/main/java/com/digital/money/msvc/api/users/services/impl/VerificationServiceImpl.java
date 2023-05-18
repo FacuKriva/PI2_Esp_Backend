@@ -30,7 +30,7 @@ public class VerificationServiceImpl implements IVerificationService {
     }
 
     @Override
-    public boolean verificateCode(Verified userVerification) {
+    public Boolean verificateCode(Verified userVerification) {
 
         Verified dbSavedVerification = verificationRepository.findById(userVerification.getUserId()).orElseThrow(NoSuchElementException::new);
 
