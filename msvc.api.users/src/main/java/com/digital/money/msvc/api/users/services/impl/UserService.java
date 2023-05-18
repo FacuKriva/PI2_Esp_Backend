@@ -14,10 +14,14 @@ import com.digital.money.msvc.api.users.repositorys.IRoleRepository;
 import com.digital.money.msvc.api.users.repositorys.IUserRepository;
 import com.digital.money.msvc.api.users.services.IUserService;
 import com.digital.money.msvc.api.users.utils.KeysGenerator;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Base64;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -58,7 +62,7 @@ public class UserService implements IUserService {
         User userEntity = userMapper.mapToEntity(userRequestDTO);
         userEntity.setEmail(userRequestDTO.getEmail().toLowerCase());
         userEntity.setCvu(KeysGenerator.generateCvu());
-        userEntity.setAlias(KeysGenerator.generateAlias());
+        userEntity.setAlias("owo.onichan.uwu");
         userEntity.setEnabled(true);
         userEntity.setAttempts(0);
         userEntity.setRole(role);
@@ -118,13 +122,16 @@ public class UserService implements IUserService {
     public void sendVerificationMail(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
         Integer codigo = verificationService.createVerificationCode(user.getUserId());
-        emailService.sendMail(user,codigo);
+        emailService.sendVericationMail(user,codigo);
     }
 
     @Override
-    public String verificateUser(VerficationRequestDTO verficationRequestDTO) {
+    public String verificateUser(VerficationRequestDTO verficationRequestDTO, String token) throws JSONException {
 
-        String email = verficationRequestDTO.getMail();
+        String[] jwtParts = token.split("\\.");
+        JSONObject payload = new JSONObject(decodeToken(jwtParts[1]));
+        String email = payload.getString("email");
+
         User user = userRepository.findByEmail(email).get();
 
         Verified verified = new Verified(user.getUserId(), verficationRequestDTO.getVerificationCode());
@@ -138,5 +145,17 @@ public class UserService implements IUserService {
         userRepository.save(user);
 
         return "Cuenta verificada";
+    }
+
+    public void resendVerificationMail(String token) throws JSONException {
+
+        String[] jwtParts = token.split("\\.");
+        JSONObject payload = new JSONObject(decodeToken(jwtParts[1]));
+        String email = payload.getString("email");
+        sendVerificationMail(email);
+    }
+
+    private static String decodeToken(String token) {
+        return new String(Base64.getUrlDecoder().decode(token));
     }
 }

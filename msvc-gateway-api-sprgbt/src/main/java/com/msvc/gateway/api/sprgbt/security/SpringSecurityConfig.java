@@ -19,6 +19,7 @@ public class SpringSecurityConfig {
         return http.authorizeExchange()
                 .pathMatchers("/security/oauth/**").permitAll()
                 .pathMatchers(HttpMethod.POST,"/users").permitAll()
+                .pathMatchers(HttpMethod.PUT,"/users").permitAll()
                 .pathMatchers("/users/**").hasRole("ADMIN")
                 .anyExchange().authenticated()
                 .and().addFilterAt(authenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)

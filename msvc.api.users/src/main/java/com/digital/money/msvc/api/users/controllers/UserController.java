@@ -8,6 +8,7 @@ import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import com.digital.money.msvc.api.users.services.impl.UserService;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.QueryParam;
+import org.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -59,16 +60,16 @@ public class UserController {
     }
 
     @PutMapping("/resend")
-    public ResponseEntity<?> resendVerificationMail(@RequestBody ResendCodeDTO mail){
+    public ResponseEntity<?> resendVerificationMail(@RequestHeader("Authorization") String token) throws JSONException {
 
-        userService.sendVerificationMail(mail.getMail());
-        return new ResponseEntity(HttpStatus.OK);
+        userService.resendVerificationMail(token);
+        return ResponseEntity.ok("Mail enviado correctamente");
     }
 
     @PutMapping("/verificate")
-    public ResponseEntity<?> verificateCode(@RequestBody VerficationRequestDTO verficationRequestDTO){
+    public ResponseEntity<?> verificateCode(@RequestBody VerficationRequestDTO verficationRequestDTO, @RequestHeader("Authorization") String token) throws JSONException {
 
-        userService.verificateUser(verficationRequestDTO);
+        userService.verificateUser(verficationRequestDTO, token);
         return ResponseEntity.ok("Mail verificado correctamente");
     }
 

@@ -4,6 +4,6 @@ import com.digital.money.msvc.api.users.entities.User;
 
 public interface IEmailService {
 
-    void sendMail(User user, Integer codigo);
+    void sendVericationMail(User user, Integer codigo);
 
 }

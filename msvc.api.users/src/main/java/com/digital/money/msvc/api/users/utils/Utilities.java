@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Base64;
+
 @Configuration
 public class Utilities {
 
@@ -26,4 +28,9 @@ public class Utilities {
         //return new BCryptPasswordEncoder($2B, 20, secure);
         return new BCryptPasswordEncoder();
     }
+
+    public String decode(String encodedString){
+        return new String(Base64.getUrlDecoder().decode(encodedString));
+    }
+
 }

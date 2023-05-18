@@ -5,6 +5,7 @@ import com.digital.money.msvc.api.users.controllers.requestDto.VerficationReques
 import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
+import org.json.JSONException;
 
 public interface IUserService {
 
@@ -14,5 +15,6 @@ public interface IUserService {
     void updateAttempsFromUser(Long userId, boolean enabled, int attempts) throws UserNotFoundException;
 
     void sendVerificationMail(String email);
-    String verificateUser(VerficationRequestDTO verficationRequestDTO);
+    void resendVerificationMail(String token) throws JSONException;
+    String verificateUser(VerficationRequestDTO verficationRequestDTO, String token) throws JSONException;
 }

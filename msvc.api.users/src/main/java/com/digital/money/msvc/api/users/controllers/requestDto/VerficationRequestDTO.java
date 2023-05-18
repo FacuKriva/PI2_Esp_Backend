@@ -12,6 +12,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class VerficationRequestDTO {
 
-    private String mail;
     private Integer verificationCode;
 }

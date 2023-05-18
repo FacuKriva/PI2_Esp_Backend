@@ -35,11 +35,13 @@ public class VerificationServiceImpl implements IVerificationService {
 
         Verified dbSavedVerification = verificationRepository.findById(userVerification.getUserId()).orElseThrow(NoSuchElementException::new);
 
-        if(userVerification.getVerificationCode().equals(dbSavedVerification.getVerificationCode())){
-            return Boolean.TRUE;
+        if(!userVerification.getVerificationCode().equals(dbSavedVerification.getVerificationCode())){
+            return Boolean.FALSE;
         }
 
-        return Boolean.FALSE;
+        verificationRepository.delete(dbSavedVerification);
+
+        return Boolean.TRUE;
 
     }
 }

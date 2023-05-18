@@ -22,7 +22,7 @@ public class EmailServiceImpl implements IEmailService {
     private String emisor;
 
     @Override
-    public void sendMail(User user, Integer codigo) {
+    public void sendVericationMail(User user, Integer codigo) {
         try {
 
             String  receptor = user.getEmail();
