@@ -17,4 +17,8 @@ public class NewPassDTO {
     @Size(min = 8, max = 30, message = "minimum number of characters 8, maximum number of characters 30")
     private String pass;
 
+    @NotBlank(message = "The password cannot be null or empty ")
+    @Size(min = 8, max = 30, message = "minimum number of characters 8, maximum number of characters 30")
+    private String passRep;
+
 }

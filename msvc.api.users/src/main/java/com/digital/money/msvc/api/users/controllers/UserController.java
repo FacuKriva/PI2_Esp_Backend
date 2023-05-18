@@ -83,10 +83,10 @@ public class UserController {
     @PutMapping("/reset-password/{recoveryCode}")
     public ResponseEntity<?> resetPassword(
             @PathVariable("recoveryCode") String recoveryCode,
-            @RequestBody NewPassDTO newPassword)
+            @RequestBody NewPassDTO passwords)
             throws PasswordNotChangedException {
 
-        userService.resetPassword(recoveryCode, newPassword.getPass());
+        userService.resetPassword(recoveryCode, passwords);
         return ResponseEntity.ok("Contraseña cambiada correctamente");
     }
 }

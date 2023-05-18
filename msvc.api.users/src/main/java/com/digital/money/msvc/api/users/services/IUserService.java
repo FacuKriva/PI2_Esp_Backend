@@ -1,5 +1,6 @@
 package com.digital.money.msvc.api.users.services;
 
+import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
@@ -21,5 +22,5 @@ public interface IUserService {
     ResponseEntity<String> verificateUser(VerficationRequestDTO verficationRequestDTO, String token) throws JSONException;
 
     void forgotPassword(String email);
-    void resetPassword(String recoveryCode, String password) throws PasswordNotChangedException;
+    void resetPassword(String recoveryCode, NewPassDTO passwords) throws PasswordNotChangedException;
 }

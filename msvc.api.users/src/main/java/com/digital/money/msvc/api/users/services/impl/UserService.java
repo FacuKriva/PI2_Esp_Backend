@@ -1,5 +1,6 @@
 package com.digital.money.msvc.api.users.services.impl;
 
+import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
@@ -170,9 +171,12 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void resetPassword(String recoveryLink, String newPassword) throws PasswordNotChangedException {
+    public void resetPassword(String recoveryLink, NewPassDTO passDTO) throws PasswordNotChangedException {
 
-        System.out.println(recoveryLink);
+        if(passDTO.getPass()!= passDTO.getPassRep())
+            throw new PasswordNotChangedException("Las contraseñas no coinciden");
+
+        String newPassword = passDTO.getPass();
 
         Boolean codigoVerificado = verificationService.verificateRecoveryLink(recoveryLink);
 
