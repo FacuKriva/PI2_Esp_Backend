@@ -31,8 +31,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: 4nR34lvarez@gmail.com
-    password: ttrvgkmasxihivbz
+    username: help.digitalmoneywallet@gmail.com
+    password: dmqoxwpexdyteqju
     properties:
       mail:
         smtp:
