@@ -8,9 +8,12 @@ spring:
   # Conexion a DB MySQL
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/user_db?useUnicode=true&characterEncoding=utf8&useSSL=false&requireSSL=false&createDatabaseIfNotExist=true
+    url: jdbc:mysql://127.0.0.1:3306/user_db?useUnicode=true&characterEncoding=utf8&useSSL=false&requireSSL=false
     username: root
-    password: root
+    password: 1234
+#    url: jdbc:mysql://127.0.0.1:3306/user_db?useUnicode=true&characterEncoding=utf8&useSSL=false&requireSSL=false&createDatabaseIfNotExist=true
+#    username: root
+#    password: root
 
   # JPA - Hibernate
   jpa:
