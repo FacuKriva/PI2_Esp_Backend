@@ -16,7 +16,8 @@ public class SpringSecurityConfig {
 
     @Bean
     public SecurityWebFilterChain configure(ServerHttpSecurity http) {
-        return http.authorizeExchange()
+        return http
+                .authorizeExchange()
                 .pathMatchers("/security/oauth/**").permitAll()
                 .pathMatchers(HttpMethod.GET,"/security/tokens/revoke/**").permitAll()
                 .pathMatchers(HttpMethod.POST,"/users").permitAll()

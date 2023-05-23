@@ -17,6 +17,5 @@ public class TokenController {
     @GetMapping("/revoke/{tokenId:.*}")
     public void revokeToken(@PathVariable("tokenId") String token) {
         tokenServices.revokeToken(token);
-
     }
 }

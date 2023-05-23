@@ -36,8 +36,6 @@ public class UserController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        System.out.println("hola");
-
         UserDTO userDTO = userService.createUser(userRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
     }
