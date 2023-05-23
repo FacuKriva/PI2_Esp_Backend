@@ -17,6 +17,7 @@ import com.digital.money.msvc.api.users.repositorys.IUserRepository;
 import com.digital.money.msvc.api.users.services.IUserService;
 import com.digital.money.msvc.api.users.utils.KeysGenerator;
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import jakarta.ws.rs.BadRequestException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -168,7 +169,7 @@ public class UserService implements IUserService {
 
     @Override
     public void forgotPassword(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
+        User user = userRepository.findByEmail(email).orElseThrow(BadRequestException::new);
         String link = verificationService.createRecoverPasswordLink(user.getUserId());
         emailService.sendForgotPasswordEmail(user,link);
     }
