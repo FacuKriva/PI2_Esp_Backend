@@ -5,22 +5,3 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/user_db?useUnicode=true&characterEncoding=utf8&useSSL=false&requireSSL=false
     username: root
     password: 1234
-  #    url: jdbc:mysql://127.0.0.1:3306/user_db?useUnicode=true&characterEncoding=utf8&useSSL=false&requireSSL=false&createDatabaseIfNotExist=true
-  #    username: root
-  #    password: root
-
-  # JPA - Hibernate
-#  jpa:
-#    database-platform: org.hibernate.dialect.MySQL8Dialect
-#    show-sql: false
-#    hibernate:
-#      ddl-auto: create-drop
-#    defer-datasource-initialization: true
-#  properties:
-#    hibernate:
-#      format_sql: false
-  # Lectura del archivo sql
-#  sql:
-#    init:
-#      mode: always
-#      data-locations-classpath: import.sql
