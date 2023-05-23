@@ -125,8 +125,11 @@ public class UserService implements IUserService {
     @Override
     public void sendVerificationMail(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
-        Integer codigo = verificationService.createVerificationCode(user.getUserId());
-        emailService.sendVericationMail(user,codigo);
+
+        if (!user.getVerified()){
+            Integer codigo = verificationService.createVerificationCode(user.getUserId());
+            emailService.sendVericationMail(user,codigo);
+        }
     }
 
     @Override
