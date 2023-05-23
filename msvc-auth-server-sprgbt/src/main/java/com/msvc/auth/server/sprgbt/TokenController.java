@@ -2,7 +2,6 @@ package com.msvc.auth.server.sprgbt;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TokenController {
 
     @Autowired
-    private DefaultTokenServices tokenServices;
+    private ConsumerTokenServices tokenServices;
 
     @GetMapping("/revoke/{tokenId:.*}")
     public void revokeToken(@PathVariable("tokenId") String token) {
