@@ -173,7 +173,7 @@ public class UserService implements IUserService {
     @Override
     public void resetPassword(String recoveryLink, NewPassDTO passDTO) throws PasswordNotChangedException {
 
-        if(passDTO.getPass()!= passDTO.getPassRep())
+        if(!passDTO.getPass().equals(passDTO.getPassRep()))
             throw new PasswordNotChangedException("Las contraseñas no coinciden");
 
         String newPassword = passDTO.getPass();
