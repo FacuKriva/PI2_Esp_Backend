@@ -184,8 +184,9 @@ public class UserService implements IUserService {
 
         Boolean codigoVerificado = verificationService.verificateRecoveryLink(recoveryLink);
 
-        if (!codigoVerificado)
+        if (!codigoVerificado) {
             throw new PasswordNotChangedException("El link ingresado no existe");
+        }
 
         String strUserId = recoveryLink.substring(0, recoveryLink.length()-6);
         Long userId = Long.parseLong(strUserId);
