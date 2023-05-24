@@ -16,7 +16,6 @@ import com.digital.money.msvc.api.users.repositorys.IRoleRepository;
 import com.digital.money.msvc.api.users.repositorys.IUserRepository;
 import com.digital.money.msvc.api.users.services.IUserService;
 import com.digital.money.msvc.api.users.utils.KeysGenerator;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -142,13 +141,13 @@ public class UserService implements IUserService {
         Boolean checkedCode = verificationService.verificateCode(verified);
 
         if(!checkedCode)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Código incorrecto.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("The code entered is incorrect");
 
         user.setVerified(true);
 
         userRepository.save(user);
 
-        return ResponseEntity.status(HttpStatus.OK).body("Mail verificado correctamente");
+        return ResponseEntity.status(HttpStatus.OK).body("Your email has been successfully verified");
     }
 
     public void resendVerificationMail(String token) throws JSONException {
@@ -164,24 +163,26 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void forgotPassword(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
-        String link = verificationService.createRecoverPasswordLink(user.getUserId());
-        emailService.sendForgotPasswordEmail(user,link);
+    public void forgotPassword(String email) throws UserNotFoundException {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            String link = verificationService.createRecoverPasswordLink(user.get().getUserId());
+            emailService.sendForgotPasswordEmail(user.get(),link);
+        } else throw new UserNotFoundException("Please provide a valid email address in order to recover your password");
     }
 
     @Override
     public void resetPassword(String recoveryLink, NewPassDTO passDTO) throws PasswordNotChangedException {
 
         if(!passDTO.getPass().equals(passDTO.getPassRep()))
-            throw new PasswordNotChangedException("Las contraseñas no coinciden");
+            throw new PasswordNotChangedException("The passwords don't match");
 
         String newPassword = passDTO.getPass();
 
         Boolean codigoVerificado = verificationService.verificateRecoveryLink(recoveryLink);
 
         if (!codigoVerificado)
-            throw new PasswordNotChangedException("El link ingresado no existe");
+            throw new PasswordNotChangedException("The link does not exist");
 
         String strUserId = recoveryLink.substring(0, recoveryLink.length()-6);
         Long userId = Long.parseLong(strUserId);
@@ -189,7 +190,7 @@ public class UserService implements IUserService {
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
 
         if (bcrypt.matches(newPassword, user.getPassword())) {
-            throw new PasswordNotChangedException("La contraseña no puede ser la misma que la anterior");
+            throw new PasswordNotChangedException ("The new password must be different than the previous one");
         }
         user.setPassword(bcrypt.encode(newPassword));
         userRepository.save(user);

@@ -9,6 +9,7 @@ import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import com.digital.money.msvc.api.users.services.impl.UserService;
 import jakarta.validation.Valid;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.QueryParam;
 import org.json.JSONException;
 import org.springframework.http.HttpStatus;
@@ -65,7 +66,7 @@ public class UserController {
     public ResponseEntity<?> resendVerificationMail(@RequestHeader("Authorization") String token) throws JSONException {
 
         userService.resendVerificationMail(token);
-        return ResponseEntity.ok("Mail enviado correctamente");
+        return ResponseEntity.ok("Please check your inbox. You will receive an email with a new verification code");
     }
 
     @PutMapping("/verificate")
@@ -74,10 +75,10 @@ public class UserController {
     }
 
     @PutMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
+    public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) throws UserNotFoundException {
 
         userService.forgotPassword(email);
-        return ResponseEntity.ok("Se ha enviado un correo para cambiar la contraseña");
+        return ResponseEntity.ok("Please check your inbox. You will receive an email with a link to reset your password");
     }
 
     @PutMapping("/reset-password/{recoveryCode}")
@@ -87,6 +88,6 @@ public class UserController {
             throws PasswordNotChangedException {
 
         userService.resetPassword(recoveryCode, passwords);
-        return ResponseEntity.ok("Contraseña cambiada correctamente");
+        return ResponseEntity.ok("Your password has been successfully updated");
     }
 }
