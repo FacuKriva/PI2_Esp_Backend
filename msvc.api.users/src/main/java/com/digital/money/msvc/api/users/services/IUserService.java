@@ -6,6 +6,7 @@ import com.digital.money.msvc.api.users.controllers.requestDto.update.UpdateUser
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
+import com.digital.money.msvc.api.users.dtos.UserWithAccountDTO;
 import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import org.json.JSONException;
@@ -17,9 +18,11 @@ public interface IUserService {
 
     UserDTO updateUser(Long userId, UpdateUserRequestDTO userDto) throws UserNotFoundException;
 
-    AuthUserDTO getUserByEmail(String email) throws UserNotFoundException;
+    UserWithAccountDTO getUserById(Long userId) throws UserNotFoundException;
 
     UserDTO getUserByDni(Long dni) throws UserNotFoundException;
+
+    AuthUserDTO getUserByEmail(String email) throws UserNotFoundException;
 
     void updateAttempsFromUser(Long userId, boolean enabled, int attempts) throws UserNotFoundException;
 
