@@ -5,7 +5,6 @@ import com.digital.money.msvc.api.users.clients.dtos.AccountDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.CreateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
-import com.digital.money.msvc.api.users.controllers.requestDto.update.Alias;
 import com.digital.money.msvc.api.users.controllers.requestDto.update.UpdateUserRequestDTO;
 import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
@@ -20,7 +19,6 @@ import com.digital.money.msvc.api.users.mappers.UserMapper;
 import com.digital.money.msvc.api.users.repositorys.IRoleRepository;
 import com.digital.money.msvc.api.users.repositorys.IUserRepository;
 import com.digital.money.msvc.api.users.services.IUserService;
-import com.digital.money.msvc.api.users.utils.KeysGenerator;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,8 +72,6 @@ public class UserService implements IUserService {
 
         User userEntity = userMapper.mapToEntity(userRequestDTO);
         userEntity.setEmail(userRequestDTO.getEmail().toLowerCase());
-        userEntity.setCvu(KeysGenerator.generateCvu());
-        userEntity.setAlias(KeysGenerator.generateAlias());
         userEntity.setEnabled(true);
         userEntity.setAttempts(0);
         userEntity.setRole(role);
@@ -83,14 +79,13 @@ public class UserService implements IUserService {
         userEntity.setVerified(false);
 
         User createdUser = userRepository.save(userEntity);
-        Map<String, Integer> accountId = accountClient.createUserAccount(createdUser.getUserId(),
-                buildAccount(createdUser.getAlias(), createdUser.getCvu()));
-        createdUser.setAccountId(accountId.get("account_id"));
+        AccountDTO account = accountClient.createUserAccount(createdUser.getUserId());
+        createdUser.setAccountId(account.getAccountId());
         User completeInformationUser = userRepository.save(createdUser);
 
         sendVerificationMail(completeInformationUser.getEmail());
 
-        return userMapper.mapToDto(completeInformationUser);
+        return userMapper.mapToDto(completeInformationUser, account.getCvu(), account.getAlias());
     }
 
     @Transactional
@@ -101,8 +96,6 @@ public class UserService implements IUserService {
         if (userEntity.isEmpty()) {
             throw new UserNotFoundException("The user is not registered");
         }
-
-        Optional<Alias> alias = Optional.ofNullable(userDto.getAlias());
         Optional<Long> dni = Optional.ofNullable(userDto.getDni());
         Optional<Integer> phone = Optional.ofNullable(userDto.getPhone());
         User user = userEntity.get();
@@ -112,11 +105,6 @@ public class UserService implements IUserService {
         }
         if (validateRequestObject(userDto.getLastName())) {
             user.setLastName(userDto.getLastName());
-        }
-        if (alias.isPresent()) {
-            String newAlias = alias.get().buildAlias();
-            user.setAlias(newAlias);
-            accountClient.updateAlias(user.getAccountId(), newAlias);
         }
         if (dni.isPresent()) {
             user.setDni(userDto.getDni());
@@ -133,7 +121,9 @@ public class UserService implements IUserService {
         }
 
         User userResponse = userRepository.save(user);
-        return userMapper.mapToDto(userResponse);
+        AccountDTO account = accountClient.getAccountById(user.getAccountId());
+
+        return userMapper.mapToDto(userResponse, account.getCvu(), account.getAlias());
     }
 
     @Transactional(readOnly = true)
@@ -144,8 +134,9 @@ public class UserService implements IUserService {
                 () -> new UserNotFoundException(String
                         .format("The user with Id %d was not found", userId))
         );
+        AccountDTO account = accountClient.getAccountById(user.getAccountId());
+        UserDTO userResponse = userMapper.mapToDto(user, account.getCvu(), account.getAlias());
 
-        UserDTO userResponse = userMapper.mapToDto(user);
         AccountDTO accountInfo = accountClient.getAccountById(userResponse.getAccountId());
 
         return UserWithAccountDTO.builder()
@@ -163,7 +154,9 @@ public class UserService implements IUserService {
                         .format("The user with dni %d was not found", dni))
         );
 
-        return userMapper.mapToDto(user);
+        AccountDTO account = accountClient.getAccountById(user.getAccountId());
+        return userMapper.mapToDto(user, account.getCvu(), account.getAlias());
+
     }
 
     @Transactional(readOnly = true)

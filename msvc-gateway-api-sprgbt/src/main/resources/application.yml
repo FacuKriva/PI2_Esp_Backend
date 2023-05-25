@@ -6,6 +6,10 @@ spring:
           uri: lb://msvc-users-api
           predicates:
             - Path=/users/**
+        - id: accountRoute
+          uri: lb://msvc-acount-api
+          predicates:
+            - Path=/account/**
         - id: oauthRoute
           uri: lb://msvc-oauth-server
           predicates:

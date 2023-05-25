@@ -29,9 +29,6 @@ public class UpdateUserRequestDTO {
     private Long dni;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Alias alias;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Email
     @Size(max = 60, message = "maximum number of characters 60")
     private String email;
