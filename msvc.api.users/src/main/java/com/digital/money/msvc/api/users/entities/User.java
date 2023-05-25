@@ -30,14 +30,17 @@ public class User {
     @Column(name = "last_name", length = 40, nullable = false)
     private String lastName;
 
+    @Column(name = "dni", unique = true, length = 10, nullable = false)
+    private Long dni;
+
+    @Column(name = "account_id", unique = true, nullable = false)
+    private Integer accountId;
+
     @Column(name = "cvu", unique = true, nullable = false, length = 22)
     private String cvu;
 
     @Column(name = "alias", unique = true, nullable = false)
     private String alias;
-
-    @Column(name = "dni", unique = true, length = 10, nullable = false)
-    private Long dni;
 
     @Column(name = "email", length = 60, unique = true, nullable = false)
     private String email;

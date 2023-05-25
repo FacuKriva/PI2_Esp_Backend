@@ -1,5 +1,7 @@
 package com.digital.money.msvc.api.users.services.impl;
 
+import com.digital.money.msvc.api.users.clients.IAccountClient;
+import com.digital.money.msvc.api.users.clients.dtos.AccountDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.CreateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.update.Alias;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Base64;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -35,6 +38,7 @@ import java.util.Optional;
 public class UserService implements IUserService {
 
     private static final int ROLE_USER = 2;
+    private final IAccountClient accountClient;
     private final IUserRepository userRepository;
     private final IRoleRepository roleRepository;
     private final UserMapper userMapper;
@@ -42,8 +46,9 @@ public class UserService implements IUserService {
     private final EmailServiceImpl emailService;
     private final VerificationServiceImpl verificationService;
 
-    public UserService(IUserRepository userRepository, IRoleRepository roleRepository, UserMapper userMapper,
+    public UserService(IAccountClient accountClient, IUserRepository userRepository, IRoleRepository roleRepository, UserMapper userMapper,
                        BCryptPasswordEncoder bcrypt, EmailServiceImpl emailService1, VerificationServiceImpl verificationService1) {
+        this.accountClient = accountClient;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userMapper = userMapper;
@@ -75,13 +80,16 @@ public class UserService implements IUserService {
         userEntity.setRole(role);
         userEntity.setPassword(bcrypt.encode(userEntity.getPassword()));
         userEntity.setVerified(false);
-        User userSaved = userRepository.save(userEntity);
 
-        System.out.println(userSaved);
+        User createdUser = userRepository.save(userEntity);
+        Map<String, Integer> accountId = accountClient.createUserAccount(createdUser.getUserId(),
+                buildAccount(createdUser.getAlias(), createdUser.getCvu()));
+        createdUser.setAccountId(accountId.get("account_id"));
+        User completeInformationUser = userRepository.save(createdUser);
 
-        sendVerificationMail(userEntity.getEmail());
+        sendVerificationMail(completeInformationUser.getEmail());
 
-        return userMapper.mapToDto(userSaved);
+        return userMapper.mapToDto(completeInformationUser);
     }
 
     @Transactional
@@ -245,5 +253,14 @@ public class UserService implements IUserService {
 
     private boolean validatePassword(String newPassword, String oldPassword) {
         return bcrypt.matches(newPassword, oldPassword);
+    }
+
+    private AccountDTO buildAccount(String alias, String cvu) {
+        double initialBalance = 0.0;
+        return AccountDTO.builder()
+                .alias(alias)
+                .cvu(cvu)
+                .availableBalance(initialBalance)
+                .build();
     }
 }
