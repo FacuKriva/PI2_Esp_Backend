@@ -1,13 +1,12 @@
 package com.digital.money.msvc.api.users.controllers;
 
-import com.digital.money.msvc.api.users.controllers.requestDto.CardRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
-import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.CreateUserRequestDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.UpdateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
-import com.digital.money.msvc.api.users.dtos.CardDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
-import com.digital.money.msvc.api.users.entities.Card;
-import com.digital.money.msvc.api.users.exceptions.*;
+import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
+import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import com.digital.money.msvc.api.users.services.impl.UserService;
 import jakarta.validation.Valid;
 import org.json.JSONException;
@@ -15,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Collections;
 import java.util.Objects;
 
 @RestController
@@ -32,13 +31,28 @@ public class UserController {
      * Registrar Usuario
      */
     @PostMapping
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) throws Exception {
+    public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserRequestDTO userRequestDTO) throws Exception {
         if (Objects.isNull(userRequestDTO)) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
         UserDTO userDTO = userService.createUser(userRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
+    }
+
+    /**
+     * Actualizar informacion del usuario.
+     */
+    @PatchMapping("/update/{user_id}")
+    public ResponseEntity<?> updateUser(@PathVariable("user_id") Long userId,
+                                        @Valid @RequestBody final UpdateUserRequestDTO userDto) throws UserNotFoundException {
+
+        if (Objects.isNull(userDto)) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        userService.update(userDto, userId);
+        return ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("message", "user updated successfully"));
     }
 
     @GetMapping("/dni")
@@ -61,9 +75,10 @@ public class UserController {
     }
 
     @PutMapping("/resend")
-        public ResponseEntity<?> resendVerificationMail(@RequestHeader("Authorization") String token) throws Exception {
+    public ResponseEntity<?> resendVerificationMail(@RequestHeader("Authorization") String token) throws JSONException {
+
         userService.resendVerificationMail(token);
-        return ResponseEntity.ok("Please check your inbox. You will receive an email with a new verification code");
+        return ResponseEntity.ok("Mail enviado correctamente");
     }
 
     @PutMapping("/verificate")
@@ -73,10 +88,10 @@ public class UserController {
     }
 
     @PutMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) throws UserNotFoundException {
+    public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
 
         userService.forgotPassword(email);
-        return ResponseEntity.ok("Please check your inbox. You will receive an email with a link to reset your password");
+        return ResponseEntity.ok("Se ha enviado un correo para cambiar la contraseña");
     }
 
     @PutMapping("/reset-password/{recoveryCode}")
@@ -86,34 +101,6 @@ public class UserController {
             throws PasswordNotChangedException {
 
         userService.resetPassword(recoveryCode, passwords);
-        return ResponseEntity.ok("Your password has been successfully updated");
-    }
-
-    @PostMapping(value = "/{dni}/add-card", consumes = "application/json")
-    public ResponseEntity<?> addCardToAccount(@PathVariable("dni") Long dni, @RequestBody CardRequestDTO cardRequestDTO) throws UserNotFoundException, CardAlreadyExistsException {
-        if (userService.doesCardExist(cardRequestDTO.getCardNumber())) {
-            return new ResponseEntity(HttpStatus.CONFLICT).ok("Card already exists and is associated with another account");
-        }
-        else {
-            userService.addCardToAccount(dni, cardRequestDTO);
-            return new ResponseEntity(HttpStatus.CREATED).ok("Card successfully added to account");
-        }
-    }
-
-    @PutMapping("/{dni}/remove-card/{cardId}")
-    public ResponseEntity<?> removeCardFromAccount(@PathVariable("dni") Long dni, @PathVariable("cardId") Long cardId) throws UserNotFoundException, CardNotFoundException {
-        userService.removeCardFromAccount(dni, cardId);
-        return new ResponseEntity(HttpStatus.OK).ok("Card successfully removed from account");
-    }
-
-    @GetMapping(value = "/{dni}/cards", produces = "application/json")
-    public ResponseEntity<List<CardDTO>> getAllCardsFromAccount(@PathVariable("dni") Long dni) throws UserNotFoundException, NoCardsException {
-        List<CardDTO> cardDTOs = userService.getAllCardsFromAccount(dni);
-        return ResponseEntity.ok(cardDTOs);
-    }
-
-    @GetMapping(value = "/{dni}/cards/{cardId}", produces = "application/json")
-    public ResponseEntity<?> getCardFromAccount(@PathVariable("dni") Long dni, @PathVariable("cardId") Long cardId) throws UserNotFoundException, CardNotFoundException {
-        return ResponseEntity.ok(userService.getCardFromAccount(dni, cardId));
+        return ResponseEntity.ok("Contraseña cambiada correctamente");
     }
 }

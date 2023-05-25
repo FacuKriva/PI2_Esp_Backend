@@ -1,6 +1,5 @@
 package com.digital.money.msvc.api.users.controllers.requestDto;
 
-import com.digital.money.msvc.api.users.dtos.RoleDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -15,7 +14,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRequestDTO {
+public class CreateUserRequestDTO {
 
     @NotNull(message = "The name cannot be null or empty")
     @Size(max = 30, message = "maximum number of characters 30")
