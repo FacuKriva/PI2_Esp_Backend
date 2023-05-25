@@ -37,8 +37,6 @@ public class UserController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        System.out.println("hola");
-
         UserDTO userDTO = userService.createUser(userRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
     }
@@ -69,7 +67,8 @@ public class UserController {
     }
 
     @PutMapping("/verificate")
-    public ResponseEntity<?> verificateCode(@RequestBody VerficationRequestDTO verficationRequestDTO, @RequestHeader("Authorization") String token) throws JSONException {
+    public ResponseEntity<?> verificateCode(@RequestBody VerficationRequestDTO verficationRequestDTO,
+                                            @RequestHeader("Authorization") String token) throws JSONException {
         return userService.verificateUser(verficationRequestDTO, token);
     }
 
