@@ -57,11 +57,12 @@ public class User {
     @Column(name = "attempts", nullable = false)
     private int attempts;
 
+    @Column(name = "verified")
+    private Boolean verified;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
-
-    private Boolean verified;
 
     @Override
     public String toString() {
