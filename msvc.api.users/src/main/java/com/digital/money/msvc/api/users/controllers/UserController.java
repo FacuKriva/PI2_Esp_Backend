@@ -1,7 +1,6 @@
 package com.digital.money.msvc.api.users.controllers;
 
 import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
-import com.digital.money.msvc.api.users.controllers.requestDto.ResendCodeDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
@@ -9,7 +8,6 @@ import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import com.digital.money.msvc.api.users.services.impl.UserService;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.QueryParam;
 import org.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +33,6 @@ public class UserController {
         if (Objects.isNull(userRequestDTO)) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-
-        System.out.println("hola");
 
         UserDTO userDTO = userService.createUser(userRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
@@ -69,7 +65,8 @@ public class UserController {
     }
 
     @PutMapping("/verificate")
-    public ResponseEntity<?> verificateCode(@RequestBody VerficationRequestDTO verficationRequestDTO, @RequestHeader("Authorization") String token) throws JSONException {
+    public ResponseEntity<?> verificateCode(@RequestBody VerficationRequestDTO verficationRequestDTO,
+                                            @RequestHeader("Authorization") String token) throws JSONException {
         return userService.verificateUser(verficationRequestDTO, token);
     }
 
