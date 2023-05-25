@@ -1,7 +1,8 @@
 package com.digital.money.msvc.api.users.controllers;
 
 import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
-import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.CreateUserRequestDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.UpdateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Objects;
 
 @RestController
@@ -29,13 +31,28 @@ public class UserController {
      * Registrar Usuario
      */
     @PostMapping
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) throws Exception {
+    public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserRequestDTO userRequestDTO) throws Exception {
         if (Objects.isNull(userRequestDTO)) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
         UserDTO userDTO = userService.createUser(userRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
+    }
+
+    /**
+     * Actualizar informacion del usuario.
+     */
+    @PatchMapping("/update/{user_id}")
+    public ResponseEntity<?> updateUser(@PathVariable("user_id") Long userId,
+                                        @Valid @RequestBody final UpdateUserRequestDTO userDto) throws UserNotFoundException {
+
+        if (Objects.isNull(userDto)) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        userService.update(userDto, userId);
+        return ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("message", "user updated successfully"));
     }
 
     @GetMapping("/dni")

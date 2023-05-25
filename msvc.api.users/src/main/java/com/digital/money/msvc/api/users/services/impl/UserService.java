@@ -1,7 +1,8 @@
 package com.digital.money.msvc.api.users.services.impl;
 
+import com.digital.money.msvc.api.users.controllers.requestDto.CreateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
-import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.UpdateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
@@ -16,7 +17,7 @@ import com.digital.money.msvc.api.users.repositorys.IRoleRepository;
 import com.digital.money.msvc.api.users.repositorys.IUserRepository;
 import com.digital.money.msvc.api.users.services.IUserService;
 import com.digital.money.msvc.api.users.utils.KeysGenerator;
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,8 @@ public class UserService implements IUserService {
     private final EmailServiceImpl emailService;
     private final VerificationServiceImpl verificationService;
 
-    public UserService(IUserRepository userRepository, IRoleRepository roleRepository, UserMapper userMapper, BCryptPasswordEncoder bcrypt, EmailServiceImpl emailService, VerificationServiceImpl verificationService, EmailServiceImpl emailService1, VerificationServiceImpl verificationService1) {
+    public UserService(IUserRepository userRepository, IRoleRepository roleRepository, UserMapper userMapper,
+                       BCryptPasswordEncoder bcrypt, EmailServiceImpl emailService1, VerificationServiceImpl verificationService1) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userMapper = userMapper;
@@ -51,7 +53,7 @@ public class UserService implements IUserService {
 
     @Transactional
     @Override
-    public UserDTO createUser(UserRequestDTO userRequestDTO) throws Exception {
+    public UserDTO createUser(CreateUserRequestDTO userRequestDTO) throws Exception {
 
         Optional<User> entityResponseDni = userRepository.findByDni(userRequestDTO.getDni());
         Optional<User> entityResponseEmail = userRepository.findByEmail(userRequestDTO.getEmail());
@@ -79,6 +81,43 @@ public class UserService implements IUserService {
         sendVerificationMail(userEntity.getEmail());
 
         return userMapper.mapToDto(userSaved);
+    }
+
+    @Transactional
+    @Override
+    public UserDTO updateUser(Long userId, UpdateUserRequestDTO userDto) throws UserNotFoundException {
+        Optional<User> userEntity = userRepository.findByUserId(userId);
+
+        if (userEntity.isEmpty()) {
+            throw new UserNotFoundException("The user is not registered");
+        }
+
+        Optional<Long> dni = Optional.ofNullable(userDto.getDni());
+        Optional<Integer> phone = Optional.ofNullable(userDto.getPhone());
+        User user = userEntity.get();
+
+        if (validateRequestObject(userDto.getName())) {
+            user.setName(userDto.getName());
+        }
+        if (validateRequestObject(userDto.getLastName())) {
+            user.setLastName(userDto.getLastName());
+        }
+        if (dni.isPresent()) {
+            user.setDni(userDto.getDni());
+        }
+        if (phone.isPresent()) {
+            user.setPhone(userDto.getPhone());
+        }
+        if (validateRequestObject(userDto.getEmail())) {
+            user.setEmail(userDto.getEmail().toLowerCase());
+        }
+        if (validateRequestObject(userDto.getPassword()) &&
+                !validatePassword(userDto.getPassword(), user.getPassword())) {
+            user.setPassword(bcrypt.encode(userDto.getPassword()));
+        }
+
+        User userResponse = userRepository.save(user);
+        return userMapper.mapToDto(userResponse);
     }
 
     @Transactional(readOnly = true)
@@ -126,11 +165,11 @@ public class UserService implements IUserService {
     public void sendVerificationMail(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
         Integer codigo = verificationService.createVerificationCode(user.getUserId());
-        emailService.sendVericationMail(user,codigo);
+        emailService.sendVericationMail(user, codigo);
     }
 
     @Override
-    public ResponseEntity <String> verificateUser(VerficationRequestDTO verficationRequestDTO, String token) throws JSONException {
+    public ResponseEntity<String> verificateUser(VerficationRequestDTO verficationRequestDTO, String token) throws JSONException {
 
         String[] jwtParts = token.split("\\.");
         JSONObject payload = new JSONObject(decodeToken(jwtParts[1]));
@@ -141,7 +180,7 @@ public class UserService implements IUserService {
         Verified verified = new Verified(user.getUserId(), verficationRequestDTO.getVerificationCode());
         Boolean checkedCode = verificationService.verificateCode(verified);
 
-        if(!checkedCode)
+        if (!checkedCode)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Código incorrecto.");
 
         user.setVerified(true);
@@ -167,13 +206,13 @@ public class UserService implements IUserService {
     public void forgotPassword(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
         String link = verificationService.createRecoverPasswordLink(user.getUserId());
-        emailService.sendForgotPasswordEmail(user,link);
+        emailService.sendForgotPasswordEmail(user, link);
     }
 
     @Override
     public void resetPassword(String recoveryLink, NewPassDTO passDTO) throws PasswordNotChangedException {
 
-        if(!passDTO.getPass().equals(passDTO.getPassRep()))
+        if (!passDTO.getPass().equals(passDTO.getPassRep()))
             throw new PasswordNotChangedException("Las contraseñas no coinciden");
 
         String newPassword = passDTO.getPass();
@@ -183,7 +222,7 @@ public class UserService implements IUserService {
         if (!codigoVerificado)
             throw new PasswordNotChangedException("El link ingresado no existe");
 
-        String strUserId = recoveryLink.substring(0, recoveryLink.length()-6);
+        String strUserId = recoveryLink.substring(0, recoveryLink.length() - 6);
         Long userId = Long.parseLong(strUserId);
 
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
@@ -193,5 +232,13 @@ public class UserService implements IUserService {
         }
         user.setPassword(bcrypt.encode(newPassword));
         userRepository.save(user);
+    }
+
+    private boolean validateRequestObject(String value) {
+        return StringUtils.isNotBlank(value);
+    }
+
+    private boolean validatePassword(String newPassword, String oldPassword) {
+        return bcrypt.matches(newPassword, oldPassword);
     }
 }
