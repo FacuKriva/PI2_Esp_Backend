@@ -1,8 +1,8 @@
 package com.digital.money.msvc.api.users.controllers;
 
-import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.CreateUserRequestDTO;
-import com.digital.money.msvc.api.users.controllers.requestDto.UpdateUserRequestDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.update.UpdateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.Objects;
 
 @RestController
@@ -51,8 +50,8 @@ public class UserController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        userService.update(userDto, userId);
-        return ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("message", "user updated successfully"));
+        UserDTO userUpdate = userService.updateUser(userId, userDto);
+        return ResponseEntity.status(HttpStatus.OK).body(userUpdate);
     }
 
     @GetMapping("/dni")
