@@ -16,6 +16,7 @@ import com.digital.money.msvc.api.users.repositorys.IRoleRepository;
 import com.digital.money.msvc.api.users.repositorys.IUserRepository;
 import com.digital.money.msvc.api.users.services.IUserService;
 import com.digital.money.msvc.api.users.utils.KeysGenerator;
+import jakarta.ws.rs.BadRequestException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -150,12 +151,16 @@ public class UserService implements IUserService {
         return ResponseEntity.status(HttpStatus.OK).body("Your email has been successfully verified");
     }
 
-    public void resendVerificationMail(String token) throws JSONException {
+    public void resendVerificationMail(String token) throws JSONException, BadRequestException {
 
         String[] jwtParts = token.split("\\.");
         JSONObject payload = new JSONObject(decodeToken(jwtParts[1]));
         String email = payload.getString("email");
-        sendVerificationMail(email);
+        Optional<User> user = userRepository.findByEmail(email);
+        if (!(user.get().getVerified())) {
+                sendVerificationMail(email);
+            } else throw new BadRequestException("The user email is already verified");
+
     }
 
     private static String decodeToken(String token) {

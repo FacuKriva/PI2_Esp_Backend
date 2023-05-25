@@ -19,7 +19,7 @@ public interface IUserService {
     void updateAttempsFromUser(Long userId, boolean enabled, int attempts) throws UserNotFoundException;
 
     void sendVerificationMail(String email);
-    void resendVerificationMail(String token) throws JSONException;
+    void resendVerificationMail(String token) throws JSONException, BadRequestException;
     ResponseEntity<String> verificateUser(VerficationRequestDTO verficationRequestDTO, String token) throws JSONException;
 
     void forgotPassword(String email) throws UserNotFoundException;
