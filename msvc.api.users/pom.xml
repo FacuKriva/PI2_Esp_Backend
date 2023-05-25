@@ -45,6 +45,12 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!--  Open Feign  -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+
         <!-- Eureka client -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
