@@ -1,4 +1,4 @@
-package com.digital.money.msvc.api.users.utils;
+package com.digital.money.msvc.api.account.utils;
 
 import lombok.extern.slf4j.Slf4j;
 

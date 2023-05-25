@@ -36,12 +36,6 @@ public class User {
     @Column(name = "account_id", unique = true, nullable = false)
     private Integer accountId;
 
-    @Column(name = "cvu", unique = true, nullable = false, length = 22)
-    private String cvu;
-
-    @Column(name = "alias", unique = true, nullable = false)
-    private String alias;
-
     @Column(name = "email", length = 60, unique = true, nullable = false)
     private String email;
 
@@ -70,8 +64,6 @@ public class User {
                 "userId=" + userId +
                 ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", cvu='" + cvu + '\'' +
-                ", alias='" + alias + '\'' +
                 ", dni=" + dni +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +

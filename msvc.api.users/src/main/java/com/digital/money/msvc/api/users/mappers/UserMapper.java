@@ -23,10 +23,12 @@ public class UserMapper {
     /**
      * Entity ->  mapToDto
      */
-    public UserDTO mapToDto(User userEntity) {
+    public UserDTO mapToDto(User userEntity, String cvu, String alias) {
 
         log.info("*** userEntity {}", userEntity);
         UserDTO dto = objectMapper.convertValue(userEntity, UserDTO.class);
+        dto.setCvu(cvu);
+        dto.setAlias(alias);
         log.info("*** UserDTO {}", dto);
 
         return dto;

@@ -1,21 +1,30 @@
-package com.digital.money.msvc.api.users.controllers.requestDto.update;
+package com.digital.money.msvc.api.account.model.dto;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
-public class Alias {
-
-    @NotNull(message = "The first word cannot be null or empty")
+@Setter
+@NoArgsConstructor
+@ToString
+public class AliasUpdate {
+    @NotNull(message = "The first word cannot be null")
+    @NotEmpty(message = "The first word cannot be empty")
     @Size(min = 6, max = 12, message = "The word must contain a minimum of 6 and a maximum of 12 characters")
     private String wordIndexOne;
 
-    @NotNull(message = "The second word cannot be null or empty")
+    @NotNull(message = "The second word cannot be null")
+    @NotEmpty(message = "The second word cannot be empty")
     @Size(min = 6, max = 12, message = "The word must contain a minimum of 6 and a maximum of 12 characters")
     private String wordIndexZero;
 
-    @NotNull(message = "The third word cannot be null or empty")
+    @NotNull(message = "The third word cannot be null")
+    @NotEmpty(message = "The third word cannot be empty")
     @Size(min = 6, max = 12, message = "The word must contain a minimum of 6 and a maximum of 12 characters")
     private String wordIndexTwo;
 

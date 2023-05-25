@@ -1,4 +1,4 @@
-package com.digital.money.msvc.api.users.utils;
+package com.digital.money.msvc.api.account.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

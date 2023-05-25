@@ -9,14 +9,10 @@ import java.util.Map;
 @FeignClient(name = "msvc-account-api")
 public interface IAccountClient {
 
-    @PostMapping("/create/account/{user_id}")
-    Map<String, Integer> createUserAccount(@PathVariable(name = "user_id") Long userId,
-                                           @RequestBody AccountDTO accountDto);
+    @PostMapping("/account}")
+    AccountDTO createUserAccount(@RequestParam(name = "user_id") Long userId);
 
-    @GetMapping("/accounts/{account_id}")
-    AccountDTO getAccountById(@PathVariable(name = "account_id") Integer accountId);
+    @GetMapping("/{id}")
+    AccountDTO getAccountById(@PathVariable(name = "id") Integer accountId);
 
-    @PatchMapping("/accounts/{account_id}")
-    void updateAlias(@PathVariable(name = "account_id") Integer accountId,
-                            @RequestParam("alias") String alias);
 }
