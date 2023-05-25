@@ -4,9 +4,9 @@ import com.digital.money.msvc.api.users.clients.IAccountClient;
 import com.digital.money.msvc.api.users.clients.dtos.AccountDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.CreateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.update.Alias;
 import com.digital.money.msvc.api.users.controllers.requestDto.update.UpdateUserRequestDTO;
-import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.entities.Role;
@@ -112,9 +112,11 @@ public class UserService implements IUserService {
         if (validateRequestObject(userDto.getLastName())) {
             user.setLastName(userDto.getLastName());
         }
-
-        alias.ifPresent(value -> user.setAlias(value.buildAlias()));
-
+        if (alias.isPresent()) {
+            String newAlias = alias.get().buildAlias();
+            user.setAlias(newAlias);
+            accountClient.updateAlias(user.getAccountId(), newAlias);
+        }
         if (dni.isPresent()) {
             user.setDni(userDto.getDni());
         }
