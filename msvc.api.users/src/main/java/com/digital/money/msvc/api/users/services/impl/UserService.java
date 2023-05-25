@@ -2,7 +2,8 @@ package com.digital.money.msvc.api.users.services.impl;
 
 import com.digital.money.msvc.api.users.controllers.requestDto.CreateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
-import com.digital.money.msvc.api.users.controllers.requestDto.UpdateUserRequestDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.update.Alias;
+import com.digital.money.msvc.api.users.controllers.requestDto.update.UpdateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
@@ -92,6 +93,7 @@ public class UserService implements IUserService {
             throw new UserNotFoundException("The user is not registered");
         }
 
+        Optional<Alias> alias = Optional.ofNullable(userDto.getAlias());
         Optional<Long> dni = Optional.ofNullable(userDto.getDni());
         Optional<Integer> phone = Optional.ofNullable(userDto.getPhone());
         User user = userEntity.get();
@@ -102,6 +104,9 @@ public class UserService implements IUserService {
         if (validateRequestObject(userDto.getLastName())) {
             user.setLastName(userDto.getLastName());
         }
+
+        alias.ifPresent(value -> user.setAlias(value.buildAlias()));
+
         if (dni.isPresent()) {
             user.setDni(userDto.getDni());
         }
