@@ -8,6 +8,7 @@ import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.entities.Role;
 import com.digital.money.msvc.api.users.entities.User;
 import com.digital.money.msvc.api.users.entities.Verified;
+import com.digital.money.msvc.api.users.exceptions.BadRequestException;
 import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
 import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
@@ -16,7 +17,7 @@ import com.digital.money.msvc.api.users.repositorys.IRoleRepository;
 import com.digital.money.msvc.api.users.repositorys.IUserRepository;
 import com.digital.money.msvc.api.users.services.IUserService;
 import com.digital.money.msvc.api.users.utils.KeysGenerator;
-import jakarta.ws.rs.BadRequestException;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -151,8 +152,7 @@ public class UserService implements IUserService {
         return ResponseEntity.status(HttpStatus.OK).body("Your email has been successfully verified");
     }
 
-    public void resendVerificationMail(String token) throws JSONException, BadRequestException {
-
+    public void resendVerificationMail(String token) throws Exception {
         String[] jwtParts = token.split("\\.");
         JSONObject payload = new JSONObject(decodeToken(jwtParts[1]));
         String email = payload.getString("email");
@@ -160,7 +160,6 @@ public class UserService implements IUserService {
         if (!(user.get().getVerified())) {
                 sendVerificationMail(email);
             } else throw new BadRequestException("The user email is already verified");
-
     }
 
     private static String decodeToken(String token) {

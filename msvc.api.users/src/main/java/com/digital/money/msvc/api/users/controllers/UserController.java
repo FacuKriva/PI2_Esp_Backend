@@ -63,7 +63,7 @@ public class UserController {
     }
 
     @PutMapping("/resend")
-    public ResponseEntity<?> resendVerificationMail(@RequestHeader("Authorization") String token) throws JSONException, BadRequestException {
+        public ResponseEntity<?> resendVerificationMail(@RequestHeader("Authorization") String token) throws Exception {
         userService.resendVerificationMail(token);
         return ResponseEntity.ok("Please check your inbox. You will receive an email with a new verification code");
     }
