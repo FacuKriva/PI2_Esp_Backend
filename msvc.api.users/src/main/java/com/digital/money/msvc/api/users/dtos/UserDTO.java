@@ -29,6 +29,9 @@ public class UserDTO {
 
     private Long dni;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer accountId;
+
     private String email;
 
     @JsonIgnore

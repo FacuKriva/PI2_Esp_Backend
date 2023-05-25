@@ -9,6 +9,7 @@ import com.digital.money.msvc.api.users.controllers.requestDto.update.Alias;
 import com.digital.money.msvc.api.users.controllers.requestDto.update.UpdateUserRequestDTO;
 import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
+import com.digital.money.msvc.api.users.dtos.UserWithAccountDTO;
 import com.digital.money.msvc.api.users.entities.Role;
 import com.digital.money.msvc.api.users.entities.User;
 import com.digital.money.msvc.api.users.entities.Verified;
@@ -133,6 +134,24 @@ public class UserService implements IUserService {
 
         User userResponse = userRepository.save(user);
         return userMapper.mapToDto(userResponse);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public UserWithAccountDTO getUserById(Long userId) throws UserNotFoundException {
+
+        User user = userRepository.findByUserId(userId).orElseThrow(
+                () -> new UserNotFoundException(String
+                        .format("The user with Id %d was not found", userId))
+        );
+
+        UserDTO userResponse = userMapper.mapToDto(user);
+        AccountDTO accountInfo = accountClient.getAccountById(userResponse.getAccountId());
+
+        return UserWithAccountDTO.builder()
+                .userDto(userResponse)
+                .accountId(accountInfo)
+                .build();
     }
 
     @Transactional(readOnly = true)

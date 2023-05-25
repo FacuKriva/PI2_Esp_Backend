@@ -54,6 +54,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userUpdate);
     }
 
+    @GetMapping("/{user_id}")
+    public ResponseEntity<?> findByUserId(@PathVariable("user_id") Long userId) throws UserNotFoundException {
+        return ResponseEntity.ok(userService.getUserById(userId));
+    }
+
     @GetMapping("/dni")
     public ResponseEntity<?> findByDni(@RequestParam("dni") Long dni) throws UserNotFoundException {
         return ResponseEntity.ok(userService.getUserByDni(dni));
