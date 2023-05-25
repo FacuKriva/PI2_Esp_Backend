@@ -48,8 +48,8 @@ public class UserDTO {
     private int attempts;
 
     @JsonIgnore
-    private RoleDTO role;
+    private Boolean verified;
 
     @JsonIgnore
-    private Boolean verified;
+    private RoleDTO role;
 }

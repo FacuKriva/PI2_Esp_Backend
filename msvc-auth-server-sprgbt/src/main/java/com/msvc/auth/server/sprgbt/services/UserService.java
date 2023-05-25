@@ -31,7 +31,9 @@ public class UserService implements IUserService, UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         try {
+            log.info("email "+ email);
             UserDTO user = this.userClient.findByEmail(email);
+            log.info("El error esta despues del cliente");
 
             List<GrantedAuthority> authorities = new ArrayList<>();
             authorities.add(new SimpleGrantedAuthority(user.getRole().getName()));
