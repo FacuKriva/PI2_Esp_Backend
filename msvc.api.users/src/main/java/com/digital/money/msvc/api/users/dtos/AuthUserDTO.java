@@ -27,6 +27,8 @@ public class AuthUserDTO {
 
     private Long dni;
 
+    private Integer accountId;
+
     private String email;
 
     private String password;
