@@ -10,7 +10,7 @@ public interface IAccountClient {
     @PostMapping("/accounts")
     AccountDTO createAccount(@RequestParam(name = "user_id") Long userId);
 
-    @GetMapping("/{id}")
+    @GetMapping("/accounts/{id}")
     AccountDTO getAccountById(@PathVariable(name = "id") Integer accountId);
 
 }
