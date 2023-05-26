@@ -20,7 +20,7 @@ public class SpringSecurityConfig {
                 .pathMatchers("/security/oauth/**").permitAll()
                 .pathMatchers(HttpMethod.POST,"/users").permitAll()
                 .pathMatchers(HttpMethod.PUT,"/users/**").permitAll()
-                .pathMatchers("/users/**").hasRole("ADMIN")
+                //.pathMatchers("/users/**").hasRole("ADMIN")
                 .anyExchange().authenticated()
                 .and().addFilterAt(authenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .csrf().disable()
