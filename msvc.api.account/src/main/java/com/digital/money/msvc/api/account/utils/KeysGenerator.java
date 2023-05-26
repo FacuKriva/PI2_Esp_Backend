@@ -1,6 +1,7 @@
 package com.digital.money.msvc.api.account.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,6 +11,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 @Slf4j
+@Component
 public class KeysGenerator {
 
     public static String generateCvu() {
@@ -23,7 +25,7 @@ public class KeysGenerator {
     }
 
     public static String generateAlias() {
-        String pathFile = "msvc.api.users\\src\\main\\resources\\words.txt";
+        String pathFile = "msvc.api.account\\src\\main\\resources\\words.txt";
         List<String> words = readFile(pathFile);
         Random random = new Random();
         int index1 = random.nextInt(words.size());

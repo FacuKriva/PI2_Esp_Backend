@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -23,7 +24,7 @@ public class TransactionPostDto {
     @JsonProperty("realization_date")
     @NotNull(message = "The realization_date cannot be null")
     @NotEmpty(message = "The realization_date cannot be empty")
-    private Date realizationDate;
+    private LocalDateTime realizationDate;
 
     @JsonProperty("description")
     @NotNull(message = "The description cannot be null")

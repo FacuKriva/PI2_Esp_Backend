@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -25,17 +26,16 @@ public class Transaction {
     @Column(name = "amount", nullable = false)
     private Double amount;
 
-
-    @Column(name = "description", nullable = false)
-    private Date realizationDate;
+    @Column(name = "realization_date", nullable = false)
+    private LocalDateTime realizationDate;
 
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "from", nullable = false, length = 22)
+    @Column(name = "from_cvu", nullable = false, length = 22)
     private String fromCvu;
 
-    @Column(name = "to", nullable = false, length = 22)
+    @Column(name = "to_cvu", nullable = false, length = 22)
     private String toCvu;
 
     @Enumerated(EnumType.STRING)

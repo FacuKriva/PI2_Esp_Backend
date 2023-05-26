@@ -15,6 +15,7 @@ import com.digital.money.msvc.api.account.utils.mapper.AccountMapper;
 import com.digital.money.msvc.api.account.utils.mapper.TransactionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -38,6 +39,7 @@ public class AccountService implements IAccountService {
         return accountGetDto;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Set<TransactionGetDto> findAllByAccountId(Long id) throws ResourceNotFoundException {
         Account account = checkId(id);
@@ -50,9 +52,11 @@ public class AccountService implements IAccountService {
         return transactionsGetDto;
     }
 
+    @Transactional
     @Override
-    public AccountGetDto save(AccountPostDto accountPostDto){
-        Account account = accountMapper.toAccount(accountPostDto);
+    public AccountGetDto save(Long userId) {
+        Account account = new Account();
+        account.setUserId(userId);
 
         String cvu = keysGenerator.generateCvu();
         while (accountRepository.findByCvu(cvu).isPresent()) {
@@ -65,18 +69,20 @@ public class AccountService implements IAccountService {
             alias = keysGenerator.generateCvu();
         }
         account.setAlias(alias);
-
         account.setAvailableBalance(0.0);
-        accountRepository.save(account);
-        return accountMapper.toAccountGetDto(account);
+
+        Account accountResponse = accountRepository.save(account);
+        return accountMapper.toAccountGetDto(accountResponse);
     }
 
+    @Transactional
     @Override
     public void updateAlias(Long id, AliasUpdate aliasUpdate) throws AlreadyRegisteredException, ResourceNotFoundException {
         Account account = checkId(id);
         checkUnique(account);
         accountRepository.save(account);
     }
+
     @Override
     public Account checkId(Long id) throws ResourceNotFoundException {
         Optional<Account> account = accountRepository.findById(id);
@@ -86,10 +92,10 @@ public class AccountService implements IAccountService {
         return account.get();
     }
 
-    public void checkUnique(Account account) throws AlreadyRegisteredException {
+    private void checkUnique(Account account) throws AlreadyRegisteredException {
         String alias = account.getAlias();
-        if (accountRepository.aliasUnique(alias, account.getAccountId()).isPresent()){
-            throw new AlreadyRegisteredException( "The user with alias "+alias+" is already registred");
+        if (accountRepository.aliasUnique(alias, account.getAccountId()).isPresent()) {
+            throw new AlreadyRegisteredException("The user with alias " + alias + " is already registred");
         }
     }
 
