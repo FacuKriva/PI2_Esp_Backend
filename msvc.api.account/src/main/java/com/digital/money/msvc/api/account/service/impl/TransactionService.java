@@ -11,6 +11,7 @@ import com.digital.money.msvc.api.account.service.interfaces.ITransactionService
 import com.digital.money.msvc.api.account.utils.mapper.TransactionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -24,18 +25,19 @@ public class TransactionService implements ITransactionService {
     @Autowired
     protected IAccountRepository accountRepository;
 
+    @Transactional
     @Override
-    public TransactionGetDto save(TransactionPostDto transactionPostDto){
+    public TransactionGetDto save(TransactionPostDto transactionPostDto) {
         Transaction transaction = transactionMapper.toTransaction(transactionPostDto);
-        if(accountRepository.findByCvu(transaction.getToCvu()).get().getAccountId() == transaction.getAccount().getAccountId()){
+        if (accountRepository.findByCvu(transaction.getToCvu()).get().getAccountId() == transaction.getAccount().getAccountId()) {
             transaction.setType(TransactionType.INCOMING);
-        }
-        else {
+        } else {
             transaction.setType(TransactionType.OUTGOING);
         }
         transactionRepository.save(transaction);
         return transactionMapper.toTransactionGetDto(transaction);
     }
+
     @Override
     public Transaction checkId(Long id) throws ResourceNotFoundException {
         Optional<Transaction> transaction = transactionRepository.findById(id);

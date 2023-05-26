@@ -33,7 +33,7 @@ public class User {
     @Column(name = "dni", unique = true, length = 10, nullable = false)
     private Long dni;
 
-    @Column(name = "account_id", unique = true, nullable = false)
+    @Column(name = "account_id", unique = true)
     private Integer accountId;
 
     @Column(name = "email", length = 60, unique = true, nullable = false)

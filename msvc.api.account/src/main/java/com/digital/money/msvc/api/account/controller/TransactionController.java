@@ -19,7 +19,7 @@ public class TransactionController {
 
     @Operation(summary = "Save an transaction", hidden = true)
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody TransactionPostDto transactionPostDto){
+    public ResponseEntity<Object> save(@RequestBody TransactionPostDto transactionPostDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.save(transactionPostDto));
     }
 }

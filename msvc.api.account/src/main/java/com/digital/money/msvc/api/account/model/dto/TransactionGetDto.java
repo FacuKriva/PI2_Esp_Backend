@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -18,7 +19,7 @@ public class TransactionGetDto {
 
     private Double amount;
 
-    private Date realizationDate;
+    private LocalDateTime realizationDate;
 
     private String description;
 

@@ -33,8 +33,8 @@ public class AccountController {
 
     @Operation(summary = "Save an account", hidden = true)
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody AccountPostDto accountPostDto){
-        return ResponseEntity.status(HttpStatus.CREATED).body(accountService.save(accountPostDto));
+    public ResponseEntity<Object> save(@RequestParam(name = "user_id") Long userId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(accountService.save(userId));
     }
 
     @Operation(summary = "Update account alias")

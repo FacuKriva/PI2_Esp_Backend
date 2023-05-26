@@ -29,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Base64;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -79,7 +78,7 @@ public class UserService implements IUserService {
         userEntity.setVerified(false);
 
         User createdUser = userRepository.save(userEntity);
-        AccountDTO account = accountClient.createUserAccount(createdUser.getUserId());
+        AccountDTO account = accountClient.createAccount(createdUser.getUserId());
         createdUser.setAccountId(account.getAccountId());
         User completeInformationUser = userRepository.save(createdUser);
 
