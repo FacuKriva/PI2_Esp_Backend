@@ -7,46 +7,39 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
+public class CardDTO {
+
+    @JsonProperty("card_id")
+    private Long cardId;
 
     @JsonProperty("user_id")
     private Long userId;
 
-    private String name;
-
-    @JsonProperty("last_name")
-    private String lastName;
-
-    private String cvu;
-
+    @JsonProperty("alias")
     private String alias;
 
-    private Long dni;
-
-    private String email;
-
-    @JsonIgnore
-    private String password;
-
-    private Integer phone;
-
-    private List<CardDTO> cards;
+    @JsonProperty("card_number")
+    private Long cardNumber;
 
     @JsonIgnore
-    private Boolean enabled;
+    private String cardHolder;
+
+    @JsonProperty("expiration_date")
+    private String expirationDate;
 
     @JsonIgnore
-    private int attempts;
+    private Integer cvv;
+
+    @JsonProperty("bank")
+    private String bank;
+
+    @JsonProperty("card_type")
+    private String cardType;
 
     @JsonIgnore
-    private RoleDTO role;
-
-    @JsonIgnore
-    private Boolean verified;
+    private boolean isEnabled;
 }

@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigInteger;
+import java.util.List;
 
 @Getter
 @Setter
@@ -58,6 +58,10 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "card_id")
+    private List<Card> cards;
+
     private Boolean verified;
 
     @Override
@@ -75,6 +79,7 @@ public class User {
                 ", enabled=" + enabled +
                 ", attempts=" + attempts +
                 ", role=" + role +
+                ", cards= " + cards +
                 ", verified=" + verified +
                 '}';
     }

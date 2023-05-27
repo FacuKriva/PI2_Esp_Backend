@@ -1,18 +1,19 @@
 package com.digital.money.msvc.api.users.services.impl;
 
+import com.digital.money.msvc.api.users.controllers.requestDto.CardRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
+import com.digital.money.msvc.api.users.dtos.CardDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
+import com.digital.money.msvc.api.users.entities.Card;
 import com.digital.money.msvc.api.users.entities.Role;
 import com.digital.money.msvc.api.users.entities.User;
 import com.digital.money.msvc.api.users.entities.Verified;
-import com.digital.money.msvc.api.users.exceptions.BadRequestException;
-import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
-import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
-import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
+import com.digital.money.msvc.api.users.exceptions.*;
 import com.digital.money.msvc.api.users.mappers.UserMapper;
+import com.digital.money.msvc.api.users.repositorys.ICardRepository;
 import com.digital.money.msvc.api.users.repositorys.IRoleRepository;
 import com.digital.money.msvc.api.users.repositorys.IUserRepository;
 import com.digital.money.msvc.api.users.services.IUserService;
@@ -26,9 +27,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Base64;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService implements IUserService {
@@ -40,14 +39,18 @@ public class UserService implements IUserService {
     private final BCryptPasswordEncoder bcrypt;
     private final EmailServiceImpl emailService;
     private final VerificationServiceImpl verificationService;
+    private final CardServiceImpl cardService;
+    private final ICardRepository cardRepository;
 
-    public UserService(IUserRepository userRepository, IRoleRepository roleRepository, UserMapper userMapper, BCryptPasswordEncoder bcrypt, EmailServiceImpl emailService, VerificationServiceImpl verificationService, EmailServiceImpl emailService1, VerificationServiceImpl verificationService1) {
+    public UserService(IUserRepository userRepository, IRoleRepository roleRepository, UserMapper userMapper, BCryptPasswordEncoder bcrypt, EmailServiceImpl emailService, VerificationServiceImpl verificationService, EmailServiceImpl emailService1, VerificationServiceImpl verificationService1, CardServiceImpl cardService, ICardRepository cardRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userMapper = userMapper;
         this.bcrypt = bcrypt;
         this.emailService = emailService1;
         this.verificationService = verificationService1;
+        this.cardService = cardService;
+        this.cardRepository = cardRepository;
     }
 
     @Transactional
@@ -199,4 +202,52 @@ public class UserService implements IUserService {
         user.setPassword(bcrypt.encode(newPassword));
         userRepository.save(user);
     }
+
+    @Override
+    public void addCardToAccount(Long dni, CardRequestDTO cardRequestDTO) throws UserNotFoundException, BadRequestException {
+        Optional<User> user = userRepository.findByDni(dni);
+        if (user.isPresent()) {
+            cardService.createCard(cardRequestDTO, user.get().getDni());
+        } else throw new UserNotFoundException("The user is not registered");
+    }
+
+    @Override
+    public void removeCardFromAccount(Long dni, Long cardId) throws UserNotFoundException, CardNotFoundException {
+        Optional<User> user = userRepository.findByDni(dni);
+        if (user.isPresent()) {
+            cardService.deleteCard(cardId);
+        } else throw new UserNotFoundException("The user is not registered");
+        if (cardRepository.findById(cardId).isEmpty())
+            throw new CardNotFoundException("The card is not registered");
+    }
+
+    @Override
+    public List<Card> getAllCardsFromAccount(Long dni) throws UserNotFoundException, NoCardsException {
+        Optional<User> user = userRepository.findByDni(dni);
+        if (user.isPresent()) {
+            List<Card> cards = cardService.getAllCardsFromUser(dni);
+            if (cards.isEmpty())
+                throw new NoCardsException("There are no cards registered to the user");
+            return cards;
+        } else throw new UserNotFoundException("The user is not registered");
+    }
+
+    @Override
+    public CardDTO getCardFromAccount(Long dni, Long cardId) throws UserNotFoundException, CardNotFoundException {
+        Optional<User> user = userRepository.findByDni(dni);
+        if (user.isPresent()) {
+            Optional<CardDTO> card = Optional.ofNullable(cardService.getCardById(cardId));
+            if (card.isPresent())
+                return card.get();
+            else throw new CardNotFoundException("The card is not registered");
+        } else throw new UserNotFoundException("The user is not registered");
+    }
+
+    @Override
+    public boolean cardAlreadyExists(Long cardNumber) throws CardAlreadyExistsException {
+        if (cardRepository.findByCardNumber(cardNumber).isPresent())
+            throw new CardAlreadyExistsException("The card is already registered in the system");
+        return false;
+    }
+
 }

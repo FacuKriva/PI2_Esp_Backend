@@ -1,16 +1,14 @@
 package com.digital.money.msvc.api.users.controllers;
 
+import com.digital.money.msvc.api.users.controllers.requestDto.CardRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
-import com.digital.money.msvc.api.users.controllers.requestDto.ResendCodeDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
-import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
-import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
+import com.digital.money.msvc.api.users.entities.Card;
+import com.digital.money.msvc.api.users.exceptions.*;
 import com.digital.money.msvc.api.users.services.impl.UserService;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.QueryParam;
 import org.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -88,5 +86,32 @@ public class UserController {
 
         userService.resetPassword(recoveryCode, passwords);
         return ResponseEntity.ok("Your password has been successfully updated");
+    }
+
+    @PostMapping("/account/{dni}/add-card")
+    public ResponseEntity<?> addCardToAccount(@PathVariable Long dni, @RequestBody CardRequestDTO cardRequestDTO) throws UserNotFoundException, CardAlreadyExistsException, BadRequestException {
+        if (userService.cardAlreadyExists(cardRequestDTO.getCardNumber())) {
+            return new ResponseEntity(HttpStatus.CONFLICT).ok("Card already exists and is associated with another account");
+        }
+        else {
+            userService.addCardToAccount(dni, cardRequestDTO);
+            return new ResponseEntity(HttpStatus.CREATED).ok("Card successfully added to account");
+        }
+    }
+
+    @PutMapping("/account/{dni}/remove-card")
+    public ResponseEntity<?> removeCardFromAccount(@PathVariable Long dni, @RequestBody Card card) throws UserNotFoundException, CardNotFoundException {
+        userService.removeCardFromAccount(dni, card.getCardId());
+        return new ResponseEntity(HttpStatus.OK).ok("Card successfully removed from account");
+    }
+
+    @GetMapping("/account/{dni}/cards")
+    public ResponseEntity<?> getAllCardsFromAccount(@PathVariable Long dni) throws UserNotFoundException, NoCardsException {
+        return ResponseEntity.ok(userService.getAllCardsFromAccount(dni));
+    }
+
+    @GetMapping("/account/{dni}/cards/{id}")
+    public ResponseEntity<?> getCardFromAccount(@PathVariable Long dni, @PathVariable Long cardId) throws UserNotFoundException, CardNotFoundException {
+        return ResponseEntity.ok(userService.getCardFromAccount(dni, cardId));
     }
 }
