@@ -56,8 +56,8 @@ public class CardServiceImpl implements ICardService {
     public List<Card> getAllCardsFromUser(Long dni) {
         Optional<User> entityResponse = userRepository.findByDni(dni);
         User user = entityResponse.get();
-        List<Card> cards = cardRepository.findByUser(user);
-        return cards;
+        List<Card> cardsList = cardRepository.findByUser(user);
+        return cardsList;
     }
 
     @Override
@@ -66,7 +66,6 @@ public class CardServiceImpl implements ICardService {
             Optional<Card> entityResponse = cardRepository.findById(cardId);
 
             if (entityResponse.isPresent()) {
-                Card card = entityResponse.get();
                 return new CardDTO();
             } else {
                 throw new CardNotFoundException("Card not found");

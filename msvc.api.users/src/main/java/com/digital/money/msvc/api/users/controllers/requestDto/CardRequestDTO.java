@@ -35,8 +35,4 @@ public class CardRequestDTO {
 
     @NotNull(message = "The bank cannot be null or empty")
     private String bank;
-
-    public boolean isEnabled(boolean b){
-        return false;
-    }
 }

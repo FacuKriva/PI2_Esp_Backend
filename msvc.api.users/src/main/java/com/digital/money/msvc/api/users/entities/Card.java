@@ -22,7 +22,7 @@ public class Card {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "alias", unique = true, nullable = true)
+    @Column(name = "alias", unique = true)
     private String alias;
 
     @Column(name = "card_number", unique = true, nullable = false, length = 16)
