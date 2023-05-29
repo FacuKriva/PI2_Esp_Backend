@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -32,6 +34,8 @@ public class AuthUserDTO {
     private String password;
 
     private Integer phone;
+
+    private List<CardDTO> cards;
 
     private Boolean enabled;
 

@@ -31,7 +31,7 @@ public class Card {
     @Column(name = "card_holder", nullable = false, length = 30)
     private String cardHolder;
 
-    @Column(name = "expiration_date", nullable = false, length = 5)
+    @Column(name = "expiration_date", nullable = false, length = 6)
     private String expirationDate;
 
     @Column(name = "cvv", nullable = false, length = 3)
@@ -43,6 +43,7 @@ public class Card {
     @Column(name = "card_Type", nullable = false)
     private String cardType;
 
+    @Column(name = "enabled", nullable = false)
     private boolean isEnabled = true;
 
 

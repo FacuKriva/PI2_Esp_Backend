@@ -25,13 +25,11 @@ public class CardDTO {
     @JsonProperty("card_number")
     private Long cardNumber;
 
-    @JsonIgnore
     private String cardHolder;
 
     @JsonProperty("expiration_date")
     private String expirationDate;
 
-    @JsonIgnore
     private Integer cvv;
 
     @JsonProperty("bank")
@@ -40,6 +38,5 @@ public class CardDTO {
     @JsonProperty("card_type")
     private String cardType;
 
-    @JsonIgnore
     private boolean isEnabled;
 }
