@@ -5,12 +5,13 @@ import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.update.UpdateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
+import com.digital.money.msvc.api.users.exceptions.BadRequestException;
+import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
 import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import com.digital.money.msvc.api.users.services.impl.UserService;
 import jakarta.validation.Valid;
 
-import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.QueryParam;
 
 import org.json.JSONException;
@@ -46,9 +47,9 @@ public class UserController {
     /**
      * Actualizar informacion del usuario.
      */
-    @PatchMapping("/update/{user_id}")
-    public ResponseEntity<?> updateUser(@PathVariable("user_id") Long userId,
-                                        @Valid @RequestBody final UpdateUserRequestDTO userDto) throws UserNotFoundException {
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable("id") Long userId,
+                                        @Valid @RequestBody final UpdateUserRequestDTO userDto) throws UserNotFoundException, HasAlreadyBeenRegistred, PasswordNotChangedException, BadRequestException {
 
         if (Objects.isNull(userDto)) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -58,8 +59,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userUpdate);
     }
 
-    @GetMapping("/{user_id}")
-    public ResponseEntity<?> findByUserId(@PathVariable("user_id") Long userId) throws UserNotFoundException {
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findByUserId(@PathVariable("id") Long userId) throws UserNotFoundException {
         return ResponseEntity.ok(userService.getUserById(userId));
     }
 

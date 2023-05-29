@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 public class TransactionGetDto {
+
     private Long transactionId;
 
     private Double amount;

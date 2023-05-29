@@ -11,8 +11,8 @@ import lombok.*;
 public class UserWithAccountDTO {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private UserDTO userDto;
+    private UserDTO user;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private AccountDTO accountId;
+    private AccountDTO account;
 
 }

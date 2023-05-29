@@ -90,35 +90,61 @@ public class UserService implements IUserService {
 
     @Transactional
     @Override
-    public UserDTO updateUser(Long userId, UpdateUserRequestDTO userDto) throws UserNotFoundException {
+    public UserDTO updateUser(Long userId, UpdateUserRequestDTO userDto) throws UserNotFoundException, HasAlreadyBeenRegistred, PasswordNotChangedException, BadRequestException {
+
         Optional<User> userEntity = userRepository.findByUserId(userId);
 
         if (userEntity.isEmpty()) {
             throw new UserNotFoundException("The user is not registered");
         }
+
+        Optional<User> entityResponseDni = userRepository.findByDni(userDto.getDni());
+        Optional<User> entityResponseEmail = userRepository.findByEmail(userDto.getEmail());
+
+        if (entityResponseDni.isPresent()) {
+            throw new HasAlreadyBeenRegistred("The dni number is already registered");
+        }
+
+        if (entityResponseEmail.isPresent()) {
+            throw new HasAlreadyBeenRegistred("The email address is already registered");
+        }
+
         Optional<Long> dni = Optional.ofNullable(userDto.getDni());
+
         Optional<Integer> phone = Optional.ofNullable(userDto.getPhone());
+
         User user = userEntity.get();
 
         if (validateRequestObject(userDto.getName())) {
             user.setName(userDto.getName());
         }
+
         if (validateRequestObject(userDto.getLastName())) {
             user.setLastName(userDto.getLastName());
         }
         if (dni.isPresent()) {
             user.setDni(userDto.getDni());
         }
+
         if (phone.isPresent()) {
             user.setPhone(userDto.getPhone());
         }
+
         if (validateRequestObject(userDto.getEmail())) {
             user.setEmail(userDto.getEmail().toLowerCase());
         }
-        if (validateRequestObject(userDto.getPassword()) &&
-                !validatePassword(userDto.getPassword(), user.getPassword())) {
-            user.setPassword(bcrypt.encode(userDto.getPassword()));
+
+        if (validateRequestObject(userDto.getPassword())) {
+            if (bcrypt.matches(userDto.getPassword(), user.getPassword())) {
+            throw new PasswordNotChangedException ("The new password must be different than the previous one");
+            } else { user.setPassword(bcrypt.encode(userDto.getPassword()));
+            }
         }
+
+//        if (validateRequestObject(userDto.getPassword()) &&
+//                !(validatePassword(userDto.getPassword(), user.getPassword()))) {
+//            user.setPassword(bcrypt.encode(userDto.getPassword()));
+//        }
 
         User userResponse = userRepository.save(user);
         AccountDTO account = accountClient.getAccountById(user.getAccountId());
@@ -140,8 +166,8 @@ public class UserService implements IUserService {
         AccountDTO accountInfo = accountClient.getAccountById(userResponse.getAccountId());
 
         return UserWithAccountDTO.builder()
-                .userDto(userResponse)
-                .accountId(accountInfo)
+                .user(userResponse)
+                .account(accountInfo)
                 .build();
     }
 
