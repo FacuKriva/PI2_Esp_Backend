@@ -22,21 +22,23 @@ public class CardDTO {
     @JsonProperty("alias")
     private String alias;
 
-    @JsonProperty("card_number")
+    @JsonProperty("cardNumber")
     private Long cardNumber;
 
+    @JsonIgnore
     private String cardHolder;
 
-    @JsonProperty("expiration_date")
     private String expirationDate;
 
+    @JsonIgnore
     private Integer cvv;
 
     @JsonProperty("bank")
     private String bank;
 
-    @JsonProperty("card_type")
+    @JsonProperty("cardType")
     private String cardType;
 
+    @JsonIgnore
     private boolean isEnabled;
 }

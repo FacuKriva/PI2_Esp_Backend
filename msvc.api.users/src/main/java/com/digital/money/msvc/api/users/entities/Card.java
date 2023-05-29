@@ -25,13 +25,13 @@ public class Card {
     @Column(name = "alias", unique = true)
     private String alias;
 
-    @Column(name = "card_number", unique = true, nullable = false, length = 16)
+    @Column(name = "cardNumber", unique = true, nullable = false, length = 16)
     private Long cardNumber;
 
-    @Column(name = "card_holder", nullable = false, length = 30)
+    @Column(name = "cardHolder", nullable = false, length = 30)
     private String cardHolder;
 
-    @Column(name = "expiration_date", nullable = false, length = 6)
+    @Column(name = "expirationDate", nullable = false, length = 7)
     private String expirationDate;
 
     @Column(name = "cvv", nullable = false, length = 3)
@@ -40,10 +40,10 @@ public class Card {
     @Column(name = "bank", nullable = false, length = 30)
     private String bank;
 
-    @Column(name = "card_Type", nullable = false)
+    @Column(name = "cardType", nullable = false)
     private String cardType;
 
-    @Column(name = "enabled", nullable = false)
+    @Column(name = "isEnabled", nullable = false)
     private boolean isEnabled = true;
 
 
