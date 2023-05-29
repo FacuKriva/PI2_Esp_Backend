@@ -9,6 +9,7 @@ import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.dtos.UserWithAccountDTO;
 import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
+import jakarta.ws.rs.BadRequestException;
 import org.json.JSONException;
 import org.springframework.http.ResponseEntity;
 
@@ -28,11 +29,8 @@ public interface IUserService {
 
     void sendVerificationMail(String email);
 
-    void resendVerificationMail(String token) throws JSONException;
-
+    void resendVerificationMail(String token) throws Exception;
     ResponseEntity<String> verificateUser(VerficationRequestDTO verficationRequestDTO, String token) throws JSONException;
-
-    void forgotPassword(String email);
-
+    void forgotPassword(String email) throws UserNotFoundException;
     void resetPassword(String recoveryCode, NewPassDTO passwords) throws PasswordNotChangedException;
 }

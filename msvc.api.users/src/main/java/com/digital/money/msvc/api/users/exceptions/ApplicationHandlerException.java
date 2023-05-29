@@ -59,6 +59,18 @@ public class ApplicationHandlerException extends ResponseEntityExceptionHandler 
                 .body(e.getMessage());
     }
 
+    @ExceptionHandler(PasswordNotChangedException.class)
+    public ResponseEntity<?> passwordNotChanged(Exception e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<?> badRequestException(Exception e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ExceptionResponse> handlingAllExceptions(Exception ex, WebRequest request) {
 
