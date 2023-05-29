@@ -42,7 +42,7 @@ public class User {
     @Column(name = "password", length = 120, nullable = false)
     private String password;
 
-    @Column(name = "phone", length = 10, nullable = false)
+    @Column(name = "phone", nullable = false)
     private Integer phone;
 
     @Column(name = "enabled", nullable = false)

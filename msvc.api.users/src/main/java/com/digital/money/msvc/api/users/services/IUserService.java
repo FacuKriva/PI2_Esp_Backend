@@ -7,6 +7,8 @@ import com.digital.money.msvc.api.users.controllers.requestDto.VerficationReques
 import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.dtos.UserWithAccountDTO;
+import com.digital.money.msvc.api.users.exceptions.BadRequestException;
+import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
 import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import org.json.JSONException;
@@ -16,7 +18,7 @@ public interface IUserService {
 
     UserDTO createUser(CreateUserRequestDTO userRequestDTO) throws Exception;
 
-    UserDTO updateUser(Long userId, UpdateUserRequestDTO userDto) throws UserNotFoundException;
+    UserDTO updateUser(Long userId, UpdateUserRequestDTO userDto) throws UserNotFoundException, HasAlreadyBeenRegistred, PasswordNotChangedException, BadRequestException;
 
     UserWithAccountDTO getUserById(Long userId) throws UserNotFoundException;
 

@@ -38,6 +38,6 @@ public class UpdateUserRequestDTO {
     private String password;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @NotNull(message = "The phone cannot be null or empty ")
+    //@NotNull(message = "The phone cannot be null or empty ")
     private Integer phone;
 }

@@ -7,9 +7,9 @@ spring:
           predicates:
             - Path=/users/**
         - id: accountRoute
-          uri: lb://msvc-acount-api
+          uri: lb://msvc-account-api
           predicates:
-            - Path=/account/**
+            - Path=/accounts/**
         - id: oauthRoute
           uri: lb://msvc-oauth-server
           predicates:
