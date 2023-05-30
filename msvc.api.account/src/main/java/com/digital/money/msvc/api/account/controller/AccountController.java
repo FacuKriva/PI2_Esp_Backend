@@ -39,8 +39,9 @@ public class AccountController {
 
     @Operation(summary = "Update account alias")
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> updateAlias(@PathVariable Long id, @RequestBody AliasUpdate aliasUpdate) throws AlreadyRegisteredException, ResourceNotFoundException {
-        accountService.updateAlias(id, aliasUpdate);
-        return ResponseEntity.ok("New Alias: " + aliasUpdate);
+    public ResponseEntity<Object> updateAlias(@PathVariable(name = "id") Long id,
+                                              @RequestBody AliasUpdate aliasUpdate) throws AlreadyRegisteredException, ResourceNotFoundException {
+        String response = accountService.updateAlias(id, aliasUpdate);
+        return ResponseEntity.ok(response);
     }
 }

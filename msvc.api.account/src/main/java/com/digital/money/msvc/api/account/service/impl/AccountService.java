@@ -13,10 +13,14 @@ import com.digital.money.msvc.api.account.service.interfaces.IAccountService;
 import com.digital.money.msvc.api.account.utils.KeysGenerator;
 import com.digital.money.msvc.api.account.utils.mapper.AccountMapper;
 import com.digital.money.msvc.api.account.utils.mapper.TransactionMapper;
+import jakarta.persistence.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.support.SQLErrorCodes;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -77,10 +81,22 @@ public class AccountService implements IAccountService {
 
     @Transactional
     @Override
-    public void updateAlias(Long id, AliasUpdate aliasUpdate) throws AlreadyRegisteredException, ResourceNotFoundException {
+    public String updateAlias(Long id, AliasUpdate aliasUpdate) throws AlreadyRegisteredException, ResourceNotFoundException {
         Account account = checkId(id);
-        checkUnique(account);
-        accountRepository.save(account);
+        String newAlias = aliasUpdate.buildAlias().toLowerCase();
+
+        if (newAlias.equals(account.getAlias())) {
+            throw new AlreadyRegisteredException("The alias is already registered");
+        }
+
+        Optional<Account> duplicateAlias = accountRepository.findByAlias(newAlias);
+        if (!duplicateAlias.isPresent()) {
+            account.setAlias(newAlias);
+            accountRepository.save(account);
+            return String.format("New Alias: %s", account.getAlias());
+        } else {
+            throw new AlreadyRegisteredException("The alias is already registered");
+        }
     }
 
     @Override
@@ -92,11 +108,11 @@ public class AccountService implements IAccountService {
         return account.get();
     }
 
-    private void checkUnique(Account account) throws AlreadyRegisteredException {
-        String alias = account.getAlias();
-        if (accountRepository.aliasUnique(alias, account.getAccountId()).isPresent()) {
-            throw new AlreadyRegisteredException("The user with alias " + alias + " is already registred");
-        }
-    }
+//    private void checkUnique(Account account) throws AlreadyRegisteredException {
+//        String alias = account.getAlias();
+//        if (accountRepository.aliasUnique(alias, account.getAccountId()).isPresent()) {
+//            throw new AlreadyRegisteredException("The user with alias " + alias + " is already registred");
+//        }
+//    }
 
 }
