@@ -36,6 +36,7 @@ public class UserDTO {
 
     private Integer phone;
 
+    @JsonIgnore
     private List<CardDTO> cards;
 
     @JsonIgnore

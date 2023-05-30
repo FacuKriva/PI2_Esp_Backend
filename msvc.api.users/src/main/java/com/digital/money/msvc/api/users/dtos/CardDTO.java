@@ -16,8 +16,8 @@ public class CardDTO {
     @JsonProperty("card_id")
     private Long cardId;
 
-    @JsonProperty("user_id")
-    private Long userId;
+     @JsonIgnore
+    private UserDTO user;
 
     @JsonProperty("alias")
     private String alias;
@@ -36,7 +36,6 @@ public class CardDTO {
     @JsonProperty("bank")
     private String bank;
 
-    @JsonProperty("cardType")
     private String cardType;
 
     @JsonIgnore
