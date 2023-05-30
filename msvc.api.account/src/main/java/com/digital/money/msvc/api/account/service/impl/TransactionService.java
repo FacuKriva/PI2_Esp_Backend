@@ -1,5 +1,6 @@
 package com.digital.money.msvc.api.account.service.impl;
 
+import com.digital.money.msvc.api.account.handler.NoTransactionsException;
 import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Transaction;
@@ -41,7 +42,7 @@ public class TransactionService implements ITransactionService {
     }
 
     @Transactional(readOnly = true)
-    public List<TransactionGetDto> getLastFive(Long id) throws ResourceNotFoundException {
+    public List<TransactionGetDto> getLastFive(Long id) throws ResourceNotFoundException, NoTransactionsException {
 
         Optional<Account> account = accountRepository.findById(id);
         if (account.isEmpty()) {
@@ -52,7 +53,7 @@ public class TransactionService implements ITransactionService {
 
         if (listTransactions.isPresent()) {
             if (listTransactions.get().size() == 0) {
-                throw new ResourceNotFoundException("There are currently no transactions for the selected account");
+                throw new NoTransactionsException("There are currently no transactions for the selected account");
             }
         }
         return listTransactions.get().stream()

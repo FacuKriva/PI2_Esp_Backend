@@ -1,5 +1,6 @@
 package com.digital.money.msvc.api.account.model.dto;
 
+import com.digital.money.msvc.api.account.handler.BadRequestException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -33,9 +34,23 @@ public class AliasUpdate {
     @JsonProperty("word_index_two")
     private String wordIndexTwo;
 
-    public String buildAlias() {
+    public String buildAlias() throws BadRequestException {
+
+        if (wordIndexZero.length() == 0 || wordIndexOne.length() == 0 || wordIndexTwo.length() == 0) {
+            throw new BadRequestException("You must choose 3 words. Words cannot be blank.");
+        }
+
+        if (wordIndexZero.isEmpty() || wordIndexOne.isEmpty() || wordIndexTwo.isEmpty()) {
+            throw new BadRequestException("You must choose 3 words. Words cannot be empty.");
+        }
+
+        if (wordIndexZero.equals(wordIndexOne) || wordIndexOne.equals(wordIndexTwo) || wordIndexZero.equals(wordIndexTwo)) { throw new BadRequestException("All the words must be different.");
+        }
+
         return wordIndexZero.concat(".")
                 .concat(wordIndexOne).concat(".")
                 .concat(wordIndexTwo);
     }
+
+
 }

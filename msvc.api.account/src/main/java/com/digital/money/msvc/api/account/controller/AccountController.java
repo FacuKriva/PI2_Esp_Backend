@@ -1,6 +1,8 @@
 package com.digital.money.msvc.api.account.controller;
 
 import com.digital.money.msvc.api.account.handler.AlreadyRegisteredException;
+import com.digital.money.msvc.api.account.handler.BadRequestException;
+import com.digital.money.msvc.api.account.handler.NoTransactionsException;
 import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
 import com.digital.money.msvc.api.account.model.dto.AliasUpdate;
 import com.digital.money.msvc.api.account.service.impl.AccountService;
@@ -26,7 +28,7 @@ public class AccountController {
 
     @Operation(summary = "Find all transactions by account id")
     @GetMapping("/{id}/transactions")
-    public ResponseEntity<Object> findAllByAccountId(@PathVariable(name = "id") Long account_id) throws ResourceNotFoundException {
+    public ResponseEntity<Object> findAllByAccountId(@PathVariable(name = "id") Long account_id) throws ResourceNotFoundException, NoTransactionsException {
         return ResponseEntity.ok(accountService.findAllByAccountId(account_id));
     }
 
@@ -39,7 +41,7 @@ public class AccountController {
     @Operation(summary = "Update account alias")
     @PatchMapping("/{id}")
     public ResponseEntity<Object> updateAlias(@PathVariable(name = "id") Long id,
-                                              @RequestBody AliasUpdate aliasUpdate) throws AlreadyRegisteredException, ResourceNotFoundException {
+                                              @RequestBody AliasUpdate aliasUpdate) throws AlreadyRegisteredException, ResourceNotFoundException, BadRequestException {
         String response = accountService.updateAlias(id, aliasUpdate);
         return ResponseEntity.ok(response);
     }
