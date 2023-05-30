@@ -26,6 +26,7 @@ public class KeysGenerator {
 
     public static String generateAlias() {
         String pathFile = "msvc.api.account\\src\\main\\resources\\words.txt";
+        //String pathFile = "./src/main/resources/words.txt";
         List<String> words = readFile(pathFile);
         Random random = new Random();
         int index1 = random.nextInt(words.size());
