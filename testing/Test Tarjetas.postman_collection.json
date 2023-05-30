@@ -1,0 +1,233 @@
+{
+	"info": {
+		"_postman_id": "ec1dc57b-5593-4271-931e-e6815504c957",
+		"name": "Test Tarjetas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21135814"
+	},
+	"item": [
+		{
+			"name": "Agregar tarjeta (MP)",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"alias\": \"Tarjeta MP\",\r\n  \"cardNumber\": 5412873403403000,\r\n  \"cardHolder\": \"Admin Admin\",\r\n  \"expirationDate\": \"05/2024\",\r\n  \"cvv\": 480,\r\n  \"bank\": \"Mercado Pago\",\r\n  \"cardType\": \"Credito\"\r\n}\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:8082/users/:dni/add-card",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"users",
+						":dni",
+						"add-card"
+					],
+					"variable": [
+						{
+							"key": "dni",
+							"value": "123456789"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar tarjeta (Amex)",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"alias\": \"Amex Platinum\",\r\n    \"cardNumber\": 376455323736878,\r\n    \"cardHolder\": \"Admin Admin\",\r\n    \"expirationDate\": \"03/2025\",\r\n    \"cvv\": 1698,\r\n    \"bank\": \"American Express Argentina\",\r\n    \"cardType\": \"Credito\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8082/users/:dni/add-card",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"users",
+						":dni",
+						"add-card"
+					],
+					"variable": [
+						{
+							"key": "dni",
+							"value": "123456789"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar tarjeta (DHMoney)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"alias\": \"DHMoney\",\r\n    \"cardNumber\": 5346717505192642,\r\n    \"cardHolder\": \"Admin Admin\",\r\n    \"expirationDate\": \"10/2028\",\r\n    \"cvv\": 827,\r\n    \"bank\": \"Digital Money Bank\",\r\n    \"cardType\": \"Debito\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8082/users/:dni/add-card",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"users",
+						":dni",
+						"add-card"
+					],
+					"variable": [
+						{
+							"key": "dni",
+							"value": "123456789"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove card",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8082/users/:dni/remove-card/:cardId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"users",
+						":dni",
+						"remove-card",
+						":cardId"
+					],
+					"variable": [
+						{
+							"key": "dni",
+							"value": "123456789"
+						},
+						{
+							"key": "cardId",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Card by Id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8082/users/:dni/cards/:cardId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"users",
+						":dni",
+						"cards",
+						":cardId"
+					],
+					"variable": [
+						{
+							"key": "dni",
+							"value": "123456789"
+						},
+						{
+							"key": "cardId",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "All Cards",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8082/users/:dni/cards",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"users",
+						":dni",
+						"cards"
+					],
+					"variable": [
+						{
+							"key": "dni",
+							"value": "123456789"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
