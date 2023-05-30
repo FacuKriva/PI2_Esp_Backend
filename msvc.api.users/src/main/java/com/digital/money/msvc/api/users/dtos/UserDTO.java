@@ -31,6 +31,9 @@ public class UserDTO {
 
     private Long dni;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer accountId;
+
     private String email;
 
     @JsonIgnore
@@ -45,8 +48,8 @@ public class UserDTO {
     private int attempts;
 
     @JsonIgnore
-    private RoleDTO role;
+    private Boolean verified;
 
     @JsonIgnore
-    private Boolean verified;
+    private RoleDTO role;
 }

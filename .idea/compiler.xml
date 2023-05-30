@@ -7,16 +7,20 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="msvc.api.users" />
         <module name="msvc-auth-server-sprgbt" />
+        <module name="msvc-eureka-server-sprgbt" />
         <module name="msvc-gateway-api-sprgbt" />
+        <module name="msvc.api.users" />
+        <module name="msvc.api.account" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="msvc-auth-server-sprgbt" options="-parameters" />
+      <module name="msvc-eureka-server-sprgbt" options="-parameters" />
       <module name="msvc-gateway-api-sprgbt" options="-parameters" />
+      <module name="msvc.api.account" options="-parameters" />
       <module name="msvc.api.users" options="-parameters" />
     </option>
   </component>

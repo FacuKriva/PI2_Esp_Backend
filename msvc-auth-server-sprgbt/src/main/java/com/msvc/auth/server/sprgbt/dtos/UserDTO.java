@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UserDTO {
 
-
     @JsonProperty("user_id")
     private Long userId;
 
@@ -27,6 +26,8 @@ public class UserDTO {
     private String alias;
 
     private Long dni;
+
+    private Integer accountId;
 
     private String email;
 

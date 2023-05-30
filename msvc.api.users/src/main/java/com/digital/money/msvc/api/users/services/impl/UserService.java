@@ -1,10 +1,14 @@
 package com.digital.money.msvc.api.users.services.impl;
 
+import com.digital.money.msvc.api.users.clients.IAccountClient;
+import com.digital.money.msvc.api.users.clients.dtos.AccountDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.CreateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
-import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.update.UpdateUserRequestDTO;
 import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
+import com.digital.money.msvc.api.users.dtos.UserWithAccountDTO;
 import com.digital.money.msvc.api.users.entities.Role;
 import com.digital.money.msvc.api.users.entities.User;
 import com.digital.money.msvc.api.users.entities.Verified;
@@ -16,8 +20,7 @@ import com.digital.money.msvc.api.users.mappers.UserMapper;
 import com.digital.money.msvc.api.users.repositorys.IRoleRepository;
 import com.digital.money.msvc.api.users.repositorys.IUserRepository;
 import com.digital.money.msvc.api.users.services.IUserService;
-import com.digital.money.msvc.api.users.utils.KeysGenerator;
-
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -34,6 +37,7 @@ import java.util.Optional;
 public class UserService implements IUserService {
 
     private static final int ROLE_USER = 2;
+    private final IAccountClient accountClient;
     private final IUserRepository userRepository;
     private final IRoleRepository roleRepository;
     private final UserMapper userMapper;
@@ -41,7 +45,9 @@ public class UserService implements IUserService {
     private final EmailServiceImpl emailService;
     private final VerificationServiceImpl verificationService;
 
-    public UserService(IUserRepository userRepository, IRoleRepository roleRepository, UserMapper userMapper, BCryptPasswordEncoder bcrypt, EmailServiceImpl emailService, VerificationServiceImpl verificationService, EmailServiceImpl emailService1, VerificationServiceImpl verificationService1) {
+    public UserService(IAccountClient accountClient, IUserRepository userRepository, IRoleRepository roleRepository, UserMapper userMapper,
+                       BCryptPasswordEncoder bcrypt, EmailServiceImpl emailService1, VerificationServiceImpl verificationService1) {
+        this.accountClient = accountClient;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userMapper = userMapper;
@@ -52,7 +58,7 @@ public class UserService implements IUserService {
 
     @Transactional
     @Override
-    public UserDTO createUser(UserRequestDTO userRequestDTO) throws Exception {
+    public UserDTO createUser(CreateUserRequestDTO userRequestDTO) throws Exception {
 
         Optional<User> entityResponseDni = userRepository.findByDni(userRequestDTO.getDni());
         Optional<User> entityResponseEmail = userRepository.findByEmail(userRequestDTO.getEmail());
@@ -66,20 +72,98 @@ public class UserService implements IUserService {
 
         User userEntity = userMapper.mapToEntity(userRequestDTO);
         userEntity.setEmail(userRequestDTO.getEmail().toLowerCase());
-        userEntity.setCvu(KeysGenerator.generateCvu());
-        userEntity.setAlias(KeysGenerator.generateAlias());
         userEntity.setEnabled(true);
         userEntity.setAttempts(0);
         userEntity.setRole(role);
         userEntity.setPassword(bcrypt.encode(userEntity.getPassword()));
         userEntity.setVerified(false);
-        User userSaved = userRepository.save(userEntity);
 
-        System.out.println(userSaved);
+        User createdUser = userRepository.save(userEntity);
+        AccountDTO account = accountClient.createAccount(createdUser.getUserId());
+        createdUser.setAccountId(account.getAccountId());
+        User completeInformationUser = userRepository.save(createdUser);
 
-        sendVerificationMail(userEntity.getEmail());
+        sendVerificationMail(completeInformationUser.getEmail());
 
-        return userMapper.mapToDto(userSaved);
+        return userMapper.mapToDto(completeInformationUser, account.getCvu(), account.getAlias());
+    }
+
+    @Transactional
+    @Override
+    public UserDTO updateUser(Long userId, UpdateUserRequestDTO userDto) throws UserNotFoundException, HasAlreadyBeenRegistred, PasswordNotChangedException, BadRequestException {
+
+        Optional<User> userEntity = userRepository.findByUserId(userId);
+
+        if (userEntity.isEmpty()) {
+            throw new UserNotFoundException("The user is not registered");
+        }
+
+        Optional<User> entityResponseDni = userRepository.findByDni(userDto.getDni());
+        Optional<User> entityResponseEmail = userRepository.findByEmail(userDto.getEmail());
+
+        if (entityResponseDni.isPresent()) {
+            throw new HasAlreadyBeenRegistred("The dni number is already registered");
+        }
+
+        if (entityResponseEmail.isPresent()) {
+            throw new HasAlreadyBeenRegistred("The email address is already registered");
+        }
+
+        Optional<Long> dni = Optional.ofNullable(userDto.getDni());
+
+        Optional<Integer> phone = Optional.ofNullable(userDto.getPhone());
+
+        User user = userEntity.get();
+
+        if (validateRequestObject(userDto.getName())) {
+            user.setName(userDto.getName());
+        }
+
+        if (validateRequestObject(userDto.getLastName())) {
+            user.setLastName(userDto.getLastName());
+        }
+        if (dni.isPresent()) {
+            user.setDni(userDto.getDni());
+        }
+
+        if (phone.isPresent()) {
+            user.setPhone(userDto.getPhone());
+        }
+
+        if (validateRequestObject(userDto.getEmail())) {
+            user.setEmail(userDto.getEmail().toLowerCase());
+        }
+
+        if (validateRequestObject(userDto.getPassword())) {
+            if (bcrypt.matches(userDto.getPassword(), user.getPassword())) {
+            throw new PasswordNotChangedException ("The new password must be different than the previous one");
+            } else { user.setPassword(bcrypt.encode(userDto.getPassword()));
+            }
+        }
+
+        User userResponse = userRepository.save(user);
+        AccountDTO account = accountClient.getAccountById(user.getAccountId());
+
+        return userMapper.mapToDto(userResponse, account.getCvu(), account.getAlias());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public UserWithAccountDTO getUserById(Long userId) throws UserNotFoundException {
+
+        User user = userRepository.findByUserId(userId).orElseThrow(
+                () -> new UserNotFoundException(String
+                        .format("The user with Id %d was not found", userId))
+        );
+        AccountDTO account = accountClient.getAccountById(user.getAccountId());
+        UserDTO userResponse = userMapper.mapToDto(user, account.getCvu(), account.getAlias());
+
+        AccountDTO accountInfo = accountClient.getAccountById(userResponse.getAccountId());
+
+        return UserWithAccountDTO.builder()
+                .user(userResponse)
+                .account(accountInfo)
+                .build();
     }
 
     @Transactional(readOnly = true)
@@ -91,7 +175,9 @@ public class UserService implements IUserService {
                         .format("The user with dni %d was not found", dni))
         );
 
-        return userMapper.mapToDto(user);
+        AccountDTO account = accountClient.getAccountById(user.getAccountId());
+        return userMapper.mapToDto(user, account.getCvu(), account.getAlias());
+
     }
 
     @Transactional(readOnly = true)
@@ -127,11 +213,11 @@ public class UserService implements IUserService {
     public void sendVerificationMail(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
         Integer codigo = verificationService.createVerificationCode(user.getUserId());
-        emailService.sendVericationMail(user,codigo);
+        emailService.sendVericationMail(user, codigo);
     }
 
     @Override
-    public ResponseEntity <String> verificateUser(VerficationRequestDTO verficationRequestDTO, String token) throws JSONException {
+    public ResponseEntity<String> verificateUser(VerficationRequestDTO verficationRequestDTO, String token) throws JSONException {
 
         String[] jwtParts = token.split("\\.");
         JSONObject payload = new JSONObject(decodeToken(jwtParts[1]));
@@ -198,5 +284,22 @@ public class UserService implements IUserService {
         }
         user.setPassword(bcrypt.encode(newPassword));
         userRepository.save(user);
+    }
+
+    private boolean validateRequestObject(String value) {
+        return StringUtils.isNotBlank(value);
+    }
+
+    private boolean validatePassword(String newPassword, String oldPassword) {
+        return bcrypt.matches(newPassword, oldPassword);
+    }
+
+    private AccountDTO buildAccount(String alias, String cvu) {
+        double initialBalance = 0.0;
+        return AccountDTO.builder()
+                .alias(alias)
+                .cvu(cvu)
+                .availableBalance(initialBalance)
+                .build();
     }
 }

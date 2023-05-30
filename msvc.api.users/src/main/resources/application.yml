@@ -24,6 +24,7 @@ spring:
   properties:
     hibernate:
       format_sql: false
+
   # Lectura del archivo sql
   sql:
     init:

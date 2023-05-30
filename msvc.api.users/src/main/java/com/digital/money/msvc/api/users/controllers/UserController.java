@@ -1,16 +1,19 @@
 package com.digital.money.msvc.api.users.controllers;
 
+import com.digital.money.msvc.api.users.controllers.requestDto.CreateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
-import com.digital.money.msvc.api.users.controllers.requestDto.ResendCodeDTO;
-import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.update.UpdateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
+import com.digital.money.msvc.api.users.exceptions.BadRequestException;
+import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
 import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import com.digital.money.msvc.api.users.services.impl.UserService;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.BadRequestException;
+
 import jakarta.ws.rs.QueryParam;
+
 import org.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,15 +35,33 @@ public class UserController {
      * Registrar Usuario
      */
     @PostMapping
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) throws Exception {
+    public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserRequestDTO userRequestDTO) throws Exception {
         if (Objects.isNull(userRequestDTO)) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        System.out.println("hola");
-
         UserDTO userDTO = userService.createUser(userRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
+    }
+
+    /**
+     * Actualizar informacion del usuario.
+     */
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable("id") Long userId,
+                                        @Valid @RequestBody final UpdateUserRequestDTO userDto) throws UserNotFoundException, HasAlreadyBeenRegistred, PasswordNotChangedException, BadRequestException {
+
+        if (Objects.isNull(userDto)) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        UserDTO userUpdate = userService.updateUser(userId, userDto);
+        return ResponseEntity.status(HttpStatus.OK).body(userUpdate);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findByUserId(@PathVariable("id") Long userId) throws UserNotFoundException {
+        return ResponseEntity.ok(userService.getUserById(userId));
     }
 
     @GetMapping("/dni")
@@ -69,7 +90,8 @@ public class UserController {
     }
 
     @PutMapping("/verificate")
-    public ResponseEntity<?> verificateCode(@RequestBody VerficationRequestDTO verficationRequestDTO, @RequestHeader("Authorization") String token) throws JSONException {
+    public ResponseEntity<?> verificateCode(@RequestBody VerficationRequestDTO verficationRequestDTO,
+                                            @RequestHeader("Authorization") String token) throws JSONException {
         return userService.verificateUser(verficationRequestDTO, token);
     }
 

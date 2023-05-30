@@ -30,14 +30,11 @@ public class User {
     @Column(name = "last_name", length = 40, nullable = false)
     private String lastName;
 
-    @Column(name = "cvu", unique = true, nullable = false, length = 22)
-    private String cvu;
-
-    @Column(name = "alias", unique = true, nullable = false)
-    private String alias;
-
     @Column(name = "dni", unique = true, length = 10, nullable = false)
     private Long dni;
+
+    @Column(name = "account_id", unique = true)
+    private Integer accountId;
 
     @Column(name = "email", length = 60, unique = true, nullable = false)
     private String email;
@@ -45,7 +42,7 @@ public class User {
     @Column(name = "password", length = 120, nullable = false)
     private String password;
 
-    @Column(name = "phone", length = 10, nullable = false)
+    @Column(name = "phone", nullable = false)
     private Integer phone;
 
     @Column(name = "enabled", nullable = false)
@@ -54,11 +51,12 @@ public class User {
     @Column(name = "attempts", nullable = false)
     private int attempts;
 
+    @Column(name = "verified")
+    private Boolean verified;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
-
-    private Boolean verified;
 
     @Override
     public String toString() {
@@ -66,8 +64,6 @@ public class User {
                 "userId=" + userId +
                 ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", cvu='" + cvu + '\'' +
-                ", alias='" + alias + '\'' +
                 ", dni=" + dni +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
