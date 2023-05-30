@@ -141,11 +141,6 @@ public class UserService implements IUserService {
             }
         }
 
-//        if (validateRequestObject(userDto.getPassword()) &&
-//                !(validatePassword(userDto.getPassword(), user.getPassword()))) {
-//            user.setPassword(bcrypt.encode(userDto.getPassword()));
-//        }
-
         User userResponse = userRepository.save(user);
         AccountDTO account = accountClient.getAccountById(user.getAccountId());
 

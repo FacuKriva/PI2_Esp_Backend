@@ -17,6 +17,6 @@ public interface IAccountService extends ICheckId<Account> {
     AccountGetDto save(Long id);
     AccountGetDto findById(Long id) throws ResourceNotFoundException;
     Set<TransactionGetDto> findAllByAccountId(Long id) throws ResourceNotFoundException;
-    void updateAlias(Long id, AliasUpdate aliasUpdate) throws AlreadyRegisteredException, ResourceNotFoundException;
+    String updateAlias(Long id, AliasUpdate aliasUpdate) throws AlreadyRegisteredException, ResourceNotFoundException;
 
 }
