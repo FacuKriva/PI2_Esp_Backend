@@ -58,7 +58,7 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Card> cards;
 
     private Boolean verified;

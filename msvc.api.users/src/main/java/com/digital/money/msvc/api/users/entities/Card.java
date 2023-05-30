@@ -18,11 +18,11 @@ public class Card {
     @Column(unique = true, name = "card_id")
     private Long cardId;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "alias", unique = true)
+    @Column(name = "alias", length = 50)
     private String alias;
 
     @Column(name = "cardNumber", unique = true, nullable = false, length = 16)
@@ -40,18 +40,18 @@ public class Card {
     @Column(name = "bank", nullable = false, length = 30)
     private String bank;
 
-    @Column(name = "cardType", nullable = false)
+    @Column(name = "cardType", nullable = false, length = 30)
     private String cardType;
 
     @Column(name = "isEnabled", nullable = false)
     private boolean isEnabled = true;
 
 
+
     @Override
     public String toString() {
         return "Card{" +
                 "cardId=" + cardId +
-                ", user=" + user +
                 ", alias='" + alias + '\'' +
                 ", cardNumber=" + cardNumber +
                 ", cardHolder='" + cardHolder + '\'' +
