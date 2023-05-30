@@ -7,90 +7,6 @@
 	},
 	"item": [
 		{
-			"name": "Agregar tarjeta (MP)",
-			"protocolProfileBehavior": {
-				"disabledSystemHeaders": {
-					"content-type": true
-				}
-			},
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"alias\": \"Tarjeta MP\",\r\n  \"cardNumber\": 5412873403403000,\r\n  \"cardHolder\": \"Admin Admin\",\r\n  \"expirationDate\": \"05/2024\",\r\n  \"cvv\": 480,\r\n  \"bank\": \"Mercado Pago\",\r\n  \"cardType\": \"Credito\"\r\n}\r\n"
-				},
-				"url": {
-					"raw": "http://localhost:8082/users/:dni/add-card",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8082",
-					"path": [
-						"users",
-						":dni",
-						"add-card"
-					],
-					"variable": [
-						{
-							"key": "dni",
-							"value": "123456789"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Agregar tarjeta (Amex)",
-			"protocolProfileBehavior": {
-				"disabledSystemHeaders": {
-					"content-type": true
-				}
-			},
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"alias\": \"Amex Platinum\",\r\n    \"cardNumber\": 376455323736878,\r\n    \"cardHolder\": \"Admin Admin\",\r\n    \"expirationDate\": \"03/2025\",\r\n    \"cvv\": 1698,\r\n    \"bank\": \"American Express Argentina\",\r\n    \"cardType\": \"Credito\"\r\n}"
-				},
-				"url": {
-					"raw": "http://localhost:8082/users/:dni/add-card",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8082",
-					"path": [
-						"users",
-						":dni",
-						"add-card"
-					],
-					"variable": [
-						{
-							"key": "dni",
-							"value": "123456789"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Agregar tarjeta (DHMoney)",
 			"request": {
 				"method": "POST",
@@ -128,16 +44,12 @@
 			"response": []
 		},
 		{
-			"name": "Remove card",
+			"name": "All Cards",
 			"request": {
-				"method": "PUT",
+				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "http://localhost:8082/users/:dni/remove-card/:cardId",
+					"raw": "http://localhost:8082/users/:dni/cards",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -146,17 +58,12 @@
 					"path": [
 						"users",
 						":dni",
-						"remove-card",
-						":cardId"
+						"cards"
 					],
 					"variable": [
 						{
 							"key": "dni",
 							"value": "123456789"
-						},
-						{
-							"key": "cardId",
-							"value": "2"
 						}
 					]
 				}
@@ -195,7 +102,7 @@
 						},
 						{
 							"key": "cardId",
-							"value": "2"
+							"value": "3"
 						}
 					]
 				}
@@ -203,12 +110,16 @@
 			"response": []
 		},
 		{
-			"name": "All Cards",
+			"name": "Remove card",
 			"request": {
-				"method": "GET",
+				"method": "PUT",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
-					"raw": "http://localhost:8082/users/:dni/cards",
+					"raw": "http://localhost:8082/users/:dni/remove-card/:cardId",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -217,12 +128,17 @@
 					"path": [
 						"users",
 						":dni",
-						"cards"
+						"remove-card",
+						":cardId"
 					],
 					"variable": [
 						{
 							"key": "dni",
 							"value": "123456789"
+						},
+						{
+							"key": "cardId",
+							"value": "2"
 						}
 					]
 				}
