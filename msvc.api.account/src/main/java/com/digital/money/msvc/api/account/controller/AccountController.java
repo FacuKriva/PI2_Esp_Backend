@@ -2,7 +2,6 @@ package com.digital.money.msvc.api.account.controller;
 
 import com.digital.money.msvc.api.account.handler.AlreadyRegisteredException;
 import com.digital.money.msvc.api.account.handler.BadRequestException;
-import com.digital.money.msvc.api.account.handler.NoTransactionsException;
 import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
 import com.digital.money.msvc.api.account.model.dto.AliasUpdate;
 import com.digital.money.msvc.api.account.service.impl.AccountService;
@@ -28,7 +27,10 @@ public class AccountController {
 
     @Operation(summary = "Find all transactions by account id")
     @GetMapping("/{id}/transactions")
-    public ResponseEntity<Object> findAllByAccountId(@PathVariable(name = "id") Long account_id) throws ResourceNotFoundException, NoTransactionsException {
+    public ResponseEntity<Object> findAllByAccountId(@PathVariable(name = "id") Long account_id) throws ResourceNotFoundException {
+        if (accountService.findAllByAccountId(account_id).isEmpty()) {
+            return ResponseEntity.ok("The account doesn't have any transactions");
+        }
         return ResponseEntity.ok(accountService.findAllByAccountId(account_id));
     }
 

@@ -2,7 +2,6 @@ package com.digital.money.msvc.api.account.service.interfaces;
 
 import com.digital.money.msvc.api.account.handler.AlreadyRegisteredException;
 import com.digital.money.msvc.api.account.handler.BadRequestException;
-import com.digital.money.msvc.api.account.handler.NoTransactionsException;
 import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.dto.AccountGetDto;
@@ -16,7 +15,7 @@ public interface IAccountService extends ICheckId<Account> {
 
     AccountGetDto save(Long id);
     AccountGetDto findById(Long id) throws ResourceNotFoundException;
-    List<TransactionGetDto> findAllByAccountId(Long id) throws ResourceNotFoundException, NoTransactionsException;
+    List<TransactionGetDto> findAllByAccountId(Long id) throws ResourceNotFoundException;
     String updateAlias(Long id, AliasUpdate aliasUpdate) throws AlreadyRegisteredException, ResourceNotFoundException, BadRequestException;
 
 }

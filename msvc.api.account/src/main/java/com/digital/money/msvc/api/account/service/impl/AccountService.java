@@ -2,7 +2,6 @@ package com.digital.money.msvc.api.account.service.impl;
 
 import com.digital.money.msvc.api.account.handler.AlreadyRegisteredException;
 import com.digital.money.msvc.api.account.handler.BadRequestException;
-import com.digital.money.msvc.api.account.handler.NoTransactionsException;
 import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.dto.AccountGetDto;
@@ -41,7 +40,7 @@ public class AccountService implements IAccountService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<TransactionGetDto> findAllByAccountId(Long id) throws ResourceNotFoundException, NoTransactionsException {
+    public List<TransactionGetDto> findAllByAccountId(Long id) throws ResourceNotFoundException  {
         return transactionService.getLastFive(id);
     }
 
