@@ -14,4 +14,5 @@ public interface ICardService {
     List<Card> getAllCardsFromUser(Long dni);
     CardDTO getCardById(Long cardId) throws CardNotFoundException;
     void deleteCard(Long cardId) throws CardNotFoundException;
+    boolean checkCardExists(Long cardNumber);
 }

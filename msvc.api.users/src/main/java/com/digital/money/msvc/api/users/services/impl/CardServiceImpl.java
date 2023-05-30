@@ -87,4 +87,10 @@ public class CardServiceImpl implements ICardService {
             throw new CardNotFoundException("Card not found");
         }
     }
+
+    @Override
+    public boolean checkCardExists(Long cardNumber) {
+        Optional<Card> entityResponse = cardRepository.findByCardNumber(cardNumber);
+        if (entityResponse.isPresent()) {return true;} else {return false;}
+    }
 }

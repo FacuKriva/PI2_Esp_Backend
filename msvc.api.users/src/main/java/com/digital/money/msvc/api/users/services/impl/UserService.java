@@ -242,10 +242,9 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public boolean cardAlreadyExists(Long cardNumber) throws CardAlreadyExistsException {
-        if (cardRepository.findByCardNumber(cardNumber).isPresent())
-            throw new CardAlreadyExistsException("The card is already registered in the system");
-        return false;
+    public boolean doesCardExist(Long cardNumber) {
+        Boolean cardExists = cardService.checkCardExists(cardNumber);
+        return cardExists;
     }
 
 }

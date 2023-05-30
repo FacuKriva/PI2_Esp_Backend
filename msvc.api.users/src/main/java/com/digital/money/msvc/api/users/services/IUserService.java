@@ -32,5 +32,5 @@ public interface IUserService {
     void removeCardFromAccount(Long dni, Long cardId) throws UserNotFoundException, CardNotFoundException;
     List<Card> getAllCardsFromAccount(Long dni) throws UserNotFoundException, NoCardsException;
     CardDTO getCardFromAccount(Long dni, Long cardId) throws UserNotFoundException, CardNotFoundException;
-    boolean cardAlreadyExists(Long cardNumber) throws CardAlreadyExistsException;
+    boolean doesCardExist(Long cardId);
 }
