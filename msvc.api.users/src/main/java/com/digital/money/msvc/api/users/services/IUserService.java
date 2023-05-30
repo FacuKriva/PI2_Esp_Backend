@@ -7,7 +7,6 @@ import com.digital.money.msvc.api.users.controllers.requestDto.VerficationReques
 import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
 import com.digital.money.msvc.api.users.dtos.CardDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
-import com.digital.money.msvc.api.users.entities.Card;
 import com.digital.money.msvc.api.users.exceptions.*;
 import org.json.JSONException;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +29,7 @@ public interface IUserService {
 
     void addCardToAccount(Long dni, CardRequestDTO cardRequestDTO) throws CardAlreadyExistsException;
     void removeCardFromAccount(Long dni, Long cardId) throws UserNotFoundException, CardNotFoundException;
-    List<Card> getAllCardsFromAccount(Long dni) throws UserNotFoundException, NoCardsException;
+    List<CardDTO> getAllCardsFromAccount(Long dni) throws UserNotFoundException, NoCardsException;
     CardDTO getCardFromAccount(Long dni, Long cardId) throws UserNotFoundException, CardNotFoundException;
     boolean doesCardExist(Long cardId);
 }

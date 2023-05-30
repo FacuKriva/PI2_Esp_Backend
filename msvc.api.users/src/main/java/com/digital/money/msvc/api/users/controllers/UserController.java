@@ -4,6 +4,7 @@ import com.digital.money.msvc.api.users.controllers.requestDto.CardRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
+import com.digital.money.msvc.api.users.dtos.CardDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.entities.Card;
 import com.digital.money.msvc.api.users.exceptions.*;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -106,8 +108,9 @@ public class UserController {
     }
 
     @GetMapping(value = "/{dni}/cards", produces = "application/json")
-    public ResponseEntity<?> getAllCardsFromAccount(@PathVariable("dni") Long dni) throws UserNotFoundException, NoCardsException {
-        return ResponseEntity.ok(userService.getAllCardsFromAccount(dni));
+    public ResponseEntity<List<CardDTO>> getAllCardsFromAccount(@PathVariable("dni") Long dni) throws UserNotFoundException, NoCardsException {
+        List<CardDTO> cardDTOs = userService.getAllCardsFromAccount(dni);
+        return ResponseEntity.ok(cardDTOs);
     }
 
     @GetMapping(value = "/{dni}/cards/{cardId}", produces = "application/json")

@@ -12,6 +12,7 @@ import com.digital.money.msvc.api.users.entities.Role;
 import com.digital.money.msvc.api.users.entities.User;
 import com.digital.money.msvc.api.users.entities.Verified;
 import com.digital.money.msvc.api.users.exceptions.*;
+import com.digital.money.msvc.api.users.mappers.CardMapper;
 import com.digital.money.msvc.api.users.mappers.UserMapper;
 import com.digital.money.msvc.api.users.repositorys.ICardRepository;
 import com.digital.money.msvc.api.users.repositorys.IRoleRepository;
@@ -41,8 +42,9 @@ public class UserService implements IUserService {
     private final VerificationServiceImpl verificationService;
     private final CardServiceImpl cardService;
     private final ICardRepository cardRepository;
+    private final CardMapper cardMapper;
 
-    public UserService(IUserRepository userRepository, IRoleRepository roleRepository, UserMapper userMapper, BCryptPasswordEncoder bcrypt, EmailServiceImpl emailService, VerificationServiceImpl verificationService, EmailServiceImpl emailService1, VerificationServiceImpl verificationService1, CardServiceImpl cardService, ICardRepository cardRepository) {
+    public UserService(IUserRepository userRepository, IRoleRepository roleRepository, UserMapper userMapper, BCryptPasswordEncoder bcrypt, EmailServiceImpl emailService, VerificationServiceImpl verificationService, EmailServiceImpl emailService1, VerificationServiceImpl verificationService1, CardServiceImpl cardService, ICardRepository cardRepository, CardMapper cardMapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userMapper = userMapper;
@@ -51,6 +53,7 @@ public class UserService implements IUserService {
         this.verificationService = verificationService1;
         this.cardService = cardService;
         this.cardRepository = cardRepository;
+        this.cardMapper = cardMapper;
     }
 
     @Transactional
@@ -220,14 +223,20 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<Card> getAllCardsFromAccount(Long dni) throws UserNotFoundException, NoCardsException {
+    public List<CardDTO> getAllCardsFromAccount(Long dni) throws UserNotFoundException, NoCardsException {
         Optional<User> user = userRepository.findByDni(dni);
         if (user.isPresent()) {
             List<Card> cards = cardService.getAllCardsFromUser(user.get().getDni());
             if (cards.isEmpty()) {
                 throw new NoCardsException("The user has no cards");
-            } else return cards;
-        } else throw new UserNotFoundException("User not found");
+            } else {
+                List<CardDTO> cardDTOs = new ArrayList<>();
+                for (Card card : cards) {cardDTOs.add(cardMapper.mapToDto(card));}
+                return cardDTOs;
+            }
+        } else {
+            throw new UserNotFoundException("User not found");
+        }
     }
 
     @Override
