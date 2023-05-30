@@ -1,6 +1,5 @@
 package com.digital.money.msvc.api.users.controllers.requestDto;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -19,7 +18,7 @@ public class CardRequestDTO {
     private String alias;
 
     @NotNull(message = "The cardNumber cannot be null")
-    @Size( message = "There must be 16 numbers for the cardNumber", min = 16, max = 16)
+    @Size( message = "There must be 16 numbers for the cardNumber", min = 15, max = 16)
     private Long cardNumber;
 
     @NotNull(message = "The cardHolder cannot be null")
@@ -31,12 +30,12 @@ public class CardRequestDTO {
     private String expirationDate;
 
     @NotNull(message = "The cvv cannot be null")
-    @Size( message = "There must be 3 numbers for the cvv", min = 4, max = 4)
+    @Size( message = "There must be 4 numbers for the cvv", min = 4, max = 4)
     private Integer cvv;
 
     @NotNull(message = "The bank cannot be null or empty")
     private String bank;
 
-    @NotBlank(message = "The cardType cannot be null or empty")
+    @NotNull(message = "The cardType cannot be null or empty")
     private String cardType;
 }
