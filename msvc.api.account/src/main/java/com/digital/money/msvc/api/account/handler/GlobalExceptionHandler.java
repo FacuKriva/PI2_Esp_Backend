@@ -2,7 +2,6 @@ package com.digital.money.msvc.api.account.handler;
 
 import com.digital.money.msvc.api.account.handler.responseError.AlreadyRegisteredResponse;
 import com.digital.money.msvc.api.account.handler.responseError.BadRequestResponse;
-import com.digital.money.msvc.api.account.handler.responseError.NoTransactionResponse;
 import com.digital.money.msvc.api.account.handler.responseError.NotFoundResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,12 +27,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> processBadRequestException (BadRequestException ex, HttpServletRequest request) {
         log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BadRequestResponse(ex.getMessage(), request.getRequestURI()));
-    }
-
-    @ExceptionHandler({NoTransactionsException.class})
-    public ResponseEntity<Object> processNoTransactionException(NoTransactionsException ex, HttpServletRequest request) {
-        log.error(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.OK).body(new NoTransactionResponse(ex.getMessage(), request.getRequestURI()));
     }
 
     @ExceptionHandler({MissingServletRequestParameterException.class})

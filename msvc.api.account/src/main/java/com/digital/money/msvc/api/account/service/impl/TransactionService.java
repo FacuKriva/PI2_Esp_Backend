@@ -1,9 +1,9 @@
 package com.digital.money.msvc.api.account.service.impl;
 
-import com.digital.money.msvc.api.account.handler.NoTransactionsException;
 import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Transaction;
+import com.digital.money.msvc.api.account.model.TransactionType;
 import com.digital.money.msvc.api.account.model.dto.TransactionGetDto;
 import com.digital.money.msvc.api.account.model.dto.TransactionPostDto;
 import com.digital.money.msvc.api.account.repository.IAccountRepository;
@@ -32,17 +32,17 @@ public class TransactionService implements ITransactionService {
     @Override
     public TransactionGetDto save(TransactionPostDto transactionPostDto) {
         Transaction transaction = transactionMapper.toTransaction(transactionPostDto);
-//        if (accountRepository.findByCvu(transaction.getToCvu()).get().getAccountId() == transaction.getAccount().getAccountId()) {
-//            transaction.setType(TransactionType.INCOMING);
-//        } else {
-//            transaction.setType(TransactionType.OUTGOING);
-//        }
+        if (accountRepository.findByCvu(transaction.getToCvu()).get().getAccountId() == transaction.getAccount().getAccountId()) {
+            transaction.setType(TransactionType.INCOMING);
+        } else {
+            transaction.setType(TransactionType.OUTGOING);
+        }
         transactionRepository.save(transaction);
         return transactionMapper.toTransactionGetDto(transaction);
     }
 
     @Transactional(readOnly = true)
-    public List<TransactionGetDto> getLastFive(Long id) throws ResourceNotFoundException, NoTransactionsException {
+    public List<TransactionGetDto> getLastFive(Long id) throws ResourceNotFoundException {
 
         Optional<Account> account = accountRepository.findById(id);
         if (account.isEmpty()) {
@@ -51,11 +51,6 @@ public class TransactionService implements ITransactionService {
 
         Optional<List<Transaction>> listTransactions = transactionRepository.getLastFive(id);
 
-        if (listTransactions.isPresent()) {
-            if (listTransactions.get().size() == 0) {
-                throw new NoTransactionsException("There are currently no transactions for the selected account");
-            }
-        }
         return listTransactions.get().stream()
                 .map(transac -> transactionMapper.toTransactionGetDto(transac))
                 .collect(Collectors.toList());
