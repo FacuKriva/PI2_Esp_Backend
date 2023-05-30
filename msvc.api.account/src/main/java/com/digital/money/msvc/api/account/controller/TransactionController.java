@@ -22,4 +22,9 @@ public class TransactionController {
     public ResponseEntity<Object> save(@RequestBody TransactionPostDto transactionPostDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.save(transactionPostDto));
     }
+
+//    @GetMapping
+//    public List<TransactionGetDto> getLastFive(@RequestParam Long id) throws ResourceNotFoundException {
+//        return transactionService.getLastFive(id);
+//    }
 }

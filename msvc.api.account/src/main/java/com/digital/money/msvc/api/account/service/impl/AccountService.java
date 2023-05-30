@@ -3,34 +3,28 @@ package com.digital.money.msvc.api.account.service.impl;
 import com.digital.money.msvc.api.account.handler.AlreadyRegisteredException;
 import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
 import com.digital.money.msvc.api.account.model.Account;
-import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.dto.AccountGetDto;
-import com.digital.money.msvc.api.account.model.dto.AccountPostDto;
 import com.digital.money.msvc.api.account.model.dto.AliasUpdate;
 import com.digital.money.msvc.api.account.model.dto.TransactionGetDto;
 import com.digital.money.msvc.api.account.repository.IAccountRepository;
 import com.digital.money.msvc.api.account.service.interfaces.IAccountService;
 import com.digital.money.msvc.api.account.utils.KeysGenerator;
 import com.digital.money.msvc.api.account.utils.mapper.AccountMapper;
-import com.digital.money.msvc.api.account.utils.mapper.TransactionMapper;
-import jakarta.persistence.PersistenceException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.support.SQLErrorCodes;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
+@Slf4j
 @Service
 public class AccountService implements IAccountService {
     @Autowired
     protected AccountMapper accountMapper;
     @Autowired
-    protected TransactionMapper transactionMapper;
+    private TransactionService transactionService;
     @Autowired
     protected KeysGenerator keysGenerator;
     @Autowired
@@ -45,15 +39,8 @@ public class AccountService implements IAccountService {
 
     @Transactional(readOnly = true)
     @Override
-    public Set<TransactionGetDto> findAllByAccountId(Long id) throws ResourceNotFoundException {
-        Account account = checkId(id);
-        Set<TransactionGetDto> transactionsGetDto = new HashSet<>();
-        Set<Transaction> transactions = account.getTransactions();
-        if (transactions.isEmpty())
-            throw new ResourceNotFoundException("The account does not have any transaction");
-        for (Transaction transaction : transactions)
-            transactionsGetDto.add(transactionMapper.toTransactionGetDto(transaction));
-        return transactionsGetDto;
+    public List<TransactionGetDto> findAllByAccountId(Long id) throws ResourceNotFoundException {
+        return transactionService.getLastFive(id);
     }
 
     @Transactional
