@@ -88,9 +88,9 @@ public class UserController {
         return ResponseEntity.ok("Your password has been successfully updated");
     }
 
-    @PostMapping("/account/{dni}/add-card")
-    public ResponseEntity<?> addCardToAccount(@PathVariable Long dni, @RequestBody CardRequestDTO cardRequestDTO) throws UserNotFoundException, CardAlreadyExistsException, BadRequestException {
-        if (userService.cardAlreadyExists(cardRequestDTO.getCardNumber())) {
+    @PostMapping(value = "/{dni}/add-card", consumes = "application/json")
+    public ResponseEntity<?> addCardToAccount(@PathVariable("dni") Long dni, @RequestBody CardRequestDTO cardRequestDTO) throws UserNotFoundException, CardAlreadyExistsException {
+        if (userService.doesCardExist(cardRequestDTO.getCardNumber())) {
             return new ResponseEntity(HttpStatus.CONFLICT).ok("Card already exists and is associated with another account");
         }
         else {
@@ -99,19 +99,19 @@ public class UserController {
         }
     }
 
-    @PutMapping("/account/{dni}/remove-card")
-    public ResponseEntity<?> removeCardFromAccount(@PathVariable Long dni, @RequestBody Card card) throws UserNotFoundException, CardNotFoundException {
-        userService.removeCardFromAccount(dni, card.getCardId());
+    @PutMapping("/{dni}/remove-card/{cardId}")
+    public ResponseEntity<?> removeCardFromAccount(@PathVariable("dni") Long dni, @PathVariable("cardId") Long cardId) throws UserNotFoundException, CardNotFoundException {
+        userService.removeCardFromAccount(dni, cardId);
         return new ResponseEntity(HttpStatus.OK).ok("Card successfully removed from account");
     }
 
-    @GetMapping("/account/{dni}/cards")
-    public ResponseEntity<?> getAllCardsFromAccount(@PathVariable Long dni) throws UserNotFoundException, NoCardsException {
+    @GetMapping(value = "/{dni}/cards", produces = "application/json")
+    public ResponseEntity<?> getAllCardsFromAccount(@PathVariable("dni") Long dni) throws UserNotFoundException, NoCardsException {
         return ResponseEntity.ok(userService.getAllCardsFromAccount(dni));
     }
 
-    @GetMapping("/account/{dni}/cards/{id}")
-    public ResponseEntity<?> getCardFromAccount(@PathVariable Long dni, @PathVariable Long cardId) throws UserNotFoundException, CardNotFoundException {
+    @GetMapping(value = "/{dni}/cards/{cardId}", produces = "application/json")
+    public ResponseEntity<?> getCardFromAccount(@PathVariable("dni") Long dni, @PathVariable("cardId") Long cardId) throws UserNotFoundException, CardNotFoundException {
         return ResponseEntity.ok(userService.getCardFromAccount(dni, cardId));
     }
 }
