@@ -6,13 +6,6 @@ spring:
     import: env.properties
   application:
     name: msvc-account-api
-
-  # Conexion a DB MySQL
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://127.0.0.1:3306/user_db?useUnicode=true&characterEncoding=utf8&useSSL=false&requireSSL=false&createDatabaseIfNotExist=true
-#    username: root
-#    password: 1234
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${MYSQL_HOST_URL}
