@@ -204,42 +204,40 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void addCardToAccount(Long dni, CardRequestDTO cardRequestDTO) throws UserNotFoundException, BadRequestException {
-        Optional<User> user = userRepository.findByDni(dni);
-        if (user.isPresent()) {
-            cardService.createCard(cardRequestDTO, user.get().getDni());
-        } else throw new UserNotFoundException("The user is not registered");
+    public void addCardToAccount(Long dni, CardRequestDTO cardRequestDTO) throws CardAlreadyExistsException {
+        cardService.createCard(cardRequestDTO, dni);
     }
 
     @Override
     public void removeCardFromAccount(Long dni, Long cardId) throws UserNotFoundException, CardNotFoundException {
         Optional<User> user = userRepository.findByDni(dni);
         if (user.isPresent()) {
-            cardService.deleteCard(cardId);
-        } else throw new UserNotFoundException("The user is not registered");
-        if (cardRepository.findById(cardId).isEmpty())
-            throw new CardNotFoundException("The card is not registered");
+            Optional<Card> card = cardRepository.findById(cardId);
+            if (card.isPresent()) {
+                cardService.deleteCard(cardId);
+            } else throw new CardNotFoundException("The card does not exist");
+        } else throw new UserNotFoundException("User not found");
     }
 
     @Override
     public List<Card> getAllCardsFromAccount(Long dni) throws UserNotFoundException, NoCardsException {
         Optional<User> user = userRepository.findByDni(dni);
         if (user.isPresent()) {
-            List<Card> cards = cardService.getAllCardsFromUser(dni);
-            if (cards.isEmpty())
-                throw new NoCardsException("There are no cards registered to the user");
-            return cards;
-        } else throw new UserNotFoundException("The user is not registered");
+            List<Card> cards = cardService.getAllCardsFromUser(user.get().getDni());
+            if (cards.isEmpty()) {
+                throw new NoCardsException("The user has no cards");
+            } else return cards;
+        } else throw new UserNotFoundException("User not found");
     }
 
     @Override
     public CardDTO getCardFromAccount(Long dni, Long cardId) throws UserNotFoundException, CardNotFoundException {
         Optional<User> user = userRepository.findByDni(dni);
         if (user.isPresent()) {
-            Optional<CardDTO> card = Optional.ofNullable(cardService.getCardById(cardId));
-            if (card.isPresent())
-                return card.get();
-            else throw new CardNotFoundException("The card is not registered");
+            Optional<Card> card = cardRepository.findById(cardId);
+            if (card.isPresent()) {
+                return cardService.getCardById(cardId);
+            } else throw new CardNotFoundException("Card does not exist");
         } else throw new UserNotFoundException("The user is not registered");
     }
 
