@@ -47,7 +47,7 @@ public class UserController {
     /**
      * Actualizar informacion del usuario.
      */
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable("id") Long userId,
                                         @Valid @RequestBody final UpdateUserRequestDTO userDto) throws UserNotFoundException, HasAlreadyBeenRegistred, PasswordNotChangedException, BadRequestException {
 
