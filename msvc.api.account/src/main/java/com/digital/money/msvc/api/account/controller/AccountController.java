@@ -2,7 +2,6 @@ package com.digital.money.msvc.api.account.controller;
 
 import com.digital.money.msvc.api.account.handler.AlreadyRegisteredException;
 import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
-import com.digital.money.msvc.api.account.model.dto.AccountPostDto;
 import com.digital.money.msvc.api.account.model.dto.AliasUpdate;
 import com.digital.money.msvc.api.account.service.impl.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +26,7 @@ public class AccountController {
 
     @Operation(summary = "Find all transactions by account id")
     @GetMapping("/{id}/transactions")
-    public ResponseEntity<Object> findAllByAccountId(@PathVariable Long account_id) throws ResourceNotFoundException {
+    public ResponseEntity<Object> findAllByAccountId(@PathVariable(name = "id") Long account_id) throws ResourceNotFoundException {
         return ResponseEntity.ok(accountService.findAllByAccountId(account_id));
     }
 

@@ -2,7 +2,6 @@ package com.digital.money.msvc.api.account.service.impl;
 
 import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
 import com.digital.money.msvc.api.account.model.Transaction;
-import com.digital.money.msvc.api.account.model.TransactionType;
 import com.digital.money.msvc.api.account.model.dto.TransactionGetDto;
 import com.digital.money.msvc.api.account.model.dto.TransactionPostDto;
 import com.digital.money.msvc.api.account.repository.IAccountRepository;
@@ -13,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -29,13 +30,25 @@ public class TransactionService implements ITransactionService {
     @Override
     public TransactionGetDto save(TransactionPostDto transactionPostDto) {
         Transaction transaction = transactionMapper.toTransaction(transactionPostDto);
-        if (accountRepository.findByCvu(transaction.getToCvu()).get().getAccountId() == transaction.getAccount().getAccountId()) {
-            transaction.setType(TransactionType.INCOMING);
-        } else {
-            transaction.setType(TransactionType.OUTGOING);
-        }
+//        if (accountRepository.findByCvu(transaction.getToCvu()).get().getAccountId() == transaction.getAccount().getAccountId()) {
+//            transaction.setType(TransactionType.INCOMING);
+//        } else {
+//            transaction.setType(TransactionType.OUTGOING);
+//        }
         transactionRepository.save(transaction);
         return transactionMapper.toTransactionGetDto(transaction);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TransactionGetDto> getLastFive(Long id) throws ResourceNotFoundException {
+        Optional<List<Transaction>> listTransactions = transactionRepository.getLastFive(id);
+
+        if (listTransactions.isEmpty()) {
+            throw new ResourceNotFoundException("The search returned no results");
+        }
+        return listTransactions.get().stream()
+                .map(transac -> transactionMapper.toTransactionGetDto(transac))
+                .collect(Collectors.toList());
     }
 
     @Override

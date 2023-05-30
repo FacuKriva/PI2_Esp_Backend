@@ -1,5 +1,6 @@
 package com.digital.money.msvc.api.account.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,8 +43,9 @@ public class Transaction {
     @Column(name = "type", nullable = false)
     private TransactionType type;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "account_id", nullable = false)
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "account_id")
+    @JsonIgnore
     private Account account;
 }
 
