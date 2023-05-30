@@ -28,7 +28,7 @@ public interface IUserService {
     void forgotPassword(String email) throws UserNotFoundException;
     void resetPassword(String recoveryCode, NewPassDTO passwords) throws PasswordNotChangedException;
 
-    void addCardToAccount(Long dni, CardRequestDTO cardRequestDTO) throws UserNotFoundException, BadRequestException;
+    void addCardToAccount(Long dni, CardRequestDTO cardRequestDTO) throws CardAlreadyExistsException;
     void removeCardFromAccount(Long dni, Long cardId) throws UserNotFoundException, CardNotFoundException;
     List<Card> getAllCardsFromAccount(Long dni) throws UserNotFoundException, NoCardsException;
     CardDTO getCardFromAccount(Long dni, Long cardId) throws UserNotFoundException, CardNotFoundException;
