@@ -40,10 +40,6 @@ public class AliasUpdate {
             throw new BadRequestException("You must choose 3 words. Words cannot be blank.");
         }
 
-        if (wordIndexZero.isEmpty() || wordIndexOne.isEmpty() || wordIndexTwo.isEmpty()) {
-            throw new BadRequestException("You must choose 3 words. Words cannot be empty.");
-        }
-
         if (wordIndexZero.equals(wordIndexOne) || wordIndexOne.equals(wordIndexTwo) || wordIndexZero.equals(wordIndexTwo)) { throw new BadRequestException("All the words must be different.");
         }
 
