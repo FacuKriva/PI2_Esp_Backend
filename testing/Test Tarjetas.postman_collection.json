@@ -22,21 +22,22 @@
 					"raw": "{\r\n    \"alias\": \"DHMoney\",\r\n    \"cardNumber\": 5346717505192642,\r\n    \"cardHolder\": \"Admin Admin\",\r\n    \"expirationDate\": \"10/2028\",\r\n    \"cvv\": 827,\r\n    \"bank\": \"Digital Money Bank\",\r\n    \"cardType\": \"Debito\"\r\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8082/users/:dni/add-card",
+					"raw": "http://localhost:8084/accounts/:id/cards/add-card",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8082",
+					"port": "8084",
 					"path": [
-						"users",
-						":dni",
+						"accounts",
+						":id",
+						"cards",
 						"add-card"
 					],
 					"variable": [
 						{
-							"key": "dni",
-							"value": "123456789"
+							"key": "id",
+							"value": "1"
 						}
 					]
 				}
@@ -49,21 +50,22 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8082/users/:dni/cards",
+					"raw": "http://localhost:8084/accounts/:id/cards/list-all",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8082",
+					"port": "8084",
 					"path": [
-						"users",
-						":dni",
-						"cards"
+						"accounts",
+						":id",
+						"cards",
+						"list-all"
 					],
 					"variable": [
 						{
-							"key": "dni",
-							"value": "123456789"
+							"key": "id",
+							"value": "1"
 						}
 					]
 				}
@@ -83,26 +85,26 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8082/users/:dni/cards/:cardId",
+					"raw": "http://localhost:8084/accounts/:id/cards/:cardId",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8082",
+					"port": "8084",
 					"path": [
-						"users",
-						":dni",
+						"accounts",
+						":id",
 						"cards",
 						":cardId"
 					],
 					"variable": [
 						{
-							"key": "dni",
-							"value": "123456789"
+							"key": "id",
+							"value": "1"
 						},
 						{
 							"key": "cardId",
-							"value": "3"
+							"value": "2"
 						}
 					]
 				}
@@ -112,29 +114,30 @@
 		{
 			"name": "Remove card",
 			"request": {
-				"method": "PUT",
+				"method": "DELETE",
 				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8082/users/:dni/remove-card/:cardId",
+					"raw": "http://localhost:8084/accounts/:id/cards/remove/:cardId",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8082",
+					"port": "8084",
 					"path": [
-						"users",
-						":dni",
-						"remove-card",
+						"accounts",
+						":id",
+						"cards",
+						"remove",
 						":cardId"
 					],
 					"variable": [
 						{
-							"key": "dni",
-							"value": "123456789"
+							"key": "id",
+							"value": "1"
 						},
 						{
 							"key": "cardId",
