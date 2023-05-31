@@ -21,6 +21,4 @@ public class AccountGetDto {
     private String cvu;
 
     private double availableBalance;
-
-    private List<CardGetDTO> cards;
 }
