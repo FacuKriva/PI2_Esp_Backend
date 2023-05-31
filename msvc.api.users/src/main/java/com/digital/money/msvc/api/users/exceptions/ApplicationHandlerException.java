@@ -52,24 +52,6 @@ public class ApplicationHandlerException extends ResponseEntityExceptionHandler 
                 .body(e.getMessage());
     }
 
-    @ExceptionHandler(CardNotFoundException.class)
-    public ResponseEntity<?> cardNotFoundException(Exception e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(e.getMessage());
-    }
-
-    @ExceptionHandler(NoCardsException.class)
-    public ResponseEntity<?> noCardsException(Exception e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(e.getMessage());
-    }
-
-    @ExceptionHandler(CardAlreadyExistsException.class)
-    public ResponseEntity<?> cardAlreadyExistsException(Exception e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
-    }
-
     @ExceptionHandler(HasAlreadyBeenRegistred.class)
     public ResponseEntity<?> hasAlreadyBeenRegistred(Exception e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

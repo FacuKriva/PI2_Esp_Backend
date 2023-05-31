@@ -41,9 +41,6 @@ public class UserDTO {
     private Integer phone;
 
     @JsonIgnore
-    private List<CardDTO> cards;
-
-    @JsonIgnore
     private Boolean enabled;
 
     @JsonIgnore
