@@ -27,7 +27,7 @@ public class CardController {
     public ResponseEntity<?> listCards(@PathVariable(name = "id") Long id) throws ResourceNotFoundException {
         if (cardService.listCardsFromAccount(id).isEmpty()) {
             return new ResponseEntity("The are no cards associated with this account"
-                    , HttpStatus.OK);
+                    , HttpStatus.NO_CONTENT);
         } else {
             return ResponseEntity.ok(cardService.listCardsFromAccount(id));
         }

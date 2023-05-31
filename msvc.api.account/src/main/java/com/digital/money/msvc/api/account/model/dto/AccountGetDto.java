@@ -14,7 +14,7 @@ import java.util.List;
 @ToString
 public class AccountGetDto {
     @JsonProperty("account_id")
-    private Integer accountId;
+    private Long accountId;
 
     private String alias;
 

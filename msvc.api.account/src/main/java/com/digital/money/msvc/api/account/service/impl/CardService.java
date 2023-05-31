@@ -21,18 +21,12 @@ import java.util.stream.Collectors;
 @Service
 public class CardService implements ICardService{
 
-    @Autowired
     private final ICardRepository cardRepository;
-
-    @Autowired
     private final IAccountRepository accountRepository;
-
-    @Autowired
     private final CardMapper cardMapper;
-
-    @Autowired
     private final AccountService accountService;
 
+    @Autowired
     public CardService(ICardRepository cardRepository, IAccountRepository accountRepository,
                        CardMapper cardMapper, AccountService accountService) {
         this.cardRepository = cardRepository;
@@ -67,7 +61,7 @@ public class CardService implements ICardService{
     public List<CardGetDTO> listCardsFromAccount(Long id) throws ResourceNotFoundException {
         Account account = accountService.checkId(id);
 
-        Optional<List<Card>> listCards = cardRepository.findAllByAccountId(id);
+        Optional<List<Card>> listCards = cardRepository.findAllByAccountId(account.getAccountId());
         return listCards.get().stream()
                 .map(card -> cardMapper.toCardGetDTO(card))
                 .collect(Collectors.toList());
@@ -77,7 +71,7 @@ public class CardService implements ICardService{
     public CardGetDTO findCardFromAccount(Long id, Long cardId) throws CardNotFoundException, ResourceNotFoundException {
         Account account = accountService.checkId(id);
 
-        Optional<Card> entityResponse = cardRepository.findById(cardId);
+        Optional<Card> entityResponse = cardRepository.findByCardById(cardId);
 
         if (entityResponse.isPresent()) {
         Card card = entityResponse.get();
@@ -91,7 +85,7 @@ public class CardService implements ICardService{
     public void removeCardFromAccount(Long id, Long cardId) throws CardNotFoundException, ResourceNotFoundException {
         Account account = accountService.checkId(id);
 
-        Optional<Card> entityResponse = cardRepository.findById(cardId);
+        Optional<Card> entityResponse = cardRepository.findByCardById(cardId);
 
         if (entityResponse.isPresent()) {
             Card card = entityResponse.get();

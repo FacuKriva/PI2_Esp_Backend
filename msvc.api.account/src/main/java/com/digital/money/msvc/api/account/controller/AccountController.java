@@ -29,7 +29,8 @@ public class AccountController {
     @GetMapping("/{id}/transactions")
     public ResponseEntity<Object> findAllByAccountId(@PathVariable(name = "id") Long account_id) throws ResourceNotFoundException {
         if (accountService.findAllByAccountId(account_id).isEmpty()) {
-            return ResponseEntity.ok("The account doesn't have any transactions");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body("The account doesn't have any transactions");
         }
         return ResponseEntity.ok(accountService.findAllByAccountId(account_id));
     }
