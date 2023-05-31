@@ -1,12 +1,8 @@
 package com.digital.money.msvc.api.account.service.interfaces;
 
-import com.digital.money.msvc.api.account.handler.AlreadyRegisteredException;
-import com.digital.money.msvc.api.account.handler.BadRequestException;
-import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
+import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Account;
-import com.digital.money.msvc.api.account.model.dto.AccountGetDto;
-import com.digital.money.msvc.api.account.model.dto.AliasUpdate;
-import com.digital.money.msvc.api.account.model.dto.TransactionGetDto;
+import com.digital.money.msvc.api.account.model.dto.*;
 import com.digital.money.msvc.api.account.service.ICheckId;
 
 import java.util.List;
