@@ -2,7 +2,7 @@ package com.digital.money.msvc.api.account.service.impl;
 
 import com.digital.money.msvc.api.account.handler.CardAlreadyExistsException;
 import com.digital.money.msvc.api.account.handler.CardNotFoundException;
-import com.digital.money.msvc.api.account.handler.NoCardsException;
+import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Card;
 import com.digital.money.msvc.api.account.model.dto.CardGetDTO;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CardService implements ICardService{
@@ -29,17 +30,20 @@ public class CardService implements ICardService{
     @Autowired
     private final CardMapper cardMapper;
 
+    @Autowired
+    private final AccountService accountService;
+
     public CardService(ICardRepository cardRepository, IAccountRepository accountRepository,
-                       CardMapper cardMapper) {
+                       CardMapper cardMapper, AccountService accountService) {
         this.cardRepository = cardRepository;
         this.accountRepository = accountRepository;
         this.cardMapper = cardMapper;
+        this.accountService = accountService;
     }
 
     @Override
-    public CardGetDTO createCard(CardPostDTO cardPostDTO, Long id) throws CardAlreadyExistsException{
-        Optional<Account> entityResponse = accountRepository.findById(id);
-        Account account = entityResponse.get();
+    public CardGetDTO addCardToAccount(Long id, CardPostDTO cardPostDTO) throws CardAlreadyExistsException, ResourceNotFoundException {
+        Account account = accountService.checkId(id);
 
          if(checkIfCardExists(cardPostDTO.getCardNumber())) {
              throw new CardAlreadyExistsException("The card you want to add already exists in our database");
@@ -60,19 +64,19 @@ public class CardService implements ICardService{
     }
 
     @Override
-    public List<Card> getAllCardsFromAccount(Long id) throws NoCardsException {
-        Optional<Account> entityResponse = accountRepository.findById(id);
-        Account account = entityResponse.get();
+    public List<CardGetDTO> listCardsFromAccount(Long id) throws ResourceNotFoundException {
+        Account account = accountService.checkId(id);
 
-        if(account.getCards().isEmpty()) {
-            throw new NoCardsException("You haven't added any cards yet");
-        } else {
-            return account.getCards();
-        }
+        Optional<List<Card>> listCards = cardRepository.findAllByAccountId(id);
+        return listCards.get().stream()
+                .map(card -> cardMapper.toCardGetDTO(card))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public CardGetDTO getCardById(Long cardId) throws CardNotFoundException {
+    public CardGetDTO findCardFromAccount(Long id, Long cardId) throws CardNotFoundException, ResourceNotFoundException {
+        Account account = accountService.checkId(id);
+
         Optional<Card> entityResponse = cardRepository.findById(cardId);
 
         if (entityResponse.isPresent()) {
@@ -84,7 +88,9 @@ public class CardService implements ICardService{
     }
 
     @Override
-    public void deleteCard(Long cardId) throws CardNotFoundException {
+    public void removeCardFromAccount(Long id, Long cardId) throws CardNotFoundException, ResourceNotFoundException {
+        Account account = accountService.checkId(id);
+
         Optional<Card> entityResponse = cardRepository.findById(cardId);
 
         if (entityResponse.isPresent()) {
