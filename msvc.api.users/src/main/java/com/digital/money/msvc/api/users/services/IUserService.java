@@ -1,0 +1,37 @@
+package com.digital.money.msvc.api.users.services;
+
+import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.CreateUserRequestDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.update.UpdateUserRequestDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
+import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
+import com.digital.money.msvc.api.users.dtos.UserDTO;
+import com.digital.money.msvc.api.users.dtos.UserWithAccountDTO;
+import com.digital.money.msvc.api.users.exceptions.BadRequestException;
+import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
+import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
+import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
+import org.json.JSONException;
+import org.springframework.http.ResponseEntity;
+
+public interface IUserService {
+
+    UserDTO createUser(CreateUserRequestDTO userRequestDTO) throws Exception;
+
+    UserDTO updateUser(Long userId, UpdateUserRequestDTO userDto) throws UserNotFoundException, HasAlreadyBeenRegistred, PasswordNotChangedException, BadRequestException;
+
+    UserWithAccountDTO getUserById(Long userId) throws UserNotFoundException;
+
+    UserDTO getUserByDni(Long dni) throws UserNotFoundException;
+
+    AuthUserDTO getUserByEmail(String email) throws UserNotFoundException;
+
+    void updateAttempsFromUser(Long userId, boolean enabled, int attempts) throws UserNotFoundException;
+
+    void sendVerificationMail(String email);
+
+    void resendVerificationMail(String token) throws Exception;
+    ResponseEntity<String> verificateUser(VerficationRequestDTO verficationRequestDTO, String token) throws JSONException;
+    void forgotPassword(String email) throws UserNotFoundException;
+    void resetPassword(String recoveryCode, NewPassDTO passwords) throws PasswordNotChangedException;
+}
