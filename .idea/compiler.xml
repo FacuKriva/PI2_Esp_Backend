@@ -11,11 +11,9 @@
         <module name="msvc-eureka-server-sprgbt" />
         <module name="msvc-gateway-api-sprgbt" />
         <module name="msvc.api.account" />
+        <module name="msvc.api.users" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="msvc.api.users" target="17" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
