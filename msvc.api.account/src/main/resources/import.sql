@@ -14,5 +14,7 @@ INSERT INTO transactions (transaction_id, amount, realization_date, description,
 INSERT INTO transactions (transaction_id, amount, realization_date, description, from_cvu, to_cvu, type, account_id) VALUES (null, 20000.0, '2018-02-09 12:45:00', 'payment transaction', '1828142364587587495555', 1828142364587587493333, 'INCOMING', 2);
 
 -- Insert Card
-INSERT INTO cards (card_id, alias, card_number, card_holder, expiration_date, cvv, bank, card_type, is_enabled, user_id) VALUES (null, 'Tarjeta MP', 5412873403403000, 'Admin Admin', '05/2024', 480, 'Mercado Pago', 'Crédito', true, 1);
-INSERT INTO cards (card_id, alias, card_number, card_holder, expiration_date, cvv, bank, card_type, is_enabled, user_id) VALUES (null, 'Amex Platinum', 376455323736878, 'Admin Admin', '03/2025', 1698, 'American Express Argentina', 'Crédito', true, 1);
+INSERT INTO cards (card_id, alias, card_number, card_holder, expiration_date, cvv, bank, card_type, is_enabled, account_id) VALUES (null, 'Tarjeta MP', 5412873403403000, 'Admin Admin', '05/2024', 480, 'Mercado Pago', 'Crédito', true, 1);
+INSERT INTO cards (card_id, alias, card_number, card_holder, expiration_date, cvv, bank, card_type, is_enabled, account_id) VALUES (null, 'Amex Platinum', 376455323736878, 'Admin Admin', '03/2025', 1698, 'American Express Argentina', 'Crédito', true, 1);
+INSERT INTO cards (card_id, alias, card_number, card_holder, expiration_date, cvv, bank, card_type, is_enabled, account_id) VALUES (null, 'Brubank', 4539793783086269, 'User One', '09/2023', 123, 'Visa Argentina', 'Débito', true, 2);
+INSERT INTO cards (card_id, alias, card_number, card_holder, expiration_date, cvv, bank, card_type, is_enabled, account_id) VALUES (null, 'Ualá', 5304690884036864, 'User One', '10/2028', 123, 'Mastercard Argentina', 'Pre-Paga', true, 3);
