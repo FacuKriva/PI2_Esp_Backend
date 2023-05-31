@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -35,6 +36,9 @@ public class Account {
     @JsonProperty("user_id")
     @Column(name = "user_id")
     private Long userId;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
+    private List<Card> cards;
 
     @OneToMany(mappedBy = "account")
     @JsonIgnore
