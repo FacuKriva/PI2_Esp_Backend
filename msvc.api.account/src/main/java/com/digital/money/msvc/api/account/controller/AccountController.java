@@ -1,9 +1,8 @@
 package com.digital.money.msvc.api.account.controller;
 
-import com.digital.money.msvc.api.account.handler.AlreadyRegisteredException;
-import com.digital.money.msvc.api.account.handler.BadRequestException;
-import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
+import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.dto.AliasUpdate;
+import com.digital.money.msvc.api.account.model.dto.CardPostDTO;
 import com.digital.money.msvc.api.account.service.impl.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,4 +47,35 @@ public class AccountController {
         String response = accountService.updateAlias(id, aliasUpdate);
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "Add a card to an account")
+    @PostMapping(value = "/{id}/cards/add-card", consumes = "application/json")
+    public ResponseEntity<?> addCard(@PathVariable(name = "id") Long id, @RequestBody CardPostDTO cardPostDTO) throws ResourceNotFoundException, CardAlreadyExistsException {
+        return ResponseEntity.ok(accountService.addCard(id, cardPostDTO));
+    }
+
+    @Operation(summary = "List all cards from an account")
+    @GetMapping(value = "/{id}/cards/list-all", produces = "application/json")
+    public ResponseEntity<?> listCards(@PathVariable(name = "id") Long id) throws ResourceNotFoundException {
+        if (accountService.listAllCards(id).isEmpty()) {
+            return new ResponseEntity("The are no cards associated with this account"
+                    , HttpStatus.NO_CONTENT);
+        } else {
+            return ResponseEntity.ok(accountService.listAllCards(id));
+        }
+    }
+
+    @Operation(summary = "Find a card by id")
+    @GetMapping(value = "/{id}/cards/{cardId}", produces = "application/json")
+    public ResponseEntity<?> findCardById(@PathVariable(name = "id") Long id, @PathVariable(name = "cardId") Long cardId) throws ResourceNotFoundException, CardNotFoundException {
+        return ResponseEntity.ok(accountService.findCardFromAccount(id, cardId));
+    }
+
+    @Operation(summary = "Delete a card from an account")
+    @DeleteMapping(value = "/{id}/cards/remove/{cardId}", produces = "application/json")
+    public ResponseEntity<?> deleteCard(@PathVariable(name = "id") Long id, @PathVariable(name = "cardId") Long cardId) throws ResourceNotFoundException, CardNotFoundException {
+        accountService.removeCardFromAccount(id, cardId);
+        return ResponseEntity.ok("Card successfully removed from account");
+    }
+
 }

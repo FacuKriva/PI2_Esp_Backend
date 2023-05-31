@@ -18,14 +18,22 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class AccountService implements IAccountService {
+    private final AccountMapper accountMapper;
+    private final TransactionService transactionService;
+    private final KeysGenerator keysGenerator;
+    private final IAccountRepository accountRepository;
+    private final CardService cardService;
+
     @Autowired
-    protected AccountMapper accountMapper;
-    @Autowired
-    private TransactionService transactionService;
-    @Autowired
-    protected KeysGenerator keysGenerator;
-    @Autowired
-    protected IAccountRepository accountRepository;
+    public AccountService(AccountMapper accountMapper, TransactionService transactionService,
+                          KeysGenerator keysGenerator, IAccountRepository accountRepository,
+                          CardService cardService) {
+        this.accountMapper = accountMapper;
+        this.transactionService = transactionService;
+        this.keysGenerator = keysGenerator;
+        this.accountRepository = accountRepository;
+        this.cardService = cardService;
+    }
 
     @Override
     public AccountGetDto findById(Long id) throws ResourceNotFoundException {
@@ -98,5 +106,34 @@ public class AccountService implements IAccountService {
 //            throw new AlreadyRegisteredException("The user with alias " + alias + " is already registered");
 //        }
 //    }
+
+    // We add a card to an account
+    @Transactional
+    @Override
+    public CardGetDTO addCard(Long id, CardPostDTO cardPostDTO) throws ResourceNotFoundException, CardAlreadyExistsException {
+        Account account = checkId(id);
+        return cardService.createCard(account, cardPostDTO);
+    }
+
+    // We list all the cards of an account
+    @Override
+    public List<CardGetDTO> listAllCards(Long id) throws ResourceNotFoundException {
+        Account account = checkId(id);
+        return cardService.listCards(account);
+    }
+
+    // We find a card of an account
+    @Override
+    public CardGetDTO findCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException, CardNotFoundException {
+        Account account = checkId(id);
+        return cardService.findCardById(account, cardId);
+    }
+
+    // We delete a card of an account
+    @Override
+    public void removeCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException, CardNotFoundException {
+        Account account = checkId(id);
+        cardService.deleteCard(account, cardId);
+    }
 
 }
