@@ -1,12 +1,8 @@
 package com.digital.money.msvc.api.account.service.impl;
 
-import com.digital.money.msvc.api.account.handler.AlreadyRegisteredException;
-import com.digital.money.msvc.api.account.handler.BadRequestException;
-import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
+import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Account;
-import com.digital.money.msvc.api.account.model.dto.AccountGetDto;
-import com.digital.money.msvc.api.account.model.dto.AliasUpdate;
-import com.digital.money.msvc.api.account.model.dto.TransactionGetDto;
+import com.digital.money.msvc.api.account.model.dto.*;
 import com.digital.money.msvc.api.account.repository.IAccountRepository;
 import com.digital.money.msvc.api.account.service.interfaces.IAccountService;
 import com.digital.money.msvc.api.account.utils.KeysGenerator;
@@ -99,7 +95,7 @@ public class AccountService implements IAccountService {
 //    private void checkUnique(Account account) throws AlreadyRegisteredException {
 //        String alias = account.getAlias();
 //        if (accountRepository.aliasUnique(alias, account.getAccountId()).isPresent()) {
-//            throw new AlreadyRegisteredException("The user with alias " + alias + " is already registred");
+//            throw new AlreadyRegisteredException("The user with alias " + alias + " is already registered");
 //        }
 //    }
 
