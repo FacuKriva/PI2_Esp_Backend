@@ -12,3 +12,7 @@ INSERT INTO transactions (transaction_id, amount, realization_date, description,
 INSERT INTO transactions (transaction_id, amount, realization_date, description, from_cvu, to_cvu, type, account_id) VALUES (null, 17223.0, '2022-07-01 10:02:00', 'payment transaction', '1828142364587587491111', 1828142364587587493333, 'INCOMING', 2);
 INSERT INTO transactions (transaction_id, amount, realization_date, description, from_cvu, to_cvu, type, account_id) VALUES (null, 112000.0, '2023-01-01 17:21:09', 'payment transaction', '1828142364587587495555', 1828142364587587493333, 'INCOMING', 2);
 INSERT INTO transactions (transaction_id, amount, realization_date, description, from_cvu, to_cvu, type, account_id) VALUES (null, 20000.0, '2018-02-09 12:45:00', 'payment transaction', '1828142364587587495555', 1828142364587587493333, 'INCOMING', 2);
+
+-- Insert Card
+INSERT INTO card (card_id, alias, card_number, card_holder, expiration_date, cvv, bank, card_type, is_enabled, user_id) VALUES (null, 'Tarjeta MP', 5412873403403000, 'Admin Admin', '05/2024', 480, 'Mercado Pago', 'Crédito', true, 1);
+INSERT INTO card (card_id, alias, card_number, card_holder, expiration_date, cvv, bank, card_type, is_enabled, user_id) VALUES (null, 'Amex Platinum', 376455323736878, 'Admin Admin', '03/2025', 1698, 'American Express Argentina', 'Crédito', true, 1);
