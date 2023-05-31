@@ -61,17 +61,15 @@ public class CardService implements ICardService{
     public List<CardGetDTO> listCardsFromAccount(Long id) throws ResourceNotFoundException {
         Account account = accountService.checkId(id);
 
-        Optional<List<Card>> listCards = cardRepository.findAllByAccountId(account.getAccountId());
-        return listCards.get().stream()
-                .map(card -> cardMapper.toCardGetDTO(card))
-                .collect(Collectors.toList());
+        List<Card> cards = cardRepository.findAllByAccountAccountId(account.getAccountId());
+        return cards.stream().map(cardMapper::toCardGetDTO).collect(Collectors.toList());
     }
 
     @Override
     public CardGetDTO findCardFromAccount(Long id, Long cardId) throws CardNotFoundException, ResourceNotFoundException {
         Account account = accountService.checkId(id);
 
-        Optional<Card> entityResponse = cardRepository.findByCardById(cardId);
+        Optional<Card> entityResponse = cardRepository.findByCardId(cardId);
 
         if (entityResponse.isPresent()) {
         Card card = entityResponse.get();
@@ -85,7 +83,7 @@ public class CardService implements ICardService{
     public void removeCardFromAccount(Long id, Long cardId) throws CardNotFoundException, ResourceNotFoundException {
         Account account = accountService.checkId(id);
 
-        Optional<Card> entityResponse = cardRepository.findByCardById(cardId);
+        Optional<Card> entityResponse = cardRepository.findByCardId(cardId);
 
         if (entityResponse.isPresent()) {
             Card card = entityResponse.get();

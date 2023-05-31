@@ -37,7 +37,7 @@ public class Account {
     @Column(name = "user_id")
     private Long userId;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
     private List<Card> cards;
 
     @OneToMany(mappedBy = "account")
