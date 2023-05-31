@@ -49,13 +49,13 @@ public class AccountController {
     }
 
     @Operation(summary = "Add a card to an account")
-    @PostMapping(value = "/{id}/cards/add-card", consumes = "application/json")
+    @PostMapping(value = "/{id}/cards", consumes = "application/json")
     public ResponseEntity<?> addCard(@PathVariable(name = "id") Long id, @RequestBody CardPostDTO cardPostDTO) throws ResourceNotFoundException, CardAlreadyExistsException {
         return ResponseEntity.ok(accountService.addCard(id, cardPostDTO));
     }
 
     @Operation(summary = "List all cards from an account")
-    @GetMapping(value = "/{id}/cards/list-all", produces = "application/json")
+    @GetMapping(value = "/{id}/cards", produces = "application/json")
     public ResponseEntity<?> listCards(@PathVariable(name = "id") Long id) throws ResourceNotFoundException {
         if (accountService.listAllCards(id).isEmpty()) {
             return new ResponseEntity("The are no cards associated with this account"
@@ -72,7 +72,7 @@ public class AccountController {
     }
 
     @Operation(summary = "Delete a card from an account")
-    @DeleteMapping(value = "/{id}/cards/remove/{cardId}", produces = "application/json")
+    @DeleteMapping(value = "/{id}/cards/{cardId}", produces = "application/json")
     public ResponseEntity<?> deleteCard(@PathVariable(name = "id") Long id, @PathVariable(name = "cardId") Long cardId) throws ResourceNotFoundException, CardNotFoundException {
         accountService.removeCardFromAccount(id, cardId);
         return ResponseEntity.ok("Card successfully removed from account");
