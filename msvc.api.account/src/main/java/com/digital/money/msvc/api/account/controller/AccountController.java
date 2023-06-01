@@ -5,12 +5,15 @@ import com.digital.money.msvc.api.account.model.dto.AliasUpdate;
 import com.digital.money.msvc.api.account.model.dto.CardPostDTO;
 import com.digital.money.msvc.api.account.service.impl.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Validated
 @RequestMapping("/accounts")
 public class AccountController {
 
@@ -50,7 +53,7 @@ public class AccountController {
 
     @Operation(summary = "Add a card to an account")
     @PostMapping(value = "/{id}/cards", consumes = "application/json")
-    public ResponseEntity<?> addCard(@PathVariable(name = "id") Long id, @RequestBody CardPostDTO cardPostDTO) throws ResourceNotFoundException, CardAlreadyExistsException {
+    public ResponseEntity<?> addCard(@PathVariable(name = "id") Long id, @Valid @RequestBody CardPostDTO cardPostDTO) throws ResourceNotFoundException, CardAlreadyExistsException {
         return ResponseEntity.ok(accountService.addCard(id, cardPostDTO));
     }
 
