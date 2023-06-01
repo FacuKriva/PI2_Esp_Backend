@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
@@ -63,6 +65,7 @@ public class TestUserProfile extends Variables {
                     .statusCode(200)
                     .statusCode(HttpStatus.SC_OK)
                     .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
                     .body("$",hasKey("user"))
                     .body("user", hasKey("name"))
                     .body("user.name", Matchers.equalTo("user1"))
@@ -162,6 +165,7 @@ public class TestUserProfile extends Variables {
                     .statusCode(200)
                     .statusCode(HttpStatus.SC_OK)
                     .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
                     .body("$",hasKey("user_id"))
                     .body("$",hasKey("name"))
                     .body("$",hasKey("last_name"))

@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
@@ -62,6 +64,7 @@ public class TestAccounts extends Variables {
                     .statusCode(200)
                     .statusCode(HttpStatus.SC_OK)
                     .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
                     .body("$",hasKey("alias"))
                     .body("alias", Matchers.equalTo("afectacion.divisa.cambios"))
                     .body("$",hasKey("cvu"))
@@ -241,6 +244,7 @@ public class TestAccounts extends Variables {
                     .statusCode(409)
                     .statusCode(HttpStatus.SC_CONFLICT)
                     .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
                     .body("$",hasKey("message"))
                     .body("message", Matchers.equalTo("The alias is already registered"))
                     .log().all()
@@ -274,6 +278,7 @@ public class TestAccounts extends Variables {
                     .statusCode(400)
                     .statusCode(HttpStatus.SC_BAD_REQUEST)
                     .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
                     .body("$",hasKey("message"))
                     .body("message", Matchers.equalTo("You must choose 3 words. Words cannot be blank."))
                     .log().all()
@@ -307,6 +312,7 @@ public class TestAccounts extends Variables {
                     .statusCode(400)
                     .statusCode(HttpStatus.SC_BAD_REQUEST)
                     .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
                     .body("$",hasKey("message"))
                     .body("message", Matchers.equalTo("All the words must be different."))
                     .log().all()
