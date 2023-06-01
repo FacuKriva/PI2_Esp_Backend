@@ -38,6 +38,10 @@ public class CardService implements ICardService{
             throw new BadRequestException("The card you are trying to add is expired. " +
                     "Please make sure the expiration date is in the future.");
         }
+        if (!isCardNumberValid(cardPostDTO.getCardNumber())) {
+            throw new BadRequestException("The card you are trying to add is invalid. " +
+                    "Please make sure the card number is valid.");
+        }
 
         Card card = cardMapper.toCard(cardPostDTO);
         card.setAccount(account);
@@ -94,4 +98,20 @@ public class CardService implements ICardService{
             return false;
         }
     }
+
+    private boolean isCardNumberValid(Long cardNumber) {
+        int sum = 0;
+        boolean alternate = false;
+        for (int i = cardNumber.toString().length() - 1; i >= 0; i--) {
+            long n = Long.parseLong(cardNumber.toString().substring(i, i + 1));
+            if (alternate) {
+                n *= 2;
+                if (n > 9) {n = (n % 10) + 1;}
+            }
+            sum += n;
+            alternate = !alternate;
+        }
+        return (sum % 10 == 0);
+    }
+
 }
