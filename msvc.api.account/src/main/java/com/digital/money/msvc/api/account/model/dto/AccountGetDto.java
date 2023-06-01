@@ -1,5 +1,6 @@
 package com.digital.money.msvc.api.account.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class AccountGetDto {
+
     @JsonProperty("account_id")
     private Long accountId;
 
@@ -21,4 +23,5 @@ public class AccountGetDto {
     private String cvu;
 
     private double availableBalance;
+
 }

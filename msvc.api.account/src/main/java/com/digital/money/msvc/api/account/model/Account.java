@@ -38,6 +38,7 @@ public class Account {
     private Long userId;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
+    @JsonIgnore
     private List<Card> cards;
 
     @OneToMany(mappedBy = "account")

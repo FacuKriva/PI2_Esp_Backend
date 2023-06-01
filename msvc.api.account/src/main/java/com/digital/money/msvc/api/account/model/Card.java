@@ -1,5 +1,6 @@
 package com.digital.money.msvc.api.account.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ public class Card {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "account_id", nullable = false)
+    //@JsonIgnore
     @JsonProperty("account_id")
     private Account account;
 

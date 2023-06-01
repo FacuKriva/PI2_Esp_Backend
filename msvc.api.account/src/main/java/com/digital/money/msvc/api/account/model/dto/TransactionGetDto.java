@@ -2,6 +2,7 @@ package com.digital.money.msvc.api.account.model.dto;
 
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.TransactionType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

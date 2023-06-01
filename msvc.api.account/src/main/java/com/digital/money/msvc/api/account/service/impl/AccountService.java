@@ -44,7 +44,7 @@ public class AccountService implements IAccountService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<TransactionGetDto> findAllByAccountId(Long id) throws ResourceNotFoundException  {
+    public LastFiveTransactionDto findAllByAccountId(Long id) throws ResourceNotFoundException  {
         return transactionService.getLastFive(id);
     }
 
