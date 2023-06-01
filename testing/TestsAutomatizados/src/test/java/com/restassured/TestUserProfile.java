@@ -6,7 +6,6 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
-import org.json.simple.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -21,11 +20,14 @@ public class TestUserProfile extends Variables {
 
     @BeforeAll
     public static void  Setup() {
+
         RestAssured.baseURI = base_uri;
     }
 
     @BeforeAll
-    public static void Login(){
+
+        public static void Login(){
+
         token = given()
                     .auth().preemptive()
                     .basic(client_id, client_secret)
@@ -40,8 +42,10 @@ public class TestUserProfile extends Variables {
                     .log().all()
                     .extract()
                     .jsonPath().get("access_token");
+
     }
 
+    //TC_Perfil_Usuario_0001
     @Tag("Smoke")
     @Test
     public void ViewUserProfileSuccess200() {
@@ -86,8 +90,32 @@ public class TestUserProfile extends Variables {
                     .log().all()
                     .extract()
                     .response();
+
     }
 
+    //TC_Perfil_Usuario_0002
+    @Tag("Smoke")
+    @Test
+    public void ViewUserProfileFailure401() {
+
+        Response response;
+
+        response = given()
+                    .basePath("/users/{id}")
+                    .pathParams("id", 2).
+                when().
+                    get().
+                then()
+                    .assertThat()
+                    .statusCode(401)
+                    .statusCode(HttpStatus.SC_UNAUTHORIZED)
+                    .log().all()
+                    .extract()
+                    .response();
+
+    }
+
+    //TC_Perfil_Usuario_0003
     @Tag("Smoke")
     @Test
     public void ViewUserProfileFailure404() {
@@ -111,34 +139,12 @@ public class TestUserProfile extends Variables {
 
     }
 
-    @Tag("Smoke")
-    @Test
-    public void ViewUserProfileFailure401() {
-
-        Response response;
-
-        response = given()
-                    .basePath("/users/{id}")
-                    .pathParams("id", 2).
-                when().
-                    get().
-                then()
-                    .assertThat()
-                    .statusCode(401)
-                    .statusCode(HttpStatus.SC_UNAUTHORIZED)
-                    .log().all()
-                    .extract()
-                    .response();
-
-    }
-
+    //TC_Perfil_Usuario_0004
     @Tag("Smoke")
     @Test
     public void UpdateUserProfileSuccess200() {
 
         Response response;
-        //JSONObject request = new JSONObject();
-        //request.put("name", "Ana");
 
         User user = new User();
         user.setName("Pablo");
@@ -149,7 +155,6 @@ public class TestUserProfile extends Variables {
                     .pathParams("id", 2)
                     .contentType(ContentType.JSON)
                     .body(user).
-                    //.body(request.toJSONString()).
                 when().
                     patch().
                 then()
@@ -171,14 +176,42 @@ public class TestUserProfile extends Variables {
                     .log().all()
                     .extract()
                     .response();
+
     }
 
+    //TC_Perfil_Usuario_0005
+    @Tag("Smoke")
+    @Test
+    public void UpdateUserProfileFailure401() {
+
+        Response response;
+
+        User user = new User();
+        user.setName("Pablo");
+
+        response = given()
+                    .basePath("/users/{id}")
+                    .pathParams("id", 2)
+                    .contentType(ContentType.JSON)
+                    .body(user).
+                when().
+                    patch().
+                then()
+                    .assertThat()
+                    .statusCode(401)
+                    .statusCode(HttpStatus.SC_UNAUTHORIZED)
+                    .log().all()
+                    .extract()
+                    .response();
+
+    }
+
+    //TC_Perfil_Usuario_0006
     @Tag("Smoke")
     @Test
     public void UpdateUserProfileFailure404() {
+
         Response response;
-        //JSONObject request = new JSONObject();
-        //request.put("name", "Ana");
 
         User user = new User();
         user.setName("Carlos");
@@ -189,45 +222,105 @@ public class TestUserProfile extends Variables {
                 .pathParams("id", 99)
                 .contentType(ContentType.JSON)
                 .body(user).
-                //.body(request.toJSONString()).
                         when().
                 patch().
                 then()
                     .assertThat()
-                    .statusCode(204)
+                    .statusCode(404)
                     .statusCode(HttpStatus.SC_NOT_FOUND)
-                    .contentType(ContentType.JSON)
+                    .contentType(ContentType.TEXT)
                     .log().all()
                     .extract()
                     .response();
-    }
-
-    @Tag("Smoke")
-    @Test
-    public void UpdateUserProfileFailure401() {
-
 
     }
 
 
-    @Tag("Smoke")
-    @Test
-    public void UpdateUserProfileFailure400EmailInUse() {
-
-
-    }
-
+    //TC_Perfil_Usuario_0007
     @Tag("Smoke")
     @Test
     public void UpdateUserProfileFailure400DniInUse() {
 
+        Response response;
+
+        User user = new User();
+        user.setDni(123456789);
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/users/{id}")
+                    .pathParams("id", 2)
+                    .contentType(ContentType.JSON)
+                    .body(user).
+                when().
+                    patch().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.TEXT)
+                    .log().all()
+                    .extract()
+                    .response();
 
     }
 
+
+    //TC_Perfil_Usuario_0008
+    @Tag("Smoke")
+    @Test
+    public void UpdateUserProfileFailure400EmailInUse() {
+
+        Response response;
+
+        User user = new User();
+        user.setEmail("admin@mail.com");
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/users/{id}")
+                    .pathParams("id", 2)
+                    .contentType(ContentType.JSON)
+                    .body(user).
+                when().
+                    patch().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.TEXT)
+                    .log().all()
+                    .extract()
+                    .response();
+
+    }
+
+    //TC_Perfil_Usuario_0009
     @Tag("Smoke")
     @Test
     public void UpdateUserProfileFailure400SamePassword() {
 
+        Response response;
+
+        User user = new User();
+        user.setPassword("123456789");
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/users/{id}")
+                    .pathParams("id", 1)
+                    .contentType(ContentType.JSON)
+                    .body(user).
+                when().
+                    patch().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.TEXT)
+                    .log().all()
+                    .extract()
+                    .response();
 
     }
 
