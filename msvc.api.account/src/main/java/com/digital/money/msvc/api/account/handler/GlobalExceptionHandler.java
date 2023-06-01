@@ -49,18 +49,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new AlreadyRegisteredResponse(ex.getMessage(), request.getRequestURI()));
     }
 
-    @ExceptionHandler({CardAlreadyExistsException.class})
-    public ResponseEntity<Object> processErrorCardAlreadyExists(CardAlreadyExistsException ex, HttpServletRequest request) {
-        log.error(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new AlreadyRegisteredResponse(ex.getMessage(), request.getRequestURI()));
-    }
-
-    @ExceptionHandler({CardNotFoundException.class})
-    public ResponseEntity<Object> processErrorCardNotFound(CardNotFoundException ex, HttpServletRequest request) {
-        log.error(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new NotFoundResponse(ex.getMessage(), request.getRequestURI()));
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
         String message = ex.getBindingResult()

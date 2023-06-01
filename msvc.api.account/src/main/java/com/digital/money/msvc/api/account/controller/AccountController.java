@@ -53,7 +53,10 @@ public class AccountController {
 
     @Operation(summary = "Add a card to an account")
     @PostMapping(value = "/{id}/cards", consumes = "application/json")
-    public ResponseEntity<?> addCard(@PathVariable(name = "id") Long id, @Valid @RequestBody CardPostDTO cardPostDTO) throws ResourceNotFoundException, CardAlreadyExistsException {
+    public ResponseEntity<?> addCard(@PathVariable(name = "id") Long id
+                                    , @Valid @RequestBody CardPostDTO cardPostDTO)
+            throws ResourceNotFoundException, AlreadyRegisteredException, BadRequestException {
+
         return ResponseEntity.ok(accountService.addCard(id, cardPostDTO));
     }
 
@@ -70,13 +73,13 @@ public class AccountController {
 
     @Operation(summary = "Find a card by id")
     @GetMapping(value = "/{id}/cards/{cardId}", produces = "application/json")
-    public ResponseEntity<?> findCardById(@PathVariable(name = "id") Long id, @PathVariable(name = "cardId") Long cardId) throws ResourceNotFoundException, CardNotFoundException {
+    public ResponseEntity<?> findCardById(@PathVariable(name = "id") Long id, @PathVariable(name = "cardId") Long cardId) throws ResourceNotFoundException {
         return ResponseEntity.ok(accountService.findCardFromAccount(id, cardId));
     }
 
     @Operation(summary = "Delete a card from an account")
     @DeleteMapping(value = "/{id}/cards/{cardId}", produces = "application/json")
-    public ResponseEntity<?> deleteCard(@PathVariable(name = "id") Long id, @PathVariable(name = "cardId") Long cardId) throws ResourceNotFoundException, CardNotFoundException {
+    public ResponseEntity<?> deleteCard(@PathVariable(name = "id") Long id, @PathVariable(name = "cardId") Long cardId) throws ResourceNotFoundException {
         accountService.removeCardFromAccount(id, cardId);
         return ResponseEntity.ok("Card successfully removed from account");
     }

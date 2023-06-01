@@ -14,8 +14,8 @@ public interface IAccountService extends ICheckId<Account> {
     LastFiveTransactionDto findAllByAccountId(Long id) throws ResourceNotFoundException;
     String updateAlias(Long id, AliasUpdate aliasUpdate) throws AlreadyRegisteredException, ResourceNotFoundException, BadRequestException;
 
-    CardGetDTO addCard(Long id, CardPostDTO cardPostDTO) throws ResourceNotFoundException, CardAlreadyExistsException;
+    CardGetDTO addCard(Long id, CardPostDTO cardPostDTO) throws ResourceNotFoundException, AlreadyRegisteredException, BadRequestException;
     List<CardGetDTO> listAllCards(Long id) throws ResourceNotFoundException;
-    CardGetDTO findCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException, CardNotFoundException;
-    void removeCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException, CardNotFoundException;
+    CardGetDTO findCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException;
+    void removeCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException;
 }

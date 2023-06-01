@@ -1,8 +1,6 @@
 package com.digital.money.msvc.api.account.service.impl;
 
-import com.digital.money.msvc.api.account.handler.BadRequestException;
-import com.digital.money.msvc.api.account.handler.CardAlreadyExistsException;
-import com.digital.money.msvc.api.account.handler.CardNotFoundException;
+import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Card;
 import com.digital.money.msvc.api.account.model.dto.CardGetDTO;
@@ -32,9 +30,9 @@ public class CardService implements ICardService{
     }
 
     @Override
-    public CardGetDTO createCard(Account account, CardPostDTO cardPostDTO) throws CardAlreadyExistsException, BadRequestException {
+    public CardGetDTO createCard(Account account, CardPostDTO cardPostDTO) throws AlreadyRegisteredException, BadRequestException {
         if (checkIfCardExists(cardPostDTO.getCardNumber())) {
-            throw new CardAlreadyExistsException("The card you are trying to create already exists");
+            throw new AlreadyRegisteredException("The card you are trying to create already exists");
         }
         if (!isExpirationDateValid(cardPostDTO.getExpirationDate())) {
             throw new BadRequestException("The card you are trying to add is expired. " +
@@ -55,26 +53,26 @@ public class CardService implements ICardService{
     }
 
     @Override
-    public CardGetDTO findCardById(Account account, Long cardId) throws CardNotFoundException {
+    public CardGetDTO findCardById(Account account, Long cardId) throws ResourceNotFoundException {
         Optional<Card> entityResponse = cardRepository.findByCardId(cardId);
 
         if (entityResponse.isPresent()) {
             Card card = entityResponse.get();
             return cardMapper.toCardGetDTO(card);
         } else {
-            throw new CardNotFoundException("The card you are trying to find does not exist");
+            throw new ResourceNotFoundException("The card you are trying to find does not exist");
         }
     }
 
     @Override
-    public void deleteCard(Account account, Long cardId) throws CardNotFoundException {
+    public void deleteCard(Account account, Long cardId) throws ResourceNotFoundException {
         Optional<Card> entityResponse = cardRepository.findByCardId(cardId);
 
         if (entityResponse.isPresent()) {
             Card card = entityResponse.get();
             cardRepository.delete(card);
         } else {
-            throw new CardNotFoundException("The card you are trying to delete does not exist");
+            throw new ResourceNotFoundException("The card you are trying to delete does not exist");
         }
     }
 

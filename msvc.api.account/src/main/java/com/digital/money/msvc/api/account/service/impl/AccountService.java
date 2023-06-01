@@ -107,31 +107,27 @@ public class AccountService implements IAccountService {
 //        }
 //    }
 
-    // We add a card to an account
     @Transactional
     @Override
-    public CardGetDTO addCard(Long id, CardPostDTO cardPostDTO) throws ResourceNotFoundException, CardAlreadyExistsException {
+    public CardGetDTO addCard(Long id, CardPostDTO cardPostDTO) throws ResourceNotFoundException, AlreadyRegisteredException, BadRequestException {
         Account account = checkId(id);
         return cardService.createCard(account, cardPostDTO);
     }
 
-    // We list all the cards of an account
     @Override
     public List<CardGetDTO> listAllCards(Long id) throws ResourceNotFoundException {
         Account account = checkId(id);
         return cardService.listCards(account);
     }
 
-    // We find a card of an account
     @Override
-    public CardGetDTO findCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException, CardNotFoundException {
+    public CardGetDTO findCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException {
         Account account = checkId(id);
         return cardService.findCardById(account, cardId);
     }
 
-    // We delete a card of an account
     @Override
-    public void removeCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException, CardNotFoundException {
+    public void removeCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException {
         Account account = checkId(id);
         cardService.deleteCard(account, cardId);
     }
