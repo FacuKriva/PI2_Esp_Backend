@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UserDTO {
 
-
     @JsonProperty("user_id")
     private Long userId;
 
@@ -28,6 +27,8 @@ public class UserDTO {
 
     private Long dni;
 
+    private Integer accountId;
+
     private String email;
 
     private String password;
@@ -37,6 +38,8 @@ public class UserDTO {
     private boolean enabled;
 
     private int attempts;
+
+    private Boolean verified;
 
     private RoleDTO role;
 }

@@ -21,11 +21,9 @@ public class AuthUserDTO {
     @JsonProperty("last_name")
     private String lastName;
 
-    private String cvu;
-
-    private String alias;
-
     private Long dni;
+
+    private Integer accountId;
 
     private String email;
 
@@ -36,6 +34,8 @@ public class AuthUserDTO {
     private Boolean enabled;
 
     private int attempts;
+
+    private Boolean verified;
 
     private RoleDTO role;
 }

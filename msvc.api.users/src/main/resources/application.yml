@@ -2,15 +2,17 @@ server:
   port: 8082
 
 spring:
+  config:
+    import: env.properties
   application:
     name: msvc-users-api
 
   # Conexion a DB MySQL
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/user_db?useUnicode=true&characterEncoding=utf8&useSSL=false&requireSSL=false
-    username: root
-    password: 1234
+    url: ${MYSQL_HOST_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
 
   # JPA - Hibernate
   jpa:
@@ -22,11 +24,24 @@ spring:
   properties:
     hibernate:
       format_sql: false
+
   # Lectura del archivo sql
   sql:
     init:
       mode: always
       data-locations-classpath: import.sql
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: help.digitalmoneywallet@gmail.com
+    password: dmqoxwpexdyteqju
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 logging:
   level:
     org:
