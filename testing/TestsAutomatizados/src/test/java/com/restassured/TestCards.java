@@ -108,7 +108,7 @@ public class TestCards extends Variables {
 
     }
 
-    //TC_Tajetas_0002
+    //TC_Tarjetas_0002
     @Tag("Smoke")
     @Test
     @Order(2)
@@ -371,7 +371,7 @@ public class TestCards extends Variables {
 
     //**------------------------------------ POST a card (/accounts/{id}/cards)-----------------------------------**
 
-    //TC_Tajetas_0010
+    //TC_Tarjetas_0010
     @Tag("Smoke")
     @Test
     @Order(9)
@@ -425,7 +425,7 @@ public class TestCards extends Variables {
 
     }
 
-    //TC_Tajetas_0011
+    //TC_Tarjetas_0011
     @Tag("Smoke")
     @Test
     @Order(10)
@@ -467,7 +467,7 @@ public class TestCards extends Variables {
 
     }
 
-    //TC_Tajetas_0012
+    //TC_Tarjetas_0012
     @Tag("Smoke")
     @Test
     @Order(11)
@@ -510,7 +510,7 @@ public class TestCards extends Variables {
     }
 
 
-    //TC_Tajetas_0013
+    //TC_Tarjetas_0013
     @Tag("Smoke")
     @Test
     @Order(12)
@@ -548,7 +548,7 @@ public class TestCards extends Variables {
     }
 
 
-    //TC_Tajetas_0022
+    //TC_Tarjetas_0022
     @Tag("Smoke")
     @Test
     @Order(13)
@@ -592,7 +592,7 @@ public class TestCards extends Variables {
     }
 
 
-    //TC_Tajetas_0014
+    //TC_Tarjetas_0014
     @Tag("Smoke")
     @Test
     @Order(14)
@@ -631,7 +631,7 @@ public class TestCards extends Variables {
 
     }
 
-    //TC_Tajetas_0015
+    //TC_Tarjetas_0015
     @Tag("Smoke")
     @Test
     @Order(15)
@@ -670,7 +670,7 @@ public class TestCards extends Variables {
 
     }
 
-    //TC_Tajetas_0016
+    //TC_Tarjetas_0016
     @Tag("Smoke")
     @Test
     @Order(16)
@@ -709,7 +709,7 @@ public class TestCards extends Variables {
 
     }
 
-    //TC_Tajetas_0017
+    //TC_Tarjetas_0017
     @Tag("Smoke")
     @Test
     @Order(17)
@@ -749,7 +749,7 @@ public class TestCards extends Variables {
     }
 
 
-    //TC_Tajetas_0018
+    //TC_Tarjetas_0018
     @Tag("Smoke")
     @Test
     @Order(18)
@@ -791,7 +791,7 @@ public class TestCards extends Variables {
 
     }
 
-    //TC_Tajetas_0019
+    //TC_Tarjetas_0019
     @Tag("Smoke")
     @Test
     @Order(19)
@@ -830,7 +830,7 @@ public class TestCards extends Variables {
 
     }
 
-    //TC_Tajetas_0020
+    //TC_Tarjetas_0020
     @Tag("Smoke")
     @Test
     @Order(20)
@@ -872,7 +872,7 @@ public class TestCards extends Variables {
 
 //**--------------------------------- DELETE a card (/accounts/{id}/cards/{idCard})-------------------------------**
 
-    //TC_Tajetas_0028
+    //TC_Tarjetas_0028
     @Tag("Smoke")
     @Test
     @Order(21)
@@ -908,7 +908,7 @@ public class TestCards extends Variables {
                     .response();
     }
 
-    //TC_Tajetas_0029
+    //TC_Tarjetas_0029
     @Tag("Smoke")
     @Test
     @Order(22)
@@ -944,7 +944,7 @@ public class TestCards extends Variables {
 
 
 
-    //TC_Tajetas_0030
+    //TC_Tarjetas_0030
     @Tag("Smoke")
     @Test
     @Order(23)
@@ -983,7 +983,7 @@ public class TestCards extends Variables {
                     .response();
     }
 
-    //TC_Tajetas_0031
+    //TC_Tarjetas_0031
     @Tag("Smoke")
     @Test
     @Order(24)
