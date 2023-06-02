@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.not;
@@ -50,6 +52,7 @@ public class TestRegister extends Variables {
                     .statusCode(201)
                     .statusCode(HttpStatus.SC_CREATED)
                     .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
                     .body("$",hasKey("name"))
                     .body("name", Matchers.equalTo("Ana"))
                     .body("$",hasKey("last_name"))
