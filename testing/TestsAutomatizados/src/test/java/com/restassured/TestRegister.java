@@ -23,7 +23,7 @@ public class TestRegister extends Variables {
         RestAssured.baseURI = base_uri;
     }
 
-    @Tag("Smoke")
+    //@Tag("Smoke")
     @Test
     public void RegisterSuccess201() {
 

@@ -1,29 +1,40 @@
 package com.restassured;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.restassured.model.User;
+import com.restassured.reports.ExtentFactory;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestUserProfile extends Variables {
 
     private static String token;
+
+    static ExtentSparkReporter spark = new ExtentSparkReporter("target/UserProfileTestsReport.html");
+    static ExtentReports extent;
+    ExtentTest test;
 
 
     @BeforeAll
     public static void  Setup() {
 
         RestAssured.baseURI = base_uri;
+
+        extent = ExtentFactory.getInstance();
+        extent.attachReporter(spark);
+
     }
 
     @BeforeAll
@@ -47,10 +58,29 @@ public class TestUserProfile extends Variables {
 
     }
 
+    @AfterAll
+    public static void quit() {
+        extent.flush();
+    }
+
+
+    //**------------------------------------ GET user profile by id (/users/{id}) -----------------------------------**
+
+
     //TC_Perfil_Usuario_0001
     @Tag("Smoke")
     @Test
-    public void ViewUserProfileSuccess200() {
+    @Order(1)
+    public void ViewUserProfileSuccess200() throws InterruptedException {
+
+        test = extent.createTest("TC_Perfil_Usuario_0001 - GET user profile by id - Status Code: 200 - OK");
+        test.assignCategory("Perfil Usuario");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 200 - OK");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Perfil de usuario. Visualización de datos exitosa. ID de usuario existente. Usuario logueado");
 
         Response response;
 
@@ -99,7 +129,17 @@ public class TestUserProfile extends Variables {
     //TC_Perfil_Usuario_0002
     @Tag("Smoke")
     @Test
-    public void ViewUserProfileFailure401() {
+    @Order(2)
+    public void ViewUserProfileFailure401() throws InterruptedException {
+
+        test = extent.createTest("TC_Perfil_Usuario_0002 - GET user profile by id - Status Code: 401 - Unauthorized");
+        test.assignCategory("Perfil Usuario");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 401 - Unauthorized");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Perfil de usuario. Visualización de datos fallida. ID de usuario existente. Usuario no logueado");
 
         Response response;
 
@@ -121,7 +161,19 @@ public class TestUserProfile extends Variables {
     //TC_Perfil_Usuario_0003
     @Tag("Smoke")
     @Test
-    public void ViewUserProfileFailure404() {
+    @Order(3)
+    public void ViewUserProfileFailure404() throws InterruptedException {
+
+
+        test = extent.createTest("TC_Perfil_Usuario_0003 - GET user profile by id - Status Code: 404 - Not Found");
+        test.assignCategory("Perfil Usuario");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 404 - Not Found");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Perfil de usuario. Visualización de datos fallida. ID de usuario inexistente. Usuario logueado");
+
 
         Response response;
 
@@ -142,10 +194,22 @@ public class TestUserProfile extends Variables {
 
     }
 
+    //**---------------------------------- PATCH user profile by id (/users/{id}) --------------------------------**
+
     //TC_Perfil_Usuario_0004
     @Tag("Smoke")
     @Test
-    public void UpdateUserProfileSuccess200() {
+    @Order(4)
+    public void UpdateUserProfileSuccess200() throws InterruptedException {
+
+        test = extent.createTest("TC_Perfil_Usuario_0004 - PATCH user profile by id - Status Code: 200 - OK");
+        test.assignCategory("Perfil Usuario");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: PATCH");
+        test.assignCategory("Status Code: 200 - OK");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Perfil de usuario.Edición de datos exitosa. ID de usuario existente. Usuario logueado");
 
         Response response;
 
@@ -186,7 +250,17 @@ public class TestUserProfile extends Variables {
     //TC_Perfil_Usuario_0005
     @Tag("Smoke")
     @Test
-    public void UpdateUserProfileFailure401() {
+    @Order(5)
+    public void UpdateUserProfileFailure401() throws InterruptedException {
+
+        test = extent.createTest("TC_Perfil_Usuario_0005 - PATCH user profile by id - Status Code: 401 - Unauthorized");
+        test.assignCategory("Perfil Usuario");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: PATCH");
+        test.assignCategory("Status Code: 401 - Unauthorized");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario no logueado");
 
         Response response;
 
@@ -213,7 +287,17 @@ public class TestUserProfile extends Variables {
     //TC_Perfil_Usuario_0006
     @Tag("Smoke")
     @Test
-    public void UpdateUserProfileFailure404() {
+    @Order(6)
+    public void UpdateUserProfileFailure404() throws InterruptedException {
+
+        test = extent.createTest("TC_Perfil_Usuario_0006 - PATCH user profile by id - Status Code: 404 - Not Found");
+        test.assignCategory("Perfil Usuario");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: PATCH");
+        test.assignCategory("Status Code: 404 - Not Found");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario inexistente. Usuario logueado");
 
         Response response;
 
@@ -243,7 +327,17 @@ public class TestUserProfile extends Variables {
     //TC_Perfil_Usuario_0007
     @Tag("Smoke")
     @Test
-    public void UpdateUserProfileFailure400DniInUse() {
+    @Order(7)
+    public void UpdateUserProfileFailure400DniInUse() throws InterruptedException {
+
+        test = extent.createTest("TC_Perfil_Usuario_0007 - PATCH user profile by id - Status Code: 400 - Bad Request");
+        test.assignCategory("Perfil Usuario");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: PATCH");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. Dni ya registrado.");
 
         Response response;
 
@@ -273,7 +367,17 @@ public class TestUserProfile extends Variables {
     //TC_Perfil_Usuario_0008
     @Tag("Smoke")
     @Test
-    public void UpdateUserProfileFailure400EmailInUse() {
+    @Order(8)
+    public void UpdateUserProfileFailure400EmailInUse() throws InterruptedException {
+
+        test = extent.createTest("TC_Perfil_Usuario_0008 - PATCH user profile by id - Status Code: 400 - Bad Request");
+        test.assignCategory("Perfil Usuario");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: PATCH");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. Email ya registrado.");
 
         Response response;
 
@@ -302,7 +406,18 @@ public class TestUserProfile extends Variables {
     //TC_Perfil_Usuario_0009
     @Tag("Smoke")
     @Test
-    public void UpdateUserProfileFailure400SamePassword() {
+    @Order(9)
+    public void UpdateUserProfileFailure400SamePassword() throws InterruptedException {
+
+        test = extent.createTest("TC_Perfil_Usuario_0009 - PATCH user profile by id - Status Code: 400 - Bad Request");
+        test.assignCategory("Perfil Usuario");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: PATCH");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. El nuevo password es igual al anterior.");
+
 
         Response response;
 
@@ -331,7 +446,18 @@ public class TestUserProfile extends Variables {
     //TC_Perfil_Usuario_0013
     @Tag("Smoke")
     @Test
-    public void UpdateUserProfileFailure400EmailFormat() {
+    @Order(10)
+    public void UpdateUserProfileFailure400EmailFormat() throws InterruptedException {
+
+        test = extent.createTest("TC_Perfil_Usuario_0013 - PATCH user profile by id - Status Code: 400 - Bad Request");
+        test.assignCategory("Perfil Usuario");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: PATCH");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. Formato email inválido (sin '@').");
+
 
         Response response;
 

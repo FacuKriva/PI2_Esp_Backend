@@ -40,7 +40,7 @@ public class TestLogin extends Variables {
 //        extent.flush();
 //    }
 
-    @Tag("Smoke")
+   // @Tag("Smoke")
     @Test
     public void LoginSuccess200() {
 //    test = extent.createTest("Login Exitoso");

@@ -38,10 +38,10 @@ public class CardService implements ICardService{
             throw new BadRequestException("The card you are trying to add is expired. " +
                     "Please make sure the expiration date is in the future.");
         }
-//        if (!isCardNumberValid(cardPostDTO.getCardNumber())) {
-//            throw new BadRequestException("The card you are trying to add is invalid. " +
-//                    "Please make sure the card number is valid.");
-//        }
+        if (!isCardNumberValid(cardPostDTO.getCardNumber())) {
+            throw new BadRequestException("The card you are trying to add is invalid. " +
+                    "Please make sure the card number is valid.");
+        }
 
         Card card = cardMapper.toCard(cardPostDTO);
         card.setAccount(account);
