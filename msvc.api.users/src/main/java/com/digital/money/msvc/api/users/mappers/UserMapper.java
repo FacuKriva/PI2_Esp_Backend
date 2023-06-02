@@ -1,6 +1,6 @@
 package com.digital.money.msvc.api.users.mappers;
 
-import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.CreateUserRequestDTO;
 import com.digital.money.msvc.api.users.dtos.AuthUserDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
 import com.digital.money.msvc.api.users.entities.User;
@@ -23,10 +23,12 @@ public class UserMapper {
     /**
      * Entity ->  mapToDto
      */
-    public UserDTO mapToDto(User userEntity) {
+    public UserDTO mapToDto(User userEntity, String cvu, String alias) {
 
         log.info("*** userEntity {}", userEntity);
         UserDTO dto = objectMapper.convertValue(userEntity, UserDTO.class);
+        dto.setCvu(cvu);
+        dto.setAlias(alias);
         log.info("*** UserDTO {}", dto);
 
         return dto;
@@ -44,7 +46,7 @@ public class UserMapper {
     /**
      * mapToDto -> Entity
      */
-    public User mapToEntity(UserRequestDTO userRequestDTO) {
+    public User mapToEntity(CreateUserRequestDTO userRequestDTO) {
 
         log.info("*** UserDTO Dto {}", userRequestDTO);
         User entity = objectMapper.convertValue(userRequestDTO, User.class);

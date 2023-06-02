@@ -1,15 +1,19 @@
 package com.digital.money.msvc.api.users.controllers;
 
+import com.digital.money.msvc.api.users.controllers.requestDto.CreateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
-import com.digital.money.msvc.api.users.controllers.requestDto.ResendCodeDTO;
-import com.digital.money.msvc.api.users.controllers.requestDto.UserRequestDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.update.UpdateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
+import com.digital.money.msvc.api.users.exceptions.BadRequestException;
+import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
 import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
 import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
 import com.digital.money.msvc.api.users.services.impl.UserService;
 import jakarta.validation.Valid;
+
 import jakarta.ws.rs.QueryParam;
+
 import org.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,13 +35,33 @@ public class UserController {
      * Registrar Usuario
      */
     @PostMapping
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) throws Exception {
+    public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserRequestDTO userRequestDTO) throws Exception {
         if (Objects.isNull(userRequestDTO)) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
         UserDTO userDTO = userService.createUser(userRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
+    }
+
+    /**
+     * Actualizar informacion del usuario.
+     */
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable("id") Long userId,
+                                        @Valid @RequestBody final UpdateUserRequestDTO userDto) throws UserNotFoundException, HasAlreadyBeenRegistred, PasswordNotChangedException, BadRequestException {
+
+        if (Objects.isNull(userDto)) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        UserDTO userUpdate = userService.updateUser(userId, userDto);
+        return ResponseEntity.status(HttpStatus.OK).body(userUpdate);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findByUserId(@PathVariable("id") Long userId) throws UserNotFoundException {
+        return ResponseEntity.ok(userService.getUserById(userId));
     }
 
     @GetMapping("/dni")
@@ -60,22 +84,22 @@ public class UserController {
     }
 
     @PutMapping("/resend")
-    public ResponseEntity<?> resendVerificationMail(@RequestHeader("Authorization") String token) throws JSONException {
-
+        public ResponseEntity<?> resendVerificationMail(@RequestHeader("Authorization") String token) throws Exception {
         userService.resendVerificationMail(token);
-        return ResponseEntity.ok("Mail enviado correctamente");
+        return ResponseEntity.ok("Please check your inbox. You will receive an email with a new verification code");
     }
 
     @PutMapping("/verificate")
-    public ResponseEntity<?> verificateCode(@RequestBody VerficationRequestDTO verficationRequestDTO, @RequestHeader("Authorization") String token) throws JSONException {
+    public ResponseEntity<?> verificateCode(@RequestBody VerficationRequestDTO verficationRequestDTO,
+                                            @RequestHeader("Authorization") String token) throws JSONException {
         return userService.verificateUser(verficationRequestDTO, token);
     }
 
     @PutMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) {
+    public ResponseEntity<?> forgotPassword(@RequestParam("email") String email) throws UserNotFoundException {
 
         userService.forgotPassword(email);
-        return ResponseEntity.ok("Se ha enviado un correo para cambiar la contraseña");
+        return ResponseEntity.ok("Please check your inbox. You will receive an email with a link to reset your password");
     }
 
     @PutMapping("/reset-password/{recoveryCode}")
@@ -85,6 +109,6 @@ public class UserController {
             throws PasswordNotChangedException {
 
         userService.resetPassword(recoveryCode, passwords);
-        return ResponseEntity.ok("Contraseña cambiada correctamente");
+        return ResponseEntity.ok("Your password has been successfully updated");
     }
 }

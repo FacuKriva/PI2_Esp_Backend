@@ -1,9 +1,8 @@
-package com.digital.money.msvc.api.users.controllers.requestDto;
+package com.digital.money.msvc.api.users.controllers.requestDto.update;
 
-import com.digital.money.msvc.api.users.dtos.RoleDTO;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -15,32 +14,30 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRequestDTO {
+public class UpdateUserRequestDTO {
 
-    @NotNull(message = "The name cannot be null or empty")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Size(max = 30, message = "maximum number of characters 30")
     private String name;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("last_name")
-    @NotNull(message = "The last_name cannot be null or empty")
     @Size(max = 40, message = "maximum number of characters 40")
     private String lastName;
 
-    @NotNull(message = "The dni cannot be null or empty")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long dni;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Email
-    @NotBlank(message = "the email cannot be null or empty")
     @Size(max = 60, message = "maximum number of characters 60")
     private String email;
 
-    @NotBlank(message = "The password cannot be null or empty ")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Size(min = 8, max = 30, message = "minimum number of characters 8, maximum number of characters 30")
     private String password;
 
-    @NotNull(message = "The phone cannot be null or empty ")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    //@NotNull(message = "The phone cannot be null or empty ")
     private Integer phone;
-
-//    @NotNull(message = "The role_id cannot be null")
-//    private RoleDTO role;
 }
