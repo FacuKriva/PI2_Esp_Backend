@@ -328,4 +328,37 @@ public class TestUserProfile extends Variables {
 
     }
 
+    //TC_Perfil_Usuario_0013
+    @Tag("Smoke")
+    @Test
+    public void UpdateUserProfileFailure400EmailFormat() {
+
+        Response response;
+
+        User user = new User();
+        user.setEmail("anamariamail.com");
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/users/{id}")
+                    .pathParams("id", 4)
+                    .contentType(ContentType.JSON)
+                    .body(user).
+                when().
+                    patch().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("{email=must be a well-formed email address}"))
+                    .log().all()
+                    .extract()
+                    .response();
+
+    }
+
+
 }
