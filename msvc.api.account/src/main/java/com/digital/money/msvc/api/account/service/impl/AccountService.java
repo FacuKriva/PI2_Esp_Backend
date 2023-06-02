@@ -1,12 +1,8 @@
 package com.digital.money.msvc.api.account.service.impl;
 
-import com.digital.money.msvc.api.account.handler.AlreadyRegisteredException;
-import com.digital.money.msvc.api.account.handler.BadRequestException;
-import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
+import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Account;
-import com.digital.money.msvc.api.account.model.dto.AccountGetDto;
-import com.digital.money.msvc.api.account.model.dto.AliasUpdate;
-import com.digital.money.msvc.api.account.model.dto.TransactionGetDto;
+import com.digital.money.msvc.api.account.model.dto.*;
 import com.digital.money.msvc.api.account.repository.IAccountRepository;
 import com.digital.money.msvc.api.account.service.interfaces.IAccountService;
 import com.digital.money.msvc.api.account.utils.KeysGenerator;
@@ -22,14 +18,22 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class AccountService implements IAccountService {
+    private final AccountMapper accountMapper;
+    private final TransactionService transactionService;
+    private final KeysGenerator keysGenerator;
+    private final IAccountRepository accountRepository;
+    private final CardService cardService;
+
     @Autowired
-    protected AccountMapper accountMapper;
-    @Autowired
-    private TransactionService transactionService;
-    @Autowired
-    protected KeysGenerator keysGenerator;
-    @Autowired
-    protected IAccountRepository accountRepository;
+    public AccountService(AccountMapper accountMapper, TransactionService transactionService,
+                          KeysGenerator keysGenerator, IAccountRepository accountRepository,
+                          CardService cardService) {
+        this.accountMapper = accountMapper;
+        this.transactionService = transactionService;
+        this.keysGenerator = keysGenerator;
+        this.accountRepository = accountRepository;
+        this.cardService = cardService;
+    }
 
     @Override
     public AccountGetDto findById(Long id) throws ResourceNotFoundException {
@@ -40,7 +44,7 @@ public class AccountService implements IAccountService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<TransactionGetDto> findAllByAccountId(Long id) throws ResourceNotFoundException  {
+    public LastFiveTransactionDto findAllByAccountId(Long id) throws ResourceNotFoundException  {
         return transactionService.getLastFive(id);
     }
 
@@ -99,8 +103,33 @@ public class AccountService implements IAccountService {
 //    private void checkUnique(Account account) throws AlreadyRegisteredException {
 //        String alias = account.getAlias();
 //        if (accountRepository.aliasUnique(alias, account.getAccountId()).isPresent()) {
-//            throw new AlreadyRegisteredException("The user with alias " + alias + " is already registred");
+//            throw new AlreadyRegisteredException("The user with alias " + alias + " is already registered");
 //        }
 //    }
+
+    @Transactional
+    @Override
+    public CardGetDTO addCard(Long id, CardPostDTO cardPostDTO) throws ResourceNotFoundException, AlreadyRegisteredException, BadRequestException {
+        Account account = checkId(id);
+        return cardService.createCard(account, cardPostDTO);
+    }
+
+    @Override
+    public List<CardGetDTO> listAllCards(Long id) throws ResourceNotFoundException {
+        Account account = checkId(id);
+        return cardService.listCards(account);
+    }
+
+    @Override
+    public CardGetDTO findCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException {
+        Account account = checkId(id);
+        return cardService.findCardById(account, cardId);
+    }
+
+    @Override
+    public void removeCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException {
+        Account account = checkId(id);
+        cardService.deleteCard(account, cardId);
+    }
 
 }

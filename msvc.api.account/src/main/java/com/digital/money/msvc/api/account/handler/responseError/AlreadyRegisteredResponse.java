@@ -16,7 +16,7 @@ public class AlreadyRegisteredResponse {
     public AlreadyRegisteredResponse(String message, String path) {
         this.timestamp = Calendar.getInstance().getTimeInMillis();
         this.status = 409;
-        this.error = "Already Registred";
+        this.error = "Already Registered";
         this.message = message;
         this.path = path;
     }

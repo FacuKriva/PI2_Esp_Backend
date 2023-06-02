@@ -10,8 +10,8 @@
         <module name="msvc-auth-server-sprgbt" />
         <module name="msvc-eureka-server-sprgbt" />
         <module name="msvc-gateway-api-sprgbt" />
-        <module name="msvc.api.users" />
         <module name="msvc.api.account" />
+        <module name="msvc.api.users" />
       </profile>
     </annotationProcessing>
   </component>

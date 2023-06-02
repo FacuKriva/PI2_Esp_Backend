@@ -6,6 +6,8 @@ import com.digital.money.msvc.api.account.handler.responseError.NotFoundResponse
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -46,4 +48,18 @@ public class GlobalExceptionHandler {
         log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new AlreadyRegisteredResponse(ex.getMessage(), request.getRequestURI()));
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
+        String message = ex.getBindingResult()
+                .getAllErrors()
+                .stream()
+                .findFirst() // Get the first error message
+                .map(ObjectError::getDefaultMessage)
+                .orElse("Validation error");
+
+        BadRequestResponse response = new BadRequestResponse(message, request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
 }
