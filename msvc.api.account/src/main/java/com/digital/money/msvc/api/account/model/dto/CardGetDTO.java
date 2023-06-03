@@ -24,12 +24,9 @@ public class CardGetDTO {
     @JsonProperty("cardHolder")
     private String cardHolder;
 
-    @JsonProperty("expirationDate")
-    private String expirationDate;
-
     @JsonProperty("bank")
     private String bank;
 
-    @JsonProperty("cardType")
-    private String cardType;
+    @JsonProperty("cardNetwork")
+    private String cardNetwork;
 }
