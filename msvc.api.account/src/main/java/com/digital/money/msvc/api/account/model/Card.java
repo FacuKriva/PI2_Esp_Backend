@@ -45,6 +45,9 @@ public class Card {
     @Column(name = "cardType", nullable = false, length = 16)
     private String cardType;
 
+    @Column(name = "cardNetwork", nullable = false)
+    private String cardNetwork;
+
     @Column(name = "isEnabled", nullable = false)
     private boolean isEnabled = true;
 
@@ -60,6 +63,7 @@ public class Card {
                 ", cvv=" + cvv +
                 ", bank='" + bank + '\'' +
                 ", cardType='" + cardType + '\'' +
+                ", cardNetwork='" + cardNetwork + '\'' +
                 ", enabled=" + isEnabled +
                 '}';
     }
