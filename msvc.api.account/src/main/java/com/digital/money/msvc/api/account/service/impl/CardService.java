@@ -129,32 +129,14 @@ public class CardService implements ICardService{
         String cardNumberString = cardNumber.toString();
         String prefix = cardNumberString.substring(0, 2);
 
-        switch(prefix){
-            case "34":
-            case "37":
-                return "American Express";
-            case "30":
-            case "36":
-            case "38":
-                return "Diners Club International";
-            case "51":
-            case "52":
-            case "53":
-            case "54":
-            case "55":
-                return "MasterCard";
-            case "4":
-                return "Visa";
-            case "60":
-            case "61":
-            case "62":
-            case "63":
-            case "64":
-            case "65":
-                return "Discover";
-            default:
-                return "Unknown";
-        }
+        return switch (prefix) {
+            case "34", "37" -> "American Express";
+            case "30", "36", "38" -> "Diners Club International";
+            case "51", "52", "53", "54", "55" -> "MasterCard";
+            case "4" -> "Visa";
+            case "60", "61", "62", "63", "64", "65" -> "Discover";
+            default -> "Unknown";
+        };
     }
 
 }
