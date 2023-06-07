@@ -130,10 +130,10 @@ public class CardService implements ICardService{
         String prefix = cardNumberString.substring(0, 2);
 
         return switch (prefix) {
-            case "34", "37" -> "American Express";
+            case "40", "41", "42", "43", "44", "45", "46", "47", "48", "49" -> "Visa";
             case "30", "36", "38" -> "Diners Club International";
+            case "34", "37" -> "American Express";
             case "51", "52", "53", "54", "55" -> "MasterCard";
-            case "4" -> "Visa";
             case "60", "61", "62", "63", "64", "65" -> "Discover";
             default -> "Unknown";
         };
