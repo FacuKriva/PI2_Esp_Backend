@@ -45,7 +45,7 @@ public class CardService implements ICardService{
 
         Card card = cardMapper.toCard(cardPostDTO);
         card.setCardNetwork(guessTheCardNetwork(cardPostDTO.getCardNumber()));
-        // if card network is amex, then cvv is 4 digits
+
         if (card.getCardNetwork().equals("American Express")) {
             if (cardPostDTO.getCvv().toString().length() != 4) {
                 throw new BadRequestException("Please make sure the cvv is valid");

@@ -80,8 +80,10 @@ public class AccountController {
     @Operation(summary = "Delete a card from an account")
     @DeleteMapping(value = "/{id}/cards/{cardId}", produces = "application/json")
     public ResponseEntity<?> deleteCard(@PathVariable(name = "id") Long id, @PathVariable(name = "cardId") Long cardId) throws ResourceNotFoundException {
+        String cardNumber = accountService.findCardFromAccount(id, cardId).getCardNumber();
         accountService.removeCardFromAccount(id, cardId);
-        return ResponseEntity.ok("Card successfully removed from account");
+        return ResponseEntity.ok("The card N°" + cardNumber + " has been successfully removed from your " +
+                "account");
     }
 
 }
