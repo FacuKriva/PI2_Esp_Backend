@@ -2,18 +2,22 @@ package com.digital.money.msvc.api.account.service.impl;
 
 import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Account;
+import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.dto.*;
 import com.digital.money.msvc.api.account.repository.IAccountRepository;
 import com.digital.money.msvc.api.account.service.interfaces.IAccountService;
 import com.digital.money.msvc.api.account.utils.KeysGenerator;
 import com.digital.money.msvc.api.account.utils.mapper.AccountMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import org.json.JSONObject;
 
 @Slf4j
 @Service
@@ -130,6 +134,25 @@ public class AccountService implements IAccountService {
     public void removeCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException {
         Account account = checkId(id);
         cardService.deleteCard(account, cardId);
+    }
+
+
+    public Transaction findTransactionById(Long accountId, Long transactionId, String token) throws Exception {
+        String userId = decodeToken(token, "user_id");
+        Long userIdL = Long.valueOf(userId);
+
+        if(accountId!=userIdL)
+            throw new BadRequestException("The account is not linked to this user");
+
+        return transactionService.checkId(transactionId);
+
+    }
+
+    private String decodeToken(String token, String search) throws JSONException {
+        String[] jwtParts = token.split("\\.");
+        JSONObject payload = new JSONObject(new String(Base64.getUrlDecoder().decode(jwtParts[1])));
+        String keyInfo = payload.getString(search);
+        return keyInfo;
     }
 
 }

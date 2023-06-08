@@ -1,6 +1,7 @@
 package com.digital.money.msvc.api.account.controller;
 
 import com.digital.money.msvc.api.account.handler.*;
+import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.dto.AliasUpdate;
 import com.digital.money.msvc.api.account.model.dto.CardPostDTO;
 import com.digital.money.msvc.api.account.service.impl.AccountService;
@@ -82,6 +83,11 @@ public class AccountController {
     public ResponseEntity<?> deleteCard(@PathVariable(name = "id") Long id, @PathVariable(name = "cardId") Long cardId) throws ResourceNotFoundException {
         accountService.removeCardFromAccount(id, cardId);
         return ResponseEntity.ok("Card successfully removed from account");
+    }
+
+    @GetMapping("/{id}/activity/{transferenceID}")
+    public ResponseEntity<Transaction> oneActivity(@PathVariable("id") Long id, @PathVariable("transferenceID") Long transferenceID, @RequestHeader("Authorization") String token) throws Exception {
+        return ResponseEntity.ok(accountService.findTransactionById(id,transferenceID, token));
     }
 
 }
