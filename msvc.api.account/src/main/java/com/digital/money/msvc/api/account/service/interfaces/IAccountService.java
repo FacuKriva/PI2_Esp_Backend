@@ -2,6 +2,7 @@ package com.digital.money.msvc.api.account.service.interfaces;
 
 import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Account;
+import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.dto.*;
 import com.digital.money.msvc.api.account.service.ICheckId;
 
@@ -18,4 +19,6 @@ public interface IAccountService extends ICheckId<Account> {
     List<CardGetDTO> listAllCards(Long id) throws ResourceNotFoundException;
     CardGetDTO findCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException;
     void removeCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException;
+
+    Transaction findTransactionById(Long accountId, Long transactionId, String token) throws Exception;
 }

@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -65,6 +64,7 @@ public class TransactionService implements ITransactionService {
         return transaction.get();
     }
 
+    @Override
     public Transaction findTransactionById(Long accountId, Long transactionId) throws ResourceNotFoundException {
 
         Optional<Transaction> transaction = transactionRepository.findByAccount_AccountIdAndTransactionId(accountId,transactionId);
