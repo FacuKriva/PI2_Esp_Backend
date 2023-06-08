@@ -12,8 +12,6 @@ public abstract class CardMapper {
 
     public abstract Card toCard(CardPostDTO cardPostDTO);
 
-    // We create a method toCardGetDTO that takes a Card object and returns a CardGetDTO object AND
-    // hides the card number except for the last 4 digits
     public CardGetDTO toCardGetDTO(Card card) {
         CardGetDTO cardGetDTO = new CardGetDTO();
         cardGetDTO.setCardId(card.getCardId());
@@ -24,7 +22,6 @@ public abstract class CardMapper {
         cardGetDTO.setCardNetwork(card.getCardNetwork());
         return cardGetDTO;
     }
-    //public abstract CardGetDTO toCardGetDTO(Card card);
 
     public DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yyyy");
 
