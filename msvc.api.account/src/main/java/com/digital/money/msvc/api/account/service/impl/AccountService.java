@@ -142,9 +142,9 @@ public class AccountService implements IAccountService {
         Long userIdL = Long.valueOf(userId);
 
         if(accountId!=userIdL)
-            throw new BadRequestException("The account is not linked to this user");
+            throw new ForbiddenException("You don't have access to that account");
 
-        return transactionService.checkId(transactionId);
+        return transactionService.findTransactionById(accountId,transactionId);
 
     }
 

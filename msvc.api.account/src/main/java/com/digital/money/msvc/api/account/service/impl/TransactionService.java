@@ -64,4 +64,14 @@ public class TransactionService implements ITransactionService {
         }
         return transaction.get();
     }
+
+    public Transaction findTransactionById(Long accountId, Long transactionId) throws ResourceNotFoundException {
+
+        Optional<Transaction> transaction = transactionRepository.findByAccount_AccountIdAndTransactionId(accountId,transactionId);
+
+        if (transaction.isEmpty()) {
+            throw new ResourceNotFoundException("Not transference found for that id");
+        }
+        return transaction.get();
+    }
 }

@@ -2,6 +2,7 @@ package com.digital.money.msvc.api.account.handler;
 
 import com.digital.money.msvc.api.account.handler.responseError.AlreadyRegisteredResponse;
 import com.digital.money.msvc.api.account.handler.responseError.BadRequestResponse;
+import com.digital.money.msvc.api.account.handler.responseError.ForbiddenResponse;
 import com.digital.money.msvc.api.account.handler.responseError.NotFoundResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -62,4 +63,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
+    @ExceptionHandler({ForbiddenException.class})
+    public ResponseEntity<Object> processErrorForbidden(ForbiddenException ex, HttpServletRequest request) {
+        log.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ForbiddenResponse(ex.getMessage(), request.getRequestURI()));
+    }
 }
