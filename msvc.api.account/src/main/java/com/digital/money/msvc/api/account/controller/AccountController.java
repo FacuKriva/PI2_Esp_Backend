@@ -3,6 +3,7 @@ package com.digital.money.msvc.api.account.controller;
 import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.dto.AliasUpdate;
 import com.digital.money.msvc.api.account.model.dto.CardPostDTO;
+import com.digital.money.msvc.api.account.model.dto.CardTransactionPostDTO;
 import com.digital.money.msvc.api.account.service.impl.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -84,6 +85,13 @@ public class AccountController {
         accountService.removeCardFromAccount(id, cardId);
         return ResponseEntity.ok("The card N°" + cardNumber + " has been successfully removed from your " +
                 "account");
+    }
+
+    @Operation(summary = "Deposit money into account from card")
+    @PostMapping(value = "/{id}/transferences/deposit", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Object> deposit(@PathVariable("id") Long id,
+                                          @Valid @RequestBody CardTransactionPostDTO cardTransactionPostDTO) throws PaymentRequiredException, UnauthorizedException, ResourceNotFoundException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(accountService.depositMoney(id, cardTransactionPostDTO));
     }
 
 }

@@ -1,36 +1,48 @@
 package com.digital.money.msvc.api.account.service.impl;
 
+import com.digital.money.msvc.api.account.handler.PaymentRequiredException;
 import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
+import com.digital.money.msvc.api.account.handler.UnauthorizedException;
 import com.digital.money.msvc.api.account.model.Account;
+import com.digital.money.msvc.api.account.model.Card;
 import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.TransactionType;
-import com.digital.money.msvc.api.account.model.dto.LastFiveTransactionDto;
-import com.digital.money.msvc.api.account.model.dto.TransactionGetDto;
-import com.digital.money.msvc.api.account.model.dto.TransactionPostDto;
+import com.digital.money.msvc.api.account.model.dto.*;
 import com.digital.money.msvc.api.account.repository.IAccountRepository;
+import com.digital.money.msvc.api.account.repository.ICardRepository;
 import com.digital.money.msvc.api.account.repository.ITransactionRepository;
 import com.digital.money.msvc.api.account.service.interfaces.ITransactionService;
 import com.digital.money.msvc.api.account.utils.mapper.AccountMapper;
+import com.digital.money.msvc.api.account.utils.mapper.CardMapper;
 import com.digital.money.msvc.api.account.utils.mapper.TransactionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class TransactionService implements ITransactionService {
 
-    @Autowired
     protected TransactionMapper transactionMapper;
-    @Autowired
     protected AccountMapper accountMapper;
-    @Autowired
     protected ITransactionRepository transactionRepository;
-    @Autowired
     protected IAccountRepository accountRepository;
+    protected ICardRepository cardRepository;
+    private CardMapper cardMapper;
+
+    @Autowired
+    protected TransactionService(TransactionMapper transactionMapper, AccountMapper accountMapper, ITransactionRepository transactionRepository, IAccountRepository accountRepository, ICardRepository cardRepository, CardMapper cardMapper) {
+        this.transactionMapper = transactionMapper;
+        this.accountMapper = accountMapper;
+        this.transactionRepository = transactionRepository;
+        this.accountRepository = accountRepository;
+        this.cardRepository = cardRepository;
+        this.cardMapper = cardMapper;
+    }
+
 
     @Transactional
     @Override
@@ -63,5 +75,49 @@ public class TransactionService implements ITransactionService {
             throw new ResourceNotFoundException(msjIdError + " id: " + id);
         }
         return transaction.get();
+    }
+
+    @Transactional
+    @Override
+    public CardTransactionGetDTO processCardTransaction(Long id, CardTransactionPostDTO cardTransactionPostDTO) throws ResourceNotFoundException, UnauthorizedException, PaymentRequiredException {
+        Card card = cardRepository.findByCardId(cardTransactionPostDTO.getCardId())
+                .orElseThrow(() -> new ResourceNotFoundException("The card doesn't exist"));
+
+        CardGetDTO cardGetDTO = cardMapper.toCardGetDTO(card);
+
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("The account doesn't exist"));
+
+        if (!card.getAccount().getAccountId().equals(id)) {
+            throw new UnauthorizedException("The card doesn't belong to the account");
+        }
+        if (card.getCardBalance() < cardTransactionPostDTO.getAmount()) {
+            throw new PaymentRequiredException("The card doesn't have enough balance");
+        }
+
+        Transaction transaction = transactionMapper.cTPDTOToTransaction(cardTransactionPostDTO);
+        transaction.setAmount(cardTransactionPostDTO.getAmount());
+        transaction.setRealizationDate(LocalDateTime.now());
+        transaction.setDescription("You deposited $" + cardTransactionPostDTO.getAmount() + " from " +
+                cardGetDTO.getBank() + " " + card.getCardType());
+        transaction.setFromCvu(String.valueOf(card.getCardNumber()));
+        transaction.setToCvu(account.getCvu());
+        transaction.setType(TransactionType.DEPOSIT);
+        transaction.setAccount(account);
+
+        card.setCardBalance(card.getCardBalance() - cardTransactionPostDTO.getAmount());
+
+        account.setAvailableBalance(account.getAvailableBalance() + cardTransactionPostDTO.getAmount());
+
+        cardRepository.save(card);
+
+        accountRepository.save(account);
+
+        transactionRepository.save(transaction);
+
+        CardTransactionGetDTO cTGDTO = transactionMapper.transactionToCardTransactionGetDTO(transaction);
+        cTGDTO.setCardNumber(cardGetDTO.getCardNumber());
+
+        return cTGDTO;
     }
 }

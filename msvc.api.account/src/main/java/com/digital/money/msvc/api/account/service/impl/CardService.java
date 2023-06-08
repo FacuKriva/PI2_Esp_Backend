@@ -46,7 +46,7 @@ public class CardService implements ICardService{
         Card card = cardMapper.toCard(cardPostDTO);
         card.setCardNetwork(guessTheCardNetwork(cardPostDTO.getCardNumber()));
 
-        if (card.getCardNetwork().equals("American Express")) {
+        if (card.getCardNetwork().equals("AMEX")) {
             if (cardPostDTO.getCvv().toString().length() != 4) {
                 throw new BadRequestException("Please make sure the cvv is valid");
             }
@@ -56,6 +56,7 @@ public class CardService implements ICardService{
             }
         }
         card.setAccount(account);
+        card.setCardBalance(cardPostDTO.getCardBalance());
         cardRepository.save(card);
 
         return cardMapper.toCardGetDTO(card);
@@ -132,7 +133,7 @@ public class CardService implements ICardService{
         return switch (prefix) {
             case "40", "41", "42", "43", "44", "45", "46", "47", "48", "49" -> "Visa";
             case "30", "36", "38" -> "Diners Club International";
-            case "34", "37" -> "American Express";
+            case "34", "37" -> "AMEX";
             case "51", "52", "53", "54", "55" -> "MasterCard";
             case "60", "61", "62", "63", "64", "65" -> "Discover";
             default -> "Unknown";

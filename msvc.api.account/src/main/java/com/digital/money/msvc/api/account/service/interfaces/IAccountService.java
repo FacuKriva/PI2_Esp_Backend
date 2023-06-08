@@ -4,6 +4,7 @@ import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.dto.*;
 import com.digital.money.msvc.api.account.service.ICheckId;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface IAccountService extends ICheckId<Account> {
     List<CardGetDTO> listAllCards(Long id) throws ResourceNotFoundException;
     CardGetDTO findCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException;
     void removeCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException;
+
+    CardTransactionGetDTO depositMoney(Long id, CardTransactionPostDTO cardTransactionPostDTO) throws ResourceNotFoundException, PaymentRequiredException, UnauthorizedException;
 }

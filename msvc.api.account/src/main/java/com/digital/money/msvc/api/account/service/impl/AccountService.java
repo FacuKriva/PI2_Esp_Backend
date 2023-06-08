@@ -132,4 +132,10 @@ public class AccountService implements IAccountService {
         cardService.deleteCard(account, cardId);
     }
 
+    @Transactional
+    @Override
+    public CardTransactionGetDTO depositMoney(Long id, CardTransactionPostDTO cardTransactionPostDTO) throws ResourceNotFoundException, PaymentRequiredException, UnauthorizedException {
+        return transactionService.processCardTransaction(id, cardTransactionPostDTO);
+    }
+
 }
