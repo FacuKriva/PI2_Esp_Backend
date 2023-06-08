@@ -61,4 +61,9 @@ public class CardPostDTO {
     @Pattern(message = "The cardType must only contain letters and spaces"
             , regexp = "^[a-zA-Z\\s\\~\\´\\á\\é\\í\\ó\\ú\\ñ\\Á\\É\\Í\\Ó\\Ú\\Ñ]*$")
     private String cardType;
+
+    @JsonProperty("cardBalance")
+    @NotNull(message = "The cardBalance cannot be empty")
+    @Digits(integer = 13, fraction = 2, message = "The cardBalance must be a number with two decimal places")
+    private Double cardBalance;
 }
