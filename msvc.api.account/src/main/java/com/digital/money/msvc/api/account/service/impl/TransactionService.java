@@ -70,7 +70,7 @@ public class TransactionService implements ITransactionService {
 
     @Transactional
     @Override
-    public CardTransactionGetDTO processCardTransaction(Long id, CardTransactionPostDTO cardTransactionPostDTO) throws ResourceNotFoundException, ForbiddenException, PaymentRequiredException {
+    public CardTransactionGetDTO processCardTransaction(Long id, CardTransactionPostDTO cardTransactionPostDTO) throws ResourceNotFoundException, ForbiddenException, PaymentRequiredException, BadRequestException {
         Card card = cardRepository.findByCardId(cardTransactionPostDTO.getCardId())
                 .orElseThrow(() -> new ResourceNotFoundException("The card doesn't exist"));
 
@@ -84,6 +84,11 @@ public class TransactionService implements ITransactionService {
         }
         if (card.getCardBalance() < cardTransactionPostDTO.getAmount()) {
             throw new PaymentRequiredException("The card doesn't have enough balance");
+        }
+        if (cardTransactionPostDTO.getAmount() == 0.0) {
+            throw new BadRequestException("The amount can't be 0. Please enter a valid amount");
+        } else if (cardTransactionPostDTO.getAmount() < 0.0) {
+            throw new BadRequestException("The amount can't be negative. Please enter a valid amount");
         }
 
         Transaction transaction = transactionMapper.cTPDTOToTransaction(cardTransactionPostDTO);
