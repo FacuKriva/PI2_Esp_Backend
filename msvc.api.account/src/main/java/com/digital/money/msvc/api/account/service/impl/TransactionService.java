@@ -93,7 +93,7 @@ public class TransactionService implements ITransactionService {
                 cardGetDTO.getBank() + " " + card.getCardType());
         transaction.setFromCvu(String.valueOf(card.getCardNumber()));
         transaction.setToCvu(account.getCvu());
-        transaction.setType(TransactionType.DEPOSIT);
+        transaction.setType(TransactionType.INCOMING);
         transaction.setAccount(account);
 
         card.setCardBalance(card.getCardBalance() - cardTransactionPostDTO.getAmount());
