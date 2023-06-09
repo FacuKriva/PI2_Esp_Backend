@@ -19,5 +19,5 @@ public interface IAccountService extends ICheckId<Account> {
     CardGetDTO findCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException;
     void removeCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException;
 
-    CardTransactionGetDTO depositMoney(Long id, CardTransactionPostDTO cardTransactionPostDTO) throws ResourceNotFoundException, PaymentRequiredException, UnauthorizedException;
+    CardTransactionGetDTO depositMoney(Long id, CardTransactionPostDTO cardTransactionPostDTO) throws ResourceNotFoundException, PaymentRequiredException, ForbiddenException;
 }

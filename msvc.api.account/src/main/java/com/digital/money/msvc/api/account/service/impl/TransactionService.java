@@ -70,7 +70,7 @@ public class TransactionService implements ITransactionService {
 
     @Transactional
     @Override
-    public CardTransactionGetDTO processCardTransaction(Long id, CardTransactionPostDTO cardTransactionPostDTO) throws ResourceNotFoundException, UnauthorizedException, PaymentRequiredException {
+    public CardTransactionGetDTO processCardTransaction(Long id, CardTransactionPostDTO cardTransactionPostDTO) throws ResourceNotFoundException, ForbiddenException, PaymentRequiredException {
         Card card = cardRepository.findByCardId(cardTransactionPostDTO.getCardId())
                 .orElseThrow(() -> new ResourceNotFoundException("The card doesn't exist"));
 
@@ -80,7 +80,7 @@ public class TransactionService implements ITransactionService {
                 .orElseThrow(() -> new ResourceNotFoundException("The account doesn't exist"));
 
         if (!card.getAccount().getAccountId().equals(id)) {
-            throw new UnauthorizedException("The card doesn't belong to the account");
+            throw new ForbiddenException("The card doesn't belong to the account");
         }
         if (card.getCardBalance() < cardTransactionPostDTO.getAmount()) {
             throw new PaymentRequiredException("The card doesn't have enough balance");
