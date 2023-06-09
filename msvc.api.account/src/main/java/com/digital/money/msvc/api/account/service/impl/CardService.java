@@ -69,8 +69,16 @@ public class CardService implements ICardService{
     }
 
     @Override
-    public CardGetDTO findCardById(Account account, Long cardId) throws ResourceNotFoundException {
+    public CardGetDTO findCardById(Account account, Long cardId) throws ResourceNotFoundException, ForbiddenException {
         Optional<Card> entityResponse = cardRepository.findByCardId(cardId);
+
+        if (entityResponse.isPresent()) {
+            Card card = entityResponse.get();
+            if (!card.getAccount().getAccountId().equals(account.getAccountId())) {
+                throw new ForbiddenException("The card you are trying to select belongs to another " +
+                        "account.");
+            }
+        }
 
         if (entityResponse.isPresent()) {
             Card card = entityResponse.get();

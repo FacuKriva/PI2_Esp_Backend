@@ -63,7 +63,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({ForbiddenException.class})
     public ResponseEntity<Object> processErrorUnauthorized(ForbiddenException ex, HttpServletRequest request) {
         log.error(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ForbiddenResponse(ex.getMessage(), request.getRequestURI()));
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ForbiddenResponse(ex.getMessage(), request.getRequestURI()));
     }
 
     @ExceptionHandler({PaymentRequiredException.class})

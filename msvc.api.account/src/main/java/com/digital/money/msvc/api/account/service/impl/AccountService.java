@@ -121,7 +121,7 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public CardGetDTO findCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException {
+    public CardGetDTO findCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException, ForbiddenException {
         Account account = checkId(id);
         return cardService.findCardById(account, cardId);
     }
