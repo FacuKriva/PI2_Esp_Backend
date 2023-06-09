@@ -45,14 +45,9 @@ public class TransactionService implements ITransactionService {
     }
 
     @Transactional(readOnly = true)
-    public LastFiveTransactionDto getLastFive(Long id) throws ResourceNotFoundException {
-
-        Optional<Account> account = accountRepository.findById(id);
-        if (account.isEmpty()) {
-            throw new ResourceNotFoundException("The account doesn't exist");
-        }
+    public LastFiveTransactionDto getLastFive(Long id, Account account) throws ResourceNotFoundException {
         List<Transaction> list = transactionRepository.getLastFive(id).get();
-        return new LastFiveTransactionDto(accountMapper.toAccountGetDto(account.get()), list);
+        return new LastFiveTransactionDto(accountMapper.toAccountGetDto(account), list);
     }
 
     @Override

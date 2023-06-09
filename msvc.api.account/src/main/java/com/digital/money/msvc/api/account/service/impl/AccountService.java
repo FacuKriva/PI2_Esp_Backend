@@ -1,6 +1,9 @@
 package com.digital.money.msvc.api.account.service.impl;
 
-import com.digital.money.msvc.api.account.handler.*;
+import com.digital.money.msvc.api.account.handler.AlreadyRegisteredException;
+import com.digital.money.msvc.api.account.handler.BadRequestException;
+import com.digital.money.msvc.api.account.handler.ForbiddenException;
+import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.dto.*;
@@ -10,6 +13,7 @@ import com.digital.money.msvc.api.account.utils.KeysGenerator;
 import com.digital.money.msvc.api.account.utils.mapper.AccountMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
-import org.json.JSONObject;
 
 @Slf4j
 @Service
@@ -49,7 +52,8 @@ public class AccountService implements IAccountService {
     @Transactional(readOnly = true)
     @Override
     public LastFiveTransactionDto findAllByAccountId(Long id) throws ResourceNotFoundException  {
-        return transactionService.getLastFive(id);
+        Account account = checkId(id);
+        return transactionService.getLastFive(id,account);
     }
 
     @Transactional
@@ -103,13 +107,6 @@ public class AccountService implements IAccountService {
         }
         return account.get();
     }
-
-//    private void checkUnique(Account account) throws AlreadyRegisteredException {
-//        String alias = account.getAlias();
-//        if (accountRepository.aliasUnique(alias, account.getAccountId()).isPresent()) {
-//            throw new AlreadyRegisteredException("The user with alias " + alias + " is already registered");
-//        }
-//    }
 
     @Transactional
     @Override

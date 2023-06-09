@@ -1,6 +1,8 @@
 package com.digital.money.msvc.api.account.controller;
 
-import com.digital.money.msvc.api.account.handler.*;
+import com.digital.money.msvc.api.account.handler.AlreadyRegisteredException;
+import com.digital.money.msvc.api.account.handler.BadRequestException;
+import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
 import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.dto.AliasUpdate;
 import com.digital.money.msvc.api.account.model.dto.CardPostDTO;

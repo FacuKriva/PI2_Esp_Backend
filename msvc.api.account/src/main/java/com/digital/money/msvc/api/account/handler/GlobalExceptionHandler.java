@@ -4,6 +4,7 @@ import com.digital.money.msvc.api.account.handler.responseError.AlreadyRegistere
 import com.digital.money.msvc.api.account.handler.responseError.BadRequestResponse;
 import com.digital.money.msvc.api.account.handler.responseError.ForbiddenResponse;
 import com.digital.money.msvc.api.account.handler.responseError.NotFoundResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 @Slf4j
 @ControllerAdvice
