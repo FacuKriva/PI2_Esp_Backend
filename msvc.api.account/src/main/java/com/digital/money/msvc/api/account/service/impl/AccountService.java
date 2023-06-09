@@ -42,18 +42,13 @@ public class AccountService implements IAccountService {
         this.cardService = cardService;
     }
 
+    //* ///////// ACCOUNT ///////// *//
     @Override
-    public AccountGetDto findById(Long id) throws ResourceNotFoundException {
+    public AccountGetDto findById(Long id, String token) throws ResourceNotFoundException, ForbiddenException, JSONException {
         Account account = checkId(id);
+        validateAccountBelongsUser(account, token);
         AccountGetDto accountGetDto = accountMapper.toAccountGetDto(account);
         return accountGetDto;
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public LastFiveTransactionDto findAllByAccountId(Long id) throws ResourceNotFoundException  {
-        Account account = checkId(id);
-        return transactionService.getLastFive(id,account);
     }
 
     @Transactional
@@ -81,8 +76,9 @@ public class AccountService implements IAccountService {
 
     @Transactional
     @Override
-    public String updateAlias(Long id, AliasUpdate aliasUpdate) throws AlreadyRegisteredException, ResourceNotFoundException, BadRequestException {
+    public String updateAlias(Long id, AliasUpdate aliasUpdate, String token) throws AlreadyRegisteredException, ResourceNotFoundException, BadRequestException, ForbiddenException, JSONException {
         Account account = checkId(id);
+        validateAccountBelongsUser(account, token);
         String newAlias = aliasUpdate.buildAlias().toLowerCase();
 
         if (newAlias.equals(account.getAlias())) {
@@ -99,6 +95,66 @@ public class AccountService implements IAccountService {
         }
     }
 
+    //* ///////// TRANSACTIONS ///////// *//
+    @Transactional(readOnly = true)
+    @Override
+    public ListTransactionDto findLastFiveTransactions(Long id, String token) throws ResourceNotFoundException, ForbiddenException, JSONException {
+        Account account = checkId(id);
+        validateAccountBelongsUser(account, token);
+        return transactionService.getLastFive(id,account);
+    }
+
+    @Override
+    public ListTransactionDto findAllTransactions(Long id, String token) throws ResourceNotFoundException, ForbiddenException, JSONException {
+        Account account = checkId(id);
+        validateAccountBelongsUser(account, token);
+
+        return transactionService.findAllSorted(id,account);
+    }
+
+    @Override
+    public Transaction findTransactionById(Long accountId, Long transactionId, String token) throws ResourceNotFoundException, ForbiddenException, JSONException {
+        Account account = checkId(accountId);
+        validateAccountBelongsUser(account, token);
+
+        return transactionService.findTransactionById(accountId,transactionId);
+    }
+
+    //* ///////// CARDS ///////// *//
+    @Transactional
+    @Override
+    public CardGetDTO addCard(Long id, CardPostDTO cardPostDTO, String token) throws ResourceNotFoundException, AlreadyRegisteredException, BadRequestException, ForbiddenException, JSONException {
+        Account account = checkId(id);
+        validateAccountBelongsUser(account, token);
+
+        return cardService.createCard(account, cardPostDTO);
+    }
+
+    @Override
+    public List<CardGetDTO> listAllCards(Long id, String token) throws ResourceNotFoundException, ForbiddenException, JSONException {
+        Account account = checkId(id);
+        validateAccountBelongsUser(account, token);
+
+        return cardService.listCards(account);
+    }
+
+    @Override
+    public CardGetDTO findCardFromAccount(Long id, Long cardId, String token) throws ResourceNotFoundException, ForbiddenException, JSONException {
+        Account account = checkId(id);
+        validateAccountBelongsUser(account, token);
+
+        return cardService.findCardById(account, cardId);
+    }
+
+    @Override
+    public void removeCardFromAccount(Long id, Long cardId, String token) throws ResourceNotFoundException, ForbiddenException, JSONException {
+        Account account = checkId(id);
+        validateAccountBelongsUser(account, token);
+
+        cardService.deleteCard(account, cardId);
+    }
+
+    //* ///////// UTILS ///////// *//
     @Override
     public Account checkId(Long id) throws ResourceNotFoundException {
         Optional<Account> account = accountRepository.findById(id);
@@ -108,49 +164,19 @@ public class AccountService implements IAccountService {
         return account.get();
     }
 
-    @Transactional
-    @Override
-    public CardGetDTO addCard(Long id, CardPostDTO cardPostDTO) throws ResourceNotFoundException, AlreadyRegisteredException, BadRequestException {
-        Account account = checkId(id);
-        return cardService.createCard(account, cardPostDTO);
-    }
-
-    @Override
-    public List<CardGetDTO> listAllCards(Long id) throws ResourceNotFoundException {
-        Account account = checkId(id);
-        return cardService.listCards(account);
-    }
-
-    @Override
-    public CardGetDTO findCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException {
-        Account account = checkId(id);
-        return cardService.findCardById(account, cardId);
-    }
-
-    @Override
-    public void removeCardFromAccount(Long id, Long cardId) throws ResourceNotFoundException {
-        Account account = checkId(id);
-        cardService.deleteCard(account, cardId);
-    }
-
-
-    @Override
-    public Transaction findTransactionById(Long accountId, Long transactionId, String token) throws Exception {
-        String userId = decodeToken(token, "user_id");
-        Long userIdL = Long.valueOf(userId);
-
-        if(accountId!=userIdL)
-            throw new ForbiddenException("You don't have access to that account");
-
-        return transactionService.findTransactionById(accountId,transactionId);
-
-    }
-
     private String decodeToken(String token, String search) throws JSONException {
         String[] jwtParts = token.split("\\.");
         JSONObject payload = new JSONObject(new String(Base64.getUrlDecoder().decode(jwtParts[1])));
         String keyInfo = payload.getString(search);
         return keyInfo;
+    }
+
+    private void validateAccountBelongsUser(Account account, String token) throws JSONException, ForbiddenException {
+        String userId = decodeToken(token, "user_id");
+        Long userIdL = Long.valueOf(userId);
+
+        if(account.getUserId()!=userIdL)
+            throw new ForbiddenException("You don't have access to that account");
     }
 
 }

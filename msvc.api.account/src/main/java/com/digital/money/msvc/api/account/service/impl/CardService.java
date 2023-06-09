@@ -98,6 +98,7 @@ public class CardService implements ICardService{
         return null;
     }
 
+    //* ///////// UTILS ///////// *//
     private boolean checkIfCardExists(Long cardNumber) {
         return cardRepository.findByCardNumber(cardNumber).isPresent();
     }

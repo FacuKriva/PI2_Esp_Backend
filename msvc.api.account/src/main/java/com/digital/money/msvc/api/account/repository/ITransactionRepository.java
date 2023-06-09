@@ -15,5 +15,6 @@ public interface ITransactionRepository extends JpaRepository<Transaction, Long>
     @Query("SELECT t FROM Transaction t WHERE t.account.accountId = :id ORDER BY t.realizationDate DESC LIMIT 5")
     Optional<List<Transaction>> getLastFive(@Param("id") Long id);
     Optional<Transaction> findByAccount_AccountIdAndTransactionId(Long accountId, Long transactionId);
-
+    @Query("SELECT t FROM Transaction t WHERE t.account.accountId = :id ORDER BY t.realizationDate DESC")
+    Optional<List<Transaction>> findAllSorted(@Param("id") Long id);
 }
