@@ -29,4 +29,7 @@ public class CardGetDTO {
 
     @JsonProperty("cardNetwork")
     private String cardNetwork;
+
+    @JsonProperty("cardType")
+    private String cardType;
 }

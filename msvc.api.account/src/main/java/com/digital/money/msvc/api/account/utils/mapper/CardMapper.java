@@ -20,6 +20,7 @@ public abstract class CardMapper {
         cardGetDTO.setCardHolder(card.getCardHolder());
         cardGetDTO.setBank(card.getBank());
         cardGetDTO.setCardNetwork(card.getCardNetwork());
+        cardGetDTO.setCardType(card.getCardType());
         return cardGetDTO;
     }
 
