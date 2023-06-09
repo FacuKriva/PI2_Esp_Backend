@@ -1,8 +1,6 @@
 package com.digital.money.msvc.api.account.handler;
 
-import com.digital.money.msvc.api.account.handler.responseError.AlreadyRegisteredResponse;
-import com.digital.money.msvc.api.account.handler.responseError.BadRequestResponse;
-import com.digital.money.msvc.api.account.handler.responseError.NotFoundResponse;
+import com.digital.money.msvc.api.account.handler.responseError.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,4 +60,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
+    @ExceptionHandler({UnauthorizedException.class})
+    public ResponseEntity<Object> processErrorUnauthorized(UnauthorizedException ex, HttpServletRequest request) {
+        log.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new UnauthorizedResponse(ex.getMessage(), request.getRequestURI()));
+    }
+
+    @ExceptionHandler({PaymentRequiredException.class})
+    public ResponseEntity<Object> processErrorPaymentRequired(PaymentRequiredException ex, HttpServletRequest request) {
+        log.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).body(new PaymentRequiredResponse(ex.getMessage(), request.getRequestURI()));
+    }
 }
