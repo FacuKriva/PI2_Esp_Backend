@@ -1,20 +1,11 @@
 package com.digital.money.msvc.api.account.service.impl;
 
-import com.digital.money.msvc.api.account.handler.PaymentRequiredException;
-import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
-import com.digital.money.msvc.api.account.handler.UnauthorizedException;
-import com.digital.money.msvc.api.account.model.Account;
-import com.digital.money.msvc.api.account.model.Card;
-import com.digital.money.msvc.api.account.model.Transaction;
-import com.digital.money.msvc.api.account.model.TransactionType;
+import com.digital.money.msvc.api.account.handler.*;
+import com.digital.money.msvc.api.account.model.*;
 import com.digital.money.msvc.api.account.model.dto.*;
-import com.digital.money.msvc.api.account.repository.IAccountRepository;
-import com.digital.money.msvc.api.account.repository.ICardRepository;
-import com.digital.money.msvc.api.account.repository.ITransactionRepository;
+import com.digital.money.msvc.api.account.repository.*;
 import com.digital.money.msvc.api.account.service.interfaces.ITransactionService;
-import com.digital.money.msvc.api.account.utils.mapper.AccountMapper;
-import com.digital.money.msvc.api.account.utils.mapper.CardMapper;
-import com.digital.money.msvc.api.account.utils.mapper.TransactionMapper;
+import com.digital.money.msvc.api.account.utils.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +22,7 @@ public class TransactionService implements ITransactionService {
     protected ITransactionRepository transactionRepository;
     protected IAccountRepository accountRepository;
     protected ICardRepository cardRepository;
-    private CardMapper cardMapper;
+    protected CardMapper cardMapper;
 
     @Autowired
     protected TransactionService(TransactionMapper transactionMapper, AccountMapper accountMapper, ITransactionRepository transactionRepository, IAccountRepository accountRepository, ICardRepository cardRepository, CardMapper cardMapper) {

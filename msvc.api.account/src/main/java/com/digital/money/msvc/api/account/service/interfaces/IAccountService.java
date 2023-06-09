@@ -4,7 +4,6 @@ import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.dto.*;
 import com.digital.money.msvc.api.account.service.ICheckId;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
