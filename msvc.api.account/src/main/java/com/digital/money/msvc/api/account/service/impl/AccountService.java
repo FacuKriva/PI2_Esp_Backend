@@ -174,9 +174,8 @@ public class AccountService implements IAccountService {
     private void validateAccountBelongsUser(Account account, String token) throws JSONException, ForbiddenException {
         String userId = decodeToken(token, "user_id");
         Long userIdL = Long.valueOf(userId);
-
-        if(account.getUserId()!=userIdL)
+        if(account.getUserId()!=userIdL){
             throw new ForbiddenException("You don't have access to that account");
+        }
     }
-
 }
