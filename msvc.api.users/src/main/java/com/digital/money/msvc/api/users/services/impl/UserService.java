@@ -88,17 +88,14 @@ public class UserService implements IUserService {
     @Transactional
     @Override
     public UserDTO updateUser(Long userId, UpdateUserRequestDTO userDto, String token) throws UserNotFoundException, HasAlreadyBeenRegistred, PasswordNotChangedException, BadRequestException, ForbiddenException, JSONException {
-
+        Optional<User> userEntity = userRepository.findByUserId(userId);
+        if (userEntity.isEmpty()) {
+            throw new UserNotFoundException("The user is not registered");
+        }
         String tokenUserId = decodeToken(token, "user_id");
         Long tokenUserIdL = Long.valueOf(tokenUserId);
         if(userId!=tokenUserIdL){
             throw new ForbiddenException("You don't have access to that user");
-        }
-
-        Optional<User> userEntity = userRepository.findByUserId(userId);
-
-        if (userEntity.isEmpty()) {
-            throw new UserNotFoundException("The user is not registered");
         }
 
         Optional<User> entityResponseDni = userRepository.findByDni(userDto.getDni());
@@ -153,16 +150,15 @@ public class UserService implements IUserService {
     @Transactional(readOnly = true)
     @Override
     public UserWithAccountDTO getUserById(Long userId, String token) throws UserNotFoundException, ForbiddenException, JSONException {
-
+        User user = userRepository.findByUserId(userId).orElseThrow(
+                () -> new UserNotFoundException(String
+                        .format("The user with Id %d was not found", userId))
+        );
         String tokenUserId = decodeToken(token, "user_id");
         Long tokenUserIdL = Long.valueOf(tokenUserId);
         if(userId!=tokenUserIdL){
             throw new ForbiddenException("You don't have access to that user");
         }
-        User user = userRepository.findByUserId(userId).orElseThrow(
-                () -> new UserNotFoundException(String
-                        .format("The user with Id %d was not found", userId))
-        );
         AccountDTO account = accountClient.getAccountById(user.getAccountId(), token);
         System.out.println(account.toString());
         UserDTO userResponse = userMapper.mapToDto(user, account.getCvu(), account.getAlias());
@@ -176,15 +172,15 @@ public class UserService implements IUserService {
     @Transactional(readOnly = true)
     @Override
     public UserDTO getUserByDni(Long dni, String token) throws UserNotFoundException, JSONException, ForbiddenException {
+        User user = userRepository.findByDni(dni).orElseThrow(
+                () -> new UserNotFoundException(String
+                        .format("The user with dni %d was not found", dni))
+        );
         String tokenUserDni = decodeToken(token, "dni");
         Long tokenUserDniL = Long.valueOf(tokenUserDni);
         if(dni!=tokenUserDniL){
             throw new ForbiddenException("You don't have access to that user");
         }
-        User user = userRepository.findByDni(dni).orElseThrow(
-                () -> new UserNotFoundException(String
-                        .format("The user with dni %d was not found", dni))
-        );
 
         AccountDTO account = accountClient.getAccountById(user.getAccountId(), token);
         return userMapper.mapToDto(user, account.getCvu(), account.getAlias());
