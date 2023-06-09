@@ -2,18 +2,12 @@ package com.digital.money.msvc.api.users.controllers;
 
 import com.digital.money.msvc.api.users.controllers.requestDto.CreateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.NewPassDTO;
-import com.digital.money.msvc.api.users.controllers.requestDto.update.UpdateUserRequestDTO;
 import com.digital.money.msvc.api.users.controllers.requestDto.VerficationRequestDTO;
+import com.digital.money.msvc.api.users.controllers.requestDto.update.UpdateUserRequestDTO;
 import com.digital.money.msvc.api.users.dtos.UserDTO;
-import com.digital.money.msvc.api.users.exceptions.BadRequestException;
-import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
-import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
-import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
+import com.digital.money.msvc.api.users.exceptions.*;
 import com.digital.money.msvc.api.users.services.impl.UserService;
 import jakarta.validation.Valid;
-
-import jakarta.ws.rs.QueryParam;
-
 import org.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,28 +43,31 @@ public class UserController {
      */
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable("id") Long userId,
-                                        @Valid @RequestBody final UpdateUserRequestDTO userDto) throws UserNotFoundException, HasAlreadyBeenRegistred, PasswordNotChangedException, BadRequestException {
+                                        @Valid @RequestBody final UpdateUserRequestDTO userDto,
+                                        @RequestHeader("Authorization") String token) throws UserNotFoundException, HasAlreadyBeenRegistred, PasswordNotChangedException, BadRequestException, ForbiddenException, JSONException {
 
         if (Objects.isNull(userDto)) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        UserDTO userUpdate = userService.updateUser(userId, userDto);
+        UserDTO userUpdate = userService.updateUser(userId, userDto, token);
         return ResponseEntity.status(HttpStatus.OK).body(userUpdate);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findByUserId(@PathVariable("id") Long userId) throws UserNotFoundException {
-        return ResponseEntity.ok(userService.getUserById(userId));
+    public ResponseEntity<?> findByUserId(@PathVariable("id") Long userId,
+                                          @RequestHeader("Authorization") String token) throws UserNotFoundException, ForbiddenException, JSONException {
+        return ResponseEntity.ok(userService.getUserById(userId, token));
     }
 
     @GetMapping("/dni")
-    public ResponseEntity<?> findByDni(@RequestParam("dni") Long dni) throws UserNotFoundException {
-        return ResponseEntity.ok(userService.getUserByDni(dni));
+    public ResponseEntity<?> findByDni(@RequestParam("dni") Long dni,
+                                       @RequestHeader("Authorization") String token) throws UserNotFoundException, ForbiddenException, JSONException {
+        return ResponseEntity.ok(userService.getUserByDni(dni,token));
     }
 
     @GetMapping("/email")
-    public ResponseEntity<?> findByEmail(@RequestParam("email") String email) throws UserNotFoundException {
+    public ResponseEntity<?> findByEmail(@RequestParam("email") String email) throws UserNotFoundException, ForbiddenException, JSONException {
         return ResponseEntity.ok(userService.getUserByEmail(email));
     }
 
