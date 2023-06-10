@@ -19,6 +19,7 @@ public class SpringSecurityConfig {
         return http.authorizeExchange()
                 //.pathMatchers("/users/**").hasRole("ADMIN")
                 .pathMatchers("/security/oauth/**").permitAll()
+                .pathMatchers(HttpMethod.GET,"/security/tokens/revoke/**").permitAll()
                 .pathMatchers(HttpMethod.POST,"/users").permitAll()
                 .pathMatchers(HttpMethod.PUT,"/users/forgot-password").permitAll()
                 .pathMatchers(HttpMethod.PUT,"/users/reset-password/**").permitAll()
