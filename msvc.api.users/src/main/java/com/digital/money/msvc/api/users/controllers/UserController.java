@@ -67,8 +67,9 @@ public class UserController {
     }
 
     @GetMapping("/email")
-    public ResponseEntity<?> findByEmail(@RequestParam("email") String email) throws UserNotFoundException, ForbiddenException, JSONException {
-        return ResponseEntity.ok(userService.getUserByEmail(email));
+    public ResponseEntity<?> findByEmail(@RequestParam("email") String email,
+                                         @RequestHeader("Authorization") String token) throws UserNotFoundException, ForbiddenException, JSONException {
+        return ResponseEntity.ok(userService.getUserByEmail(email, token));
     }
 
     @PutMapping("/update/attempts/{dni}")

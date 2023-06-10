@@ -17,6 +17,7 @@ import com.digital.money.msvc.api.users.mappers.UserMapper;
 import com.digital.money.msvc.api.users.repositorys.IRoleRepository;
 import com.digital.money.msvc.api.users.repositorys.IUserRepository;
 import com.digital.money.msvc.api.users.services.IUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,8 +29,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Base64;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class UserService implements IUserService {
 
@@ -178,7 +181,7 @@ public class UserService implements IUserService {
         );
         String tokenUserDni = decodeToken(token, "dni");
         Long tokenUserDniL = Long.valueOf(tokenUserDni);
-        if(dni!=tokenUserDniL){
+        if(!Objects.equals(dni, tokenUserDniL)){
             throw new ForbiddenException("You don't have access to that user");
         }
 
@@ -189,8 +192,14 @@ public class UserService implements IUserService {
 
     @Transactional(readOnly = true)
     @Override
-    public AuthUserDTO getUserByEmail(String email) throws UserNotFoundException{
+    public AuthUserDTO getUserByEmail(String email, String token) throws UserNotFoundException, JSONException, ForbiddenException {
         String emailInLowercase = email.toLowerCase();
+
+        String tokenEmail = decodeToken(token, "email");
+        if(!email.equals(tokenEmail)){
+            throw new ForbiddenException("You don't have access to that user");
+        }
+
         User user = userRepository.findByEmail(emailInLowercase).orElseThrow(
                 () -> new UserNotFoundException(String
                         .format("The user with email %s was not found", email))

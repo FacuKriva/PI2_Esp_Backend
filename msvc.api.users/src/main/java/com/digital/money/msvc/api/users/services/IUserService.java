@@ -21,7 +21,7 @@ public interface IUserService {
 
     UserDTO getUserByDni(Long dni, String token) throws UserNotFoundException, JSONException, ForbiddenException ;
 
-    AuthUserDTO getUserByEmail(String email) throws UserNotFoundException;
+    AuthUserDTO getUserByEmail(String email, String token) throws UserNotFoundException, JSONException, ForbiddenException;
 
     void updateAttempsFromUser(Long userId, boolean enabled, int attempts) throws UserNotFoundException;
 
