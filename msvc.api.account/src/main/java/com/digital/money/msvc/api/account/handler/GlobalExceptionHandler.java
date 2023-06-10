@@ -2,7 +2,10 @@ package com.digital.money.msvc.api.account.handler;
 
 import com.digital.money.msvc.api.account.handler.responseError.AlreadyRegisteredResponse;
 import com.digital.money.msvc.api.account.handler.responseError.BadRequestResponse;
+import com.digital.money.msvc.api.account.handler.responseError.ForbiddenResponse;
 import com.digital.money.msvc.api.account.handler.responseError.NotFoundResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import com.digital.money.msvc.api.account.handler.responseError.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +15,6 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 @Slf4j
 @ControllerAdvice
@@ -62,4 +63,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
+    @ExceptionHandler({ForbiddenException.class})
+    public ResponseEntity<Object> processErrorForbidden(ForbiddenException ex, HttpServletRequest request) {
+        log.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ForbiddenResponse(ex.getMessage(), request.getRequestURI()));
+    }
+
+    @ExceptionHandler({PaymentRequiredException.class})
+    public ResponseEntity<Object> processErrorPaymentRequired(PaymentRequiredException ex, HttpServletRequest request) {
+        log.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).body(new PaymentRequiredResponse(ex.getMessage(), request.getRequestURI()));
+    }
 }

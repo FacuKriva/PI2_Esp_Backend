@@ -17,6 +17,6 @@ public interface IUserFeignClient {
                             @RequestParam("enabled") boolean enabled,
                             @RequestParam("attempts") int attempts);
 
-    @GetMapping("/users/email")
+    @GetMapping("/users/loging")
     UserDTO findByEmail(@RequestParam String email);
 }

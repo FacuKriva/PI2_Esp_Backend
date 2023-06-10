@@ -7,17 +7,17 @@ import java.util.Calendar;
 
 @Getter
 @Setter
-public class NotFoundResponse {
+public class ForbiddenResponse {
     private long timestamp;
     private int status;
     private String error;
     private String message;
     private String path;
 
-    public NotFoundResponse(String message, String path) {
+    public ForbiddenResponse(String message, String path) {
         this.timestamp = Calendar.getInstance().getTimeInMillis();
-        this.status = 404;
-        this.error = "Not Found";
+        this.status = 403;
+        this.error = "Forbidden";
         this.message = message;
         this.path = path;
     }
