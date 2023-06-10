@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCards extends Variables {
 
     private static String token;
+    private static String token_id_4;
 
     static ExtentSparkReporter spark = new ExtentSparkReporter("target/CardsTestsReport.html");
     static ExtentReports extent;
@@ -47,8 +47,8 @@ public class TestCards extends Variables {
                     .basic(client_id, client_secret)
                     .contentType("application/x-www-form-urlencoded")
                     .formParam("grant_type", "password")
-                    .formParam("username", username_accounts)
-                    .formParam("password", password_accounts)
+                    .formParam("username", username)
+                    .formParam("password", password)
                     .basePath("/security/oauth/token")
                 .when()
                     .post()
@@ -81,7 +81,7 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 200 - OK");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Visualización exitosa de listas de tarjetas asociadas a la cuenta del usuario. Usuario logueado. ID de cuenta existente");
+        test.info("Visualización exitosa de listas de tarjetas asociadas a la cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
 
         Response response;
 
@@ -100,10 +100,14 @@ public class TestCards extends Variables {
                     .body("[0]",hasKey("card_id"))
                     .body("[0]",hasKey("alias"))
                     .body("[0]",hasKey("cardNumber"))
+                    .body("[0].cardNumber",containsString("****"))
                     .body("[0]",hasKey("cardHolder"))
-                    .body("[0]",hasKey("expirationDate"))
                     .body("[0]",hasKey("bank"))
+                    .body("[0]",hasKey("cardNetwork"))
                     .body("[0]",hasKey("cardType"))
+                    .body("[0]",not(hasKey("expirationDate")))
+                    .body("[0]",not(hasKey("cvv")))
+                    .body("$.size()", Matchers.greaterThanOrEqualTo(1))
                     .log().all()
                     .extract()
                     .response();
@@ -123,13 +127,14 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 204 - No Content");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Visualización exitosa de listas de tarjetas asociadas a la cuenta del usuario. Usuario sin tarjetas asociadas. Usuario logueado. ID de cuenta existente");
+        test.info("Visualización exitosa de listas de tarjetas asociadas a la cuenta del usuario. Usuario sin tarjetas asociadas. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
 
+        Login_Id_4();
 
         Response response;
 
         response = given()
-                    .header("Authorization", "Bearer " + token)
+                    .header("Authorization", "Bearer " + token_id_4)
                     .basePath("/accounts/{id}/cards")
                     .pathParams("id", 4).
                 when().
@@ -157,7 +162,7 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 401 - Unauthorized");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Visualización fallida de listas de tarjetas asociadas a la cuenta del usuario. Usuario no logueado. ID de cuenta existente");
+        test.info("Visualización fallida de listas de tarjetas asociadas a la cuenta del usuario. Usuario no logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
 
         Response response;
 
@@ -189,7 +194,7 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 204 - Not Found");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Visualización fallida de listas de tarjetas asociadas a la cuenta del usuario. Usuario logueado. ID de cuenta inexistente");
+        test.info("Visualización fallida de listas de tarjetas asociadas a la cuenta del usuario. Usuario logueado. ID de cuenta inexistente.");
 
         Response response;
 
@@ -213,6 +218,46 @@ public class TestCards extends Variables {
 
     }
 
+    //TC_Tarjetas_0032
+    @Tag("Smoke")
+    @Test
+    //@Order()
+    public void ViewAllCardsFailure403() throws InterruptedException{
+
+        test = extent.createTest("TC_Tarjetas_0032 - GET all cards by account id - Status Code: 403 - Forbidden ");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 403 - Forbidden");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Visualización fallida de listas de tarjetas asociadas a la cuenta del usuario. Usuario no logueado. ID de cuenta existente. El ID de cuenta no corresponde al usuario");
+
+        Response response;
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/cards")
+                    .pathParams("id", 1).
+                when().
+                    get().
+
+                then()
+                    .assertThat()
+                    .statusCode(403)
+                    .statusCode(HttpStatus.SC_FORBIDDEN)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Forbidden"))
+                    .body("message", Matchers.equalTo("You don't have access to that account"))
+                    .log().all()
+                    .extract()
+                    .response();
+
+    }
+
+
     //**------------------------------- GET a card by card id (/accounts/{id}/cards) ------------------------------**
 
     //TC_Tarjetas_0005
@@ -228,7 +273,7 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 200 - OK");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Visualización exitosa de los datos de una tarjeta en particular asociada a la cuenta de un usuario. Usuario logueado. ID de cuenta existente. ID de tarjeta existente");
+        test.info("Visualización exitosa de los datos de una tarjeta en particular asociada a la cuenta de un usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. ID de tarjeta existente");
 
         Response response;
 
@@ -248,10 +293,13 @@ public class TestCards extends Variables {
                     .body("$",hasKey("card_id"))
                     .body("$",hasKey("alias"))
                     .body("$",hasKey("cardNumber"))
+                    .body("cardNumber",containsString("****"))
                     .body("$",hasKey("cardHolder"))
-                    .body("$",hasKey("expirationDate"))
                     .body("$",hasKey("bank"))
+                    .body("$",hasKey("cardNetwork"))
                     .body("$",hasKey("cardType"))
+                    .body("$",not(hasKey("expirationDate")))
+                    .body("$",not(hasKey("cvv")))
                     .log().all()
                     .extract()
                     .response();
@@ -272,7 +320,7 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 401 - Unauthorized");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Visualización fallida de los datos de una tarjeta en particular asociada a la cuenta de un usuario.Usuario no logueado. ID de cuenta existente. ID de tarjeta existente");
+        test.info("Visualización fallida de los datos de una tarjeta en particular asociada a la cuenta de un usuario.Usuario no logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. ID de tarjeta existente");
 
 
         Response response;
@@ -346,7 +394,7 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 404 - Not Found");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Visualización fallida de los datos de una tarjeta en particular asociada a la cuenta de un usuario.Usuario logueado. ID de cuenta existente. ID de tarjeta inexistente");
+        test.info("Visualización fallida de los datos de una tarjeta en particular asociada a la cuenta de un usuario.Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. ID de tarjeta inexistente");
 
         Response response;
 
@@ -365,6 +413,45 @@ public class TestCards extends Variables {
                     .body("$", Matchers.instanceOf(Map.class))
                     .body("$",hasKey("error"))
                     .body("error", Matchers.equalTo("Not Found"))
+                    .log().all()
+                    .extract()
+                    .response();
+
+    }
+
+    //TC_Tarjetas_0033
+    @Tag("Smoke")
+    @Test
+    //@Order()
+    public void ViewACardFailure403() throws InterruptedException {
+
+        test = extent.createTest("TC_Tarjetas_0033 - GET a card by id - Status Code: 403 - Forbidden ");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 403 - Forbidden");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Visualización fallida de los datos de una tarjeta en particular asociada a la cuenta de un usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta no corresponde al usuario. ID de tarjeta inexistente");
+
+        Response response;
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/cards/{idCard}")
+                    .pathParams("id", 1)
+                    .pathParams("idCard", 1).
+                when().
+                    get().
+                then()
+                    .assertThat()
+                    .statusCode(403)
+                    .statusCode(HttpStatus.SC_FORBIDDEN)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Forbidden"))
+                    .body("message", Matchers.equalTo("You don't have access to that account"))
                     .log().all()
                     .extract()
                     .response();
@@ -1024,6 +1111,27 @@ public class TestCards extends Variables {
                     .extract()
                     .response();
     }
+
+    //**----------------------------------------------------- AUX ------------------------------------------------**
+
+    public static void Login_Id_4() {
+        token_id_4 = given()
+                .auth().preemptive()
+                .basic(client_id, client_secret)
+                .contentType("application/x-www-form-urlencoded")
+                .formParam("grant_type", "password")
+                //account_id: 4
+                .formParam("username", "amaria@mail.com")
+                .formParam("password", password_accounts)
+                .basePath("/security/oauth/token")
+                .when()
+                .post()
+                .then()
+                .log().all()
+                .extract()
+                .jsonPath().get("access_token");
+    }
+
 
 
 }
