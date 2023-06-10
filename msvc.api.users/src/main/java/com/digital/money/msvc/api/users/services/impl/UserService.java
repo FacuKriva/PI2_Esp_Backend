@@ -12,10 +12,7 @@ import com.digital.money.msvc.api.users.dtos.UserWithAccountDTO;
 import com.digital.money.msvc.api.users.entities.Role;
 import com.digital.money.msvc.api.users.entities.User;
 import com.digital.money.msvc.api.users.entities.Verified;
-import com.digital.money.msvc.api.users.exceptions.BadRequestException;
-import com.digital.money.msvc.api.users.exceptions.HasAlreadyBeenRegistred;
-import com.digital.money.msvc.api.users.exceptions.PasswordNotChangedException;
-import com.digital.money.msvc.api.users.exceptions.UserNotFoundException;
+import com.digital.money.msvc.api.users.exceptions.*;
 import com.digital.money.msvc.api.users.mappers.UserMapper;
 import com.digital.money.msvc.api.users.repositorys.IRoleRepository;
 import com.digital.money.msvc.api.users.repositorys.IUserRepository;
@@ -90,12 +87,15 @@ public class UserService implements IUserService {
 
     @Transactional
     @Override
-    public UserDTO updateUser(Long userId, UpdateUserRequestDTO userDto) throws UserNotFoundException, HasAlreadyBeenRegistred, PasswordNotChangedException, BadRequestException {
-
+    public UserDTO updateUser(Long userId, UpdateUserRequestDTO userDto, String token) throws UserNotFoundException, HasAlreadyBeenRegistred, PasswordNotChangedException, BadRequestException, ForbiddenException, JSONException {
         Optional<User> userEntity = userRepository.findByUserId(userId);
-
         if (userEntity.isEmpty()) {
             throw new UserNotFoundException("The user is not registered");
+        }
+        String tokenUserId = decodeToken(token, "user_id");
+        Long tokenUserIdL = Long.valueOf(tokenUserId);
+        if(userId!=tokenUserIdL){
+            throw new ForbiddenException("You don't have access to that user");
         }
 
         Optional<User> entityResponseDni = userRepository.findByDni(userDto.getDni());
@@ -142,49 +142,55 @@ public class UserService implements IUserService {
         }
 
         User userResponse = userRepository.save(user);
-        AccountDTO account = accountClient.getAccountById(user.getAccountId());
+        AccountDTO account = accountClient.getAccountById(user.getAccountId(), token);
 
         return userMapper.mapToDto(userResponse, account.getCvu(), account.getAlias());
     }
 
     @Transactional(readOnly = true)
     @Override
-    public UserWithAccountDTO getUserById(Long userId) throws UserNotFoundException {
-
+    public UserWithAccountDTO getUserById(Long userId, String token) throws UserNotFoundException, ForbiddenException, JSONException {
         User user = userRepository.findByUserId(userId).orElseThrow(
                 () -> new UserNotFoundException(String
                         .format("The user with Id %d was not found", userId))
         );
-        AccountDTO account = accountClient.getAccountById(user.getAccountId());
+        String tokenUserId = decodeToken(token, "user_id");
+        Long tokenUserIdL = Long.valueOf(tokenUserId);
+        if(userId!=tokenUserIdL){
+            throw new ForbiddenException("You don't have access to that user");
+        }
+        AccountDTO account = accountClient.getAccountById(user.getAccountId(), token);
+        System.out.println(account.toString());
         UserDTO userResponse = userMapper.mapToDto(user, account.getCvu(), account.getAlias());
-
-        AccountDTO accountInfo = accountClient.getAccountById(userResponse.getAccountId());
 
         return UserWithAccountDTO.builder()
                 .user(userResponse)
-                .account(accountInfo)
+                .account(account)
                 .build();
     }
 
     @Transactional(readOnly = true)
     @Override
-    public UserDTO getUserByDni(Long dni) throws UserNotFoundException {
-
+    public UserDTO getUserByDni(Long dni, String token) throws UserNotFoundException, JSONException, ForbiddenException {
         User user = userRepository.findByDni(dni).orElseThrow(
                 () -> new UserNotFoundException(String
                         .format("The user with dni %d was not found", dni))
         );
+        String tokenUserDni = decodeToken(token, "dni");
+        Long tokenUserDniL = Long.valueOf(tokenUserDni);
+        if(dni!=tokenUserDniL){
+            throw new ForbiddenException("You don't have access to that user");
+        }
 
-        AccountDTO account = accountClient.getAccountById(user.getAccountId());
+        AccountDTO account = accountClient.getAccountById(user.getAccountId(), token);
         return userMapper.mapToDto(user, account.getCvu(), account.getAlias());
 
     }
 
     @Transactional(readOnly = true)
     @Override
-    public AuthUserDTO getUserByEmail(String email) throws UserNotFoundException {
+    public AuthUserDTO getUserByEmail(String email) throws UserNotFoundException{
         String emailInLowercase = email.toLowerCase();
-
         User user = userRepository.findByEmail(emailInLowercase).orElseThrow(
                 () -> new UserNotFoundException(String
                         .format("The user with email %s was not found", email))
@@ -302,4 +308,13 @@ public class UserService implements IUserService {
                 .availableBalance(initialBalance)
                 .build();
     }
+
+    //* ///////// UTILS ///////// *//
+    private String decodeToken(String token, String search) throws JSONException {
+        String[] jwtParts = token.split("\\.");
+        JSONObject payload = new JSONObject(new String(Base64.getUrlDecoder().decode(jwtParts[1])));
+        String keyInfo = payload.getString(search);
+        return keyInfo;
+    }
+
 }

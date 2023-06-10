@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LastFiveTransactionDto {
+public class ListTransactionDto {
 
     private AccountGetDto account;
     List<Transaction> transactions;
