@@ -68,11 +68,6 @@ public class GlobalExceptionHandler {
         log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ForbiddenResponse(ex.getMessage(), request.getRequestURI()));
     }
-    @ExceptionHandler({ForbiddenException.class})
-    public ResponseEntity<Object> processErrorUnauthorized(ForbiddenException ex, HttpServletRequest request) {
-        log.error(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ForbiddenResponse(ex.getMessage(), request.getRequestURI()));
-    }
 
     @ExceptionHandler({PaymentRequiredException.class})
     public ResponseEntity<Object> processErrorPaymentRequired(PaymentRequiredException ex, HttpServletRequest request) {
