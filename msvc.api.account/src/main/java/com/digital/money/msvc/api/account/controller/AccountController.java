@@ -118,8 +118,9 @@ public class AccountController {
     @Operation(summary = "Deposit money into account from card")
     @PostMapping(value = "/{id}/transferences", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Object> deposit(@PathVariable("id") Long id,
-                                          @Valid @RequestBody CardTransactionPostDTO cardTransactionPostDTO) throws PaymentRequiredException, ForbiddenException, ResourceNotFoundException, BadRequestException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(accountService.depositMoney(id, cardTransactionPostDTO));
+                                          @RequestHeader("Authorization") String token,
+                                          @Valid @RequestBody CardTransactionPostDTO cardTransactionPostDTO) throws PaymentRequiredException, ForbiddenException, ResourceNotFoundException, BadRequestException, JSONException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(accountService.depositMoney(id, cardTransactionPostDTO, token));
     }
 
 }

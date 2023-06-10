@@ -24,5 +24,5 @@ public interface IAccountService extends ICheckId<Account> {
     List<CardGetDTO> listAllCards(Long id, String token) throws ResourceNotFoundException, ForbiddenException, JSONException;
     CardGetDTO findCardFromAccount(Long id, Long cardId, String token) throws ResourceNotFoundException, ForbiddenException, JSONException;
     void removeCardFromAccount(Long id, Long cardId, String token) throws ResourceNotFoundException, ForbiddenException, JSONException;
-    CardTransactionGetDTO depositMoney(Long id, CardTransactionPostDTO cardTransactionPostDTO) throws ResourceNotFoundException, PaymentRequiredException, ForbiddenException, BadRequestException;
+    CardTransactionGetDTO depositMoney(Long id, CardTransactionPostDTO cardTransactionPostDTO, String token) throws ResourceNotFoundException, PaymentRequiredException, ForbiddenException, BadRequestException, JSONException;
 }

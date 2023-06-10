@@ -174,7 +174,9 @@ public class AccountService implements IAccountService {
 
     @Transactional
     @Override
-    public CardTransactionGetDTO depositMoney(Long id, CardTransactionPostDTO cardTransactionPostDTO) throws ResourceNotFoundException, PaymentRequiredException, ForbiddenException, BadRequestException {
+    public CardTransactionGetDTO depositMoney(Long id, CardTransactionPostDTO cardTransactionPostDTO, String token) throws ResourceNotFoundException, PaymentRequiredException, ForbiddenException, BadRequestException, JSONException {
+        Account account = checkId(id);
+        validateAccountBelongsUser(account, token);
         return transactionService.processCardTransaction(id, cardTransactionPostDTO);
     }
 
