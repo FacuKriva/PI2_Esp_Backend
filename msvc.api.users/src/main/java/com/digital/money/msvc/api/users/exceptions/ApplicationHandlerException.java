@@ -71,6 +71,12 @@ public class ApplicationHandlerException extends ResponseEntityExceptionHandler 
                 .body(e.getMessage());
     }
 
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<?> forbiddenException(Exception e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(e.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ExceptionResponse> handlingAllExceptions(Exception ex, WebRequest request) {
 

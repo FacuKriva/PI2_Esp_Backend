@@ -1,6 +1,5 @@
 package com.digital.money.msvc.api.account.model.dto;
 
-import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.TransactionType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @ToString
-public class TransactionGetDto {
+public class CardTransactionGetDTO {
 
     private Long transactionId;
 
@@ -23,11 +22,9 @@ public class TransactionGetDto {
 
     private String description;
 
-    private String fromCvu;
+    private String cardNumber;
 
     private String toCvu;
 
     private TransactionType type;
-
-    private Account account;
 }

@@ -19,7 +19,7 @@ public class CardGetDTO {
     private String alias;
 
     @JsonProperty("cardNumber")
-    private Long cardNumber;
+    private String cardNumber;
 
     @JsonProperty("cardHolder")
     private String cardHolder;
@@ -29,4 +29,7 @@ public class CardGetDTO {
 
     @JsonProperty("cardNetwork")
     private String cardNetwork;
+
+    @JsonProperty("cardType")
+    private String cardType;
 }

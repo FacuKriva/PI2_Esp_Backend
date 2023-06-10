@@ -29,7 +29,7 @@ public class AditionalInformation implements TokenEnhancer {
 
         Map<String, Object> mapInfo = new HashMap<>();
         mapInfo.put("user_id", userInfo.getUserId());
-        mapInfo.put("dni", userInfo.getUserId());
+        mapInfo.put("dni", userInfo.getDni());
         mapInfo.put("name", userInfo.getName());
         mapInfo.put("email", userInfo.getEmail());
 

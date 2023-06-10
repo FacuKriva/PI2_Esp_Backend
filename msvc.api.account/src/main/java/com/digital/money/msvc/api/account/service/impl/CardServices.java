@@ -1,12 +1,15 @@
 package com.digital.money.msvc.api.account.service.impl;
 
-import com.digital.money.msvc.api.account.handler.*;
+import com.digital.money.msvc.api.account.handler.AlreadyRegisteredException;
+import com.digital.money.msvc.api.account.handler.BadRequestException;
+import com.digital.money.msvc.api.account.handler.ForbiddenException;
+import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Card;
 import com.digital.money.msvc.api.account.model.dto.CardGetDTO;
 import com.digital.money.msvc.api.account.model.dto.CardPostDTO;
 import com.digital.money.msvc.api.account.repository.ICardRepository;
-import com.digital.money.msvc.api.account.service.interfaces.ICardService;
+import com.digital.money.msvc.api.account.service.ICardService;
 import com.digital.money.msvc.api.account.utils.mapper.CardMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,13 +21,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class CardService implements ICardService{
+public class CardServices implements ICardService {
 
     private final ICardRepository cardRepository;
     private final CardMapper cardMapper;
 
     @Autowired
-    public CardService(ICardRepository cardRepository, CardMapper cardMapper) {
+    public CardServices(ICardRepository cardRepository, CardMapper cardMapper) {
         this.cardRepository = cardRepository;
         this.cardMapper = cardMapper;
     }
@@ -42,11 +45,15 @@ public class CardService implements ICardService{
             throw new BadRequestException("The card you are trying to add is invalid. " +
                     "Please make sure the card number is valid.");
         }
+        if (cardPostDTO.getCardBalance() < 0 ) {
+            throw new BadRequestException("The card you are trying to add has a negative balance. " +
+                    "Please make sure the card balance is valid.");
+        }
 
         Card card = cardMapper.toCard(cardPostDTO);
         card.setCardNetwork(guessTheCardNetwork(cardPostDTO.getCardNumber()));
-        // if card network is amex, then cvv is 4 digits
-        if (card.getCardNetwork().equals("American Express")) {
+
+        if (card.getCardNetwork().equals("AMEX")) {
             if (cardPostDTO.getCvv().toString().length() != 4) {
                 throw new BadRequestException("Please make sure the cvv is valid");
             }
@@ -56,6 +63,7 @@ public class CardService implements ICardService{
             }
         }
         card.setAccount(account);
+        card.setCardBalance(cardPostDTO.getCardBalance());
         cardRepository.save(card);
 
         return cardMapper.toCardGetDTO(card);
@@ -68,8 +76,16 @@ public class CardService implements ICardService{
     }
 
     @Override
-    public CardGetDTO findCardById(Account account, Long cardId) throws ResourceNotFoundException {
+    public CardGetDTO findCardById(Account account, Long cardId) throws ResourceNotFoundException, ForbiddenException {
         Optional<Card> entityResponse = cardRepository.findByCardId(cardId);
+
+        if (entityResponse.isPresent()) {
+            Card card = entityResponse.get();
+            if (!card.getAccount().getAccountId().equals(account.getAccountId())) {
+                throw new ForbiddenException("The card you are trying to select belongs to another " +
+                        "account.");
+            }
+        }
 
         if (entityResponse.isPresent()) {
             Card card = entityResponse.get();
@@ -96,6 +112,7 @@ public class CardService implements ICardService{
         return null;
     }
 
+    //* ///////// UTILS ///////// *//
     private boolean checkIfCardExists(Long cardNumber) {
         return cardRepository.findByCardNumber(cardNumber).isPresent();
     }
@@ -129,32 +146,14 @@ public class CardService implements ICardService{
         String cardNumberString = cardNumber.toString();
         String prefix = cardNumberString.substring(0, 2);
 
-        switch(prefix){
-            case "34":
-            case "37":
-                return "American Express";
-            case "30":
-            case "36":
-            case "38":
-                return "Diners Club International";
-            case "51":
-            case "52":
-            case "53":
-            case "54":
-            case "55":
-                return "MasterCard";
-            case "4":
-                return "Visa";
-            case "60":
-            case "61":
-            case "62":
-            case "63":
-            case "64":
-            case "65":
-                return "Discover";
-            default:
-                return "Unknown";
-        }
+        return switch (prefix) {
+            case "40", "41", "42", "43", "44", "45", "46", "47", "48", "49" -> "Visa";
+            case "30", "36", "38" -> "Diners Club International";
+            case "34", "37" -> "AMEX";
+            case "51", "52", "53", "54", "55" -> "MasterCard";
+            case "60", "61", "62", "63", "64", "65" -> "Discover";
+            default -> "Unknown";
+        };
     }
 
 }
