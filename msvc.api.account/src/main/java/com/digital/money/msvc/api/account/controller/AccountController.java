@@ -1,6 +1,7 @@
 package com.digital.money.msvc.api.account.controller;
 
 import com.digital.money.msvc.api.account.handler.*;
+import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.dto.*;
 import com.digital.money.msvc.api.account.service.impl.AccountService;
 import io.swagger.v3.oas.annotations.Operation;

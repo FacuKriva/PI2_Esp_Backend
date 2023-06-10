@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 @Slf4j
 @Component
-public class KeysGenerator {
+public class GeneratorKeys {
 
     public static String generateCvu() {
         Random random = new Random();

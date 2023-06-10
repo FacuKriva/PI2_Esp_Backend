@@ -1,4 +1,4 @@
-package com.digital.money.msvc.api.account.service.interfaces;
+package com.digital.money.msvc.api.account.service;
 
 import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
 import com.digital.money.msvc.api.account.model.Account;

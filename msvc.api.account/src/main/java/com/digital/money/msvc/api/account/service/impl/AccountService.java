@@ -1,15 +1,12 @@
 package com.digital.money.msvc.api.account.service.impl;
 
-import com.digital.money.msvc.api.account.handler.AlreadyRegisteredException;
-import com.digital.money.msvc.api.account.handler.BadRequestException;
-import com.digital.money.msvc.api.account.handler.ForbiddenException;
-import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
+import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.dto.*;
 import com.digital.money.msvc.api.account.repository.IAccountRepository;
-import com.digital.money.msvc.api.account.service.interfaces.IAccountService;
-import com.digital.money.msvc.api.account.utils.KeysGenerator;
+import com.digital.money.msvc.api.account.service.IAccountService;
+import com.digital.money.msvc.api.account.utils.GeneratorKeys;
 import com.digital.money.msvc.api.account.utils.mapper.AccountMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
@@ -27,17 +24,16 @@ import java.util.Optional;
 public class AccountService implements IAccountService {
     private final AccountMapper accountMapper;
     private final TransactionService transactionService;
-    private final KeysGenerator keysGenerator;
     private final IAccountRepository accountRepository;
-    private final CardService cardService;
+    private final CardServices cardService;
 
     @Autowired
-    public AccountService(AccountMapper accountMapper, TransactionService transactionService,
-                          KeysGenerator keysGenerator, IAccountRepository accountRepository,
-                          CardService cardService) {
+    public AccountService(AccountMapper accountMapper,
+                          TransactionService transactionService,
+                          IAccountRepository accountRepository,
+                          CardServices cardService) {
         this.accountMapper = accountMapper;
         this.transactionService = transactionService;
-        this.keysGenerator = keysGenerator;
         this.accountRepository = accountRepository;
         this.cardService = cardService;
     }
@@ -47,8 +43,7 @@ public class AccountService implements IAccountService {
     public AccountGetDto findById(Long id, String token) throws ResourceNotFoundException, ForbiddenException, JSONException {
         Account account = checkId(id);
         validateAccountBelongsUser(account, token);
-        AccountGetDto accountGetDto = accountMapper.toAccountGetDto(account);
-        return accountGetDto;
+        return accountMapper.toAccountGetDto(account);
     }
 
     @Transactional
@@ -57,15 +52,15 @@ public class AccountService implements IAccountService {
         Account account = new Account();
         account.setUserId(userId);
 
-        String cvu = keysGenerator.generateCvu();
+        String cvu = GeneratorKeys.generateCvu();
         while (accountRepository.findByCvu(cvu).isPresent()) {
-            cvu = keysGenerator.generateCvu();
+            cvu = GeneratorKeys.generateCvu();
         }
         account.setCvu(cvu);
 
-        String alias = keysGenerator.generateAlias();
+        String alias = GeneratorKeys.generateAlias();
         while (accountRepository.findByCvu(alias).isPresent()) {
-            alias = keysGenerator.generateCvu();
+            alias = GeneratorKeys.generateCvu();
         }
         account.setAlias(alias);
         account.setAvailableBalance(0.0);
@@ -86,7 +81,7 @@ public class AccountService implements IAccountService {
         }
 
         Optional<Account> duplicateAlias = accountRepository.findByAlias(newAlias);
-        if (!duplicateAlias.isPresent()) {
+        if (duplicateAlias.isEmpty()) {
             account.setAlias(newAlias);
             accountRepository.save(account);
             return String.format("New Alias: %s", account.getAlias());
@@ -101,7 +96,7 @@ public class AccountService implements IAccountService {
     public ListTransactionDto findLastFiveTransactions(Long id, String token) throws ResourceNotFoundException, ForbiddenException, JSONException {
         Account account = checkId(id);
         validateAccountBelongsUser(account, token);
-        return transactionService.getLastFive(id,account);
+        return transactionService.getLastFive(id, account);
     }
 
     @Override
@@ -109,7 +104,7 @@ public class AccountService implements IAccountService {
         Account account = checkId(id);
         validateAccountBelongsUser(account, token);
 
-        return transactionService.findAllSorted(id,account);
+        return transactionService.findAllSorted(id, account);
     }
 
     @Override
@@ -117,7 +112,7 @@ public class AccountService implements IAccountService {
         Account account = checkId(accountId);
         validateAccountBelongsUser(account, token);
 
-        return transactionService.findTransactionById(accountId,transactionId);
+        return transactionService.findTransactionById(accountId, transactionId);
     }
 
     //* ///////// CARDS ///////// *//
@@ -139,7 +134,7 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public CardGetDTO findCardFromAccount(Long id, Long cardId, String token) throws ResourceNotFoundException, ForbiddenException, JSONException {
+    public CardGetDTO findCardFromAccount(Long id, Long cardId, String token) throws ResourceNotFoundException, ForbiddenException {
         Account account = checkId(id);
         return cardService.findCardById(account, cardId);
     }
@@ -162,20 +157,20 @@ public class AccountService implements IAccountService {
         return account.get();
     }
 
-    private String decodeToken(String token, String search) throws JSONException {
+    private String decodeToken(String token) throws JSONException {
         String[] jwtParts = token.split("\\.");
         JSONObject payload = new JSONObject(new String(Base64.getUrlDecoder().decode(jwtParts[1])));
-        String keyInfo = payload.getString(search);
-        return keyInfo;
+        return payload.getString("user_id");
     }
 
     private void validateAccountBelongsUser(Account account, String token) throws JSONException, ForbiddenException {
-        String userId = decodeToken(token, "user_id");
+        String userId = decodeToken(token);
         Long userIdL = Long.valueOf(userId);
-        if(account.getUserId()!=userIdL){
+        if (!account.getUserId().equals(userIdL)) {
             throw new ForbiddenException("You don't have access to that account");
         }
     }
+
     @Transactional
     @Override
     public CardTransactionGetDTO depositMoney(Long id, CardTransactionPostDTO cardTransactionPostDTO) throws ResourceNotFoundException, PaymentRequiredException, ForbiddenException, BadRequestException {
