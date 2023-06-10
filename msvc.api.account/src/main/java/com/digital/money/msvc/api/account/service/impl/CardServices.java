@@ -96,8 +96,17 @@ public class CardServices implements ICardService {
     }
 
     @Override
-    public void deleteCard(Account account, Long cardId) throws ResourceNotFoundException {
+    public void deleteCard(Account account, Long cardId) throws ResourceNotFoundException, ForbiddenException {
+
         Optional<Card> entityResponse = cardRepository.findByCardId(cardId);
+
+        if (entityResponse.isPresent()) {
+            Card card = entityResponse.get();
+            if (!card.getAccount().getAccountId().equals(account.getAccountId())) {
+                throw new ForbiddenException("The card you are trying to delete belongs to another " +
+                        "account.");
+            }
+        }
 
         if (entityResponse.isPresent()) {
             Card card = entityResponse.get();
