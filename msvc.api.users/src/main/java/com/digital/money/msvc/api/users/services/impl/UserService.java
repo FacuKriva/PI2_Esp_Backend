@@ -208,6 +208,18 @@ public class UserService implements IUserService {
         return userMapper.mapToAuthUserDto(user);
     }
 
+    @Transactional(readOnly = true)
+    public AuthUserDTO getUserByEmailLoging(String email) throws UserNotFoundException{
+        String emailInLowercase = email.toLowerCase();
+
+        User user = userRepository.findByEmail(emailInLowercase).orElseThrow(
+                () -> new UserNotFoundException(String
+                        .format("The user with email %s was not found", email))
+        );
+
+        return userMapper.mapToAuthUserDto(user);
+    }
+
     @Transactional
     @Override
     public void updateAttempsFromUser(Long userId, boolean enabled, int attempts) throws UserNotFoundException {

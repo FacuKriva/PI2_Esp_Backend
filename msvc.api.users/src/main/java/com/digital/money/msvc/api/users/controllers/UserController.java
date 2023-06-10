@@ -72,6 +72,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserByEmail(email, token));
     }
 
+    @GetMapping("/loging")
+    public ResponseEntity<?> findByEmailLoging(@RequestParam("email") String email) throws UserNotFoundException{
+        return ResponseEntity.ok(userService.getUserByEmailLoging(email));
+    }
+
     @PutMapping("/update/attempts/{dni}")
     public ResponseEntity<?> updateUserAttempts(@PathVariable Long dni,
                                                 @RequestParam("enabled") boolean enabled,
