@@ -95,6 +95,7 @@ public class TransactionService implements ITransactionService {
     @Transactional
     @Override
     public CardTransactionGetDTO processCardTransaction(Long id, CardTransactionPostDTO cardTransactionPostDTO) throws ResourceNotFoundException, ForbiddenException, PaymentRequiredException, BadRequestException {
+
         Card card = cardRepository.findByCardId(cardTransactionPostDTO.getCardId())
                 .orElseThrow(() -> new ResourceNotFoundException("The card doesn't exist"));
 

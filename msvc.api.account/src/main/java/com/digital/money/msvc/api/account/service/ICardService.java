@@ -15,6 +15,6 @@ public interface ICardService extends IService<CardPostDTO, CardGetDTO> {
     CardGetDTO createCard(Account account, CardPostDTO cardPostDTO) throws AlreadyRegisteredException, BadRequestException;
     List<CardGetDTO> listCards(Account account) throws ResourceNotFoundException;
     CardGetDTO findCardById(Account account, Long cardId) throws ResourceNotFoundException, ForbiddenException;
-    void deleteCard(Account account, Long cardId) throws ResourceNotFoundException;
+    void deleteCard(Account account, Long cardId) throws ResourceNotFoundException, ForbiddenException;
 
 }
