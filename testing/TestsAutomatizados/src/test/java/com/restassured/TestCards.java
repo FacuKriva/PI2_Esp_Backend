@@ -61,7 +61,9 @@ public class TestCards extends Variables {
 
     @AfterAll
     public static void quit() {
+
         extent.flush();
+
     }
 
     //**---------------------------------- GET all cards (/accounts/{id}/cards) ----------------------------------**
@@ -868,6 +870,7 @@ public class TestCards extends Variables {
                     .response();
 
     }
+
 
 
 //**--------------------------------- DELETE a card (/accounts/{id}/cards/{idCard})-------------------------------**

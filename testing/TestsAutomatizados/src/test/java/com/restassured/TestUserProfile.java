@@ -7,6 +7,7 @@ import com.restassured.model.User;
 import com.restassured.reports.ExtentFactory;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.parsing.Parser;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
@@ -443,6 +444,132 @@ public class TestUserProfile extends Variables {
 
     }
 
+    //TC_Perfil_Usuario_0010
+    @Tag("Regression")
+    @Test
+    //@Order()
+    public void UpdateUserProfileFailure400NameLength() throws InterruptedException {
+
+        test = extent.createTest("TC_Perfil_Usuario_0010 - PATCH user profile by id - Status Code: 400 - Bad Request");
+        test.assignCategory("Perfil Usuario");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: PATCH");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. Caracteres Excedentes (name supera los 30 caracteres).");
+
+
+        Response response;
+
+        User user = new User();
+        user.setName("Juan Ignacio Javier Sebastian Esteban");
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/users/{id}")
+                    .pathParams("id", 1)
+                    .contentType(ContentType.JSON)
+                    .body(user).
+                when().
+                    patch().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("{name=maximum number of characters 30}"))
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
+    //TC_Perfil_Usuario_0011
+    @Tag("Regression")
+    @Test
+    //@Order()
+    public void UpdateUserProfileFailure400LastNameLength() throws InterruptedException {
+
+        test = extent.createTest("TC_Perfil_Usuario_0011 - PATCH user profile by id - Status Code: 400 - Bad Request");
+        test.assignCategory("Perfil Usuario");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: PATCH");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. Caracteres Excedentes (last_name supera los 40 caracteres).");
+
+
+        Response response;
+
+        User user = new User();
+        user.setLast_name("Perez Sanchez Aliendro Brunetti Torres Gomez");
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/users/{id}")
+                    .pathParams("id", 1)
+                    .contentType(ContentType.JSON)
+                    .body(user).
+                when().
+                    patch().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("{lastName=maximum number of characters 40}"))
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
+    //TC_Perfil_Usuario_0012
+    @Tag("Regression")
+    @Test
+    //@Order()
+    public void UpdateUserProfileFailure400EmailLength() throws InterruptedException {
+
+        test = extent.createTest("TC_Perfil_Usuario_0012 - PATCH user profile by id - Status Code: 400 - Bad Request");
+        test.assignCategory("Perfil Usuario");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: PATCH");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. Caracteres Excedentes (email supera los 60 caracteres).");
+
+
+        Response response;
+
+        User user = new User();
+        user.setEmail("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@mail.commmmmmmmmmmmmmmmmmmmmmm");
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/users/{id}")
+                    .pathParams("id", 1)
+                    .contentType(ContentType.JSON)
+                    .body(user).
+                when().
+                    patch().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("{email=maximum number of characters 60}"))
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
     //TC_Perfil_Usuario_0013
     @Tag("Smoke")
     @Test
@@ -485,6 +612,88 @@ public class TestUserProfile extends Variables {
                     .response();
 
     }
+
+    //TC_Perfil_Usuario_0014
+    @Tag("Regression")
+    @Test
+    //@Order()
+    public void UpdateUserProfileFailure400PasswordLength() throws InterruptedException {
+
+        test = extent.createTest("TC_Perfil_Usuario_0014 - PATCH user profile by id - Status Code: 400 - Bad Request");
+        test.assignCategory("Perfil Usuario");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: PATCH");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. Caracteres Excedentes (password supera los 30 caracteres).");
+
+
+        Response response;
+
+        User user = new User();
+        user.setPassword("123abc123abc123abc123abc123abc123abc");
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/users/{id}")
+                    .pathParams("id", 1)
+                    .contentType(ContentType.JSON)
+                    .body(user).
+                when().
+                    patch().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("{password=minimum number of characters 8, maximum number of characters 30}"))
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
+//    //TC_Perfil_Usuario_0015
+//    @Tag("Regression")
+//    @Test
+//    //@Order()
+//    public void UpdateUserProfileFailure400NameEmpty() throws InterruptedException {
+//
+//        test = extent.createTest("TC_Perfil_Usuario_0015 - PATCH user profile by id - Status Code: 400 - Bad Request");
+//        test.assignCategory("Perfil Usuario");
+//        test.assignCategory("Suite: Smoke");
+//        test.assignCategory("Request Method: PATCH");
+//        test.assignCategory("Status Code: 400 - Bad Request");
+//        test.assignCategory("Sprint: 2");
+//        test.assignAuthor("Ana Laura Fidalgo");
+//        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. Dato vacío (el usuario intenta modificar su name por un campo name vacío).");
+//
+//
+//        Response response;
+//
+//        User user = new User();
+//        user.setName();
+//
+//        response = given()
+//                    .header("Authorization", "Bearer " + token)
+//                    .basePath("/users/{id}")
+//                    .pathParams("id", 1)
+//                    .contentType(ContentType.JSON)
+//                    .body(user).
+//                when().
+//                    patch().
+//                then()
+//                    .assertThat()
+//                    .statusCode(400)
+//                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+//                    .contentType(ContentType.JSON)
+//                    .log().all()
+//                    .extract()
+//                    .response();
+//    }
+
 
 
 }

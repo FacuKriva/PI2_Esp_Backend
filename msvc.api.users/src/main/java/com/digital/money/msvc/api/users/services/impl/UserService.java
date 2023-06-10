@@ -193,17 +193,18 @@ public class UserService implements IUserService {
     @Transactional(readOnly = true)
     @Override
     public AuthUserDTO getUserByEmail(String email, String token) throws UserNotFoundException, JSONException, ForbiddenException {
-        String emailInLowercase = email.toLowerCase();
 
-        String tokenEmail = decodeToken(token, "email");
-        if(!email.equals(tokenEmail)){
-            throw new ForbiddenException("You don't have access to that user");
-        }
+        String emailInLowercase = email.toLowerCase();
 
         User user = userRepository.findByEmail(emailInLowercase).orElseThrow(
                 () -> new UserNotFoundException(String
                         .format("The user with email %s was not found", email))
         );
+
+        String tokenEmail = decodeToken(token, "email");
+        if(!email.equals(tokenEmail)){
+            throw new ForbiddenException("You don't have access to that user");
+        }
 
         return userMapper.mapToAuthUserDto(user);
     }
