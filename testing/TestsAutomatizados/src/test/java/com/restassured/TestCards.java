@@ -1014,7 +1014,7 @@ public class TestCards extends Variables {
 
 
     //TC_Tarjetas_0035
-    @Tag("Smoke")
+    @Tag("Regression")
     @Test
     @Order(24)
     public void AddCardFailure400CardBalanceNegative() throws InterruptedException {
@@ -1057,12 +1057,230 @@ public class TestCards extends Variables {
     }
 
 
+    //TC_Tarjetas_0021
+    @Tag("Regression")
+    @Test
+    @Order(25)
+    public void AddCardFailure400CardHolderTooShort() throws InterruptedException {
+
+        test = extent.createTest("TC_Tarjetas_0021 - POST a card to an account - Status Code: 400 - Bad Request");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: POST");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. Caracteres Excedentes o Faltantes (cardHolder)");
+
+        Response response;
+
+        Card card = new Card("DH Money", 4539337010734513L, "Juan", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/cards")
+                    .pathParams("id", 2)
+                    .body(card).
+                when().
+                    post().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("The cardHolder's name is too short"))
+                    .log().all()
+                    .extract()
+                    .response();
+
+    }
+
+    //TC_Tarjetas_0023
+    @Tag("Regression")
+    @Test
+    @Order(26)
+    public void AddCardFailure400CvvTooShort() throws InterruptedException {
+
+        test = extent.createTest("TC_Tarjetas_0023 - POST a card to an account - Status Code: 400 - Bad Request");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: POST");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. Caracteres Excedentes o Faltantes (cvv)");
+
+        Response response;
+
+        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 82, "Digital Money Bank", "Debito", 10000.00);
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/cards")
+                    .pathParams("id", 2)
+                    .body(card).
+                when().
+                    post().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("The cvv must be between 3 and 4 digits"))
+                    .log().all()
+                    .extract()
+                    .response();
+
+    }
+
+    //TC_Tarjetas_0024
+    @Tag("Regression")
+    @Test
+    @Order(27)
+    public void AddCardFailure400AliasTooShort() throws InterruptedException {
+
+        test = extent.createTest("TC_Tarjetas_0024 - POST a card to an account - Status Code: 400 - Bad Request");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: POST");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. Caracteres Excedentes o Faltantes (alias)");
+
+        Response response;
+
+        Card card = new Card("D", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/cards")
+                    .pathParams("id", 2)
+                    .body(card).
+                when().
+                    post().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("The alias is too short"))
+                    .log().all()
+                    .extract()
+                    .response();
+
+    }
+
+
+    //TC_Tarjetas_0036
+    @Tag("Regression")
+    @Test
+    @Order(28)
+    public void AddCardFailure400ExpirationDateExpired() throws InterruptedException {
+
+        test = extent.createTest("TC_Tarjetas_0036 - POST a card to an account - Status Code: 400 - Bad Request");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: POST");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. Fecha de vencimiento expirada.");
+
+        Response response;
+
+        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "05/2023", 827, "Digital Money Bank", "Debito", 10000.00);
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/cards")
+                    .pathParams("id", 2)
+                    .body(card).
+                when().
+                    post().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("The card you are trying to add is expired. Please make sure the expiration date is in the future."))
+                    .log().all()
+                    .extract()
+                    .response();
+
+    }
+
+
+    //TC_Tarjetas_0037
+    @Tag("Smoke")
+    @Test
+    @Order(29)
+    public void AddCardFailure400CardNumberInvalidNumber() throws InterruptedException {
+
+        test = extent.createTest("TC_Tarjetas_0037 - POST a card to an account - Status Code: 400 - Bad Request");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: POST");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 2");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. Dato inválido (cardNumber).");
+
+        Response response;
+
+        Card card = new Card("DH Money", 453933701073451L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/cards")
+                    .pathParams("id", 2)
+                    .body(card).
+                when().
+                    post().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("The card you are trying to add is invalid. Please make sure the card number is valid."))
+                    .log().all()
+                    .extract()
+                    .response();
+
+    }
+
+
 //**--------------------------------- DELETE a card (/accounts/{id}/cards/{idCard})-------------------------------**
 
     //TC_Tarjetas_0028
     @Tag("Smoke")
     @Test
-    @Order(25)
+    @Order(30)
     public void DeleteCardSuccess200() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0028 - DELETE a card by id - Status Code: 200 - OK");
@@ -1098,7 +1316,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0029
     @Tag("Smoke")
     @Test
-    @Order(26)
+    @Order(31)
     public void DeleteCardFailure401() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0029 - DELETE a card by id - Status Code: 401 - Unauthorized");
@@ -1134,7 +1352,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0030
     @Tag("Smoke")
     @Test
-    @Order(27)
+    @Order(32)
     public void DeleteCardFailure404CardNotFound() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0030- DELETE a card by id - Status Code: 404 - Not Found");
@@ -1173,7 +1391,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0031
     @Tag("Smoke")
     @Test
-    @Order(28)
+    @Order(33)
     public void DeleteCardFailure404AccountNotFound() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0031- DELETE a card by id - Status Code: 404 - Not Found");
@@ -1209,13 +1427,13 @@ public class TestCards extends Variables {
                     .response();
     }
 
-    //TC_Tarjetas_0035
+    //TC_Tarjetas_0036
     @Tag("Smoke")
     @Test
-    @Order(29)
+    @Order(34)
     public void DeleteCardFailure403Forbidden() throws InterruptedException {
 
-        test = extent.createTest("TC_Tarjetas_0035- DELETE a card by id - Status Code: 403 - Forbidden");
+        test = extent.createTest("TC_Tarjetas_0036 - DELETE a card by id - Status Code: 403 - Forbidden");
         test.assignCategory("Tarjetas");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: DELETE");
@@ -1267,7 +1485,5 @@ public class TestCards extends Variables {
                 .extract()
                 .jsonPath().get("access_token");
     }
-
-
 
 }
