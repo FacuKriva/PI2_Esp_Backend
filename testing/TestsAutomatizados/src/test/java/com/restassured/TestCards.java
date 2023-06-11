@@ -88,7 +88,7 @@ public class TestCards extends Variables {
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .basePath("/accounts/{id}/cards")
-                    .pathParams("id", 1).
+                    .pathParams("id", 2).
                 when().
                     get().
                 then()
@@ -221,7 +221,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0032
     @Tag("Smoke")
     @Test
-    //@Order()
+    @Order(5)
     public void ViewAllCardsFailure403() throws InterruptedException{
 
         test = extent.createTest("TC_Tarjetas_0032 - GET all cards by account id - Status Code: 403 - Forbidden ");
@@ -263,7 +263,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0005
     @Tag("Smoke")
     @Test
-    @Order(5)
+    @Order(6)
     public void ViewACardSuccess200() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0005 - GET a card by id - Status Code: 200 - OK ");
@@ -280,8 +280,8 @@ public class TestCards extends Variables {
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .basePath("/accounts/{id}/cards/{idCard}")
-                    .pathParams("id", 1)
-                    .pathParams("idCard", 1).
+                    .pathParams("id", 2)
+                    .pathParams("idCard", 3).
                 when().
                     get().
                 then()
@@ -310,7 +310,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0006
     @Tag("Smoke")
     @Test
-    @Order(6)
+    @Order(7)
     public void ViewACardFailure401() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0006 - GET a card by id - Status Code: 401 - Unauthorized ");
@@ -345,7 +345,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0008
     @Tag("Smoke")
     @Test
-    @Order(7)
+    @Order(8)
     public void ViewACardFailure404AccountNotFound() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0008 - GET a card by id - Status Code: 404 - Not Found ");
@@ -384,7 +384,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0009
     @Tag("Smoke")
     @Test
-    @Order(8)
+    @Order(9)
     public void ViewACardFailure404CardNotFound() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0009 - GET a card by id - Status Code: 404 - Not Found ");
@@ -401,7 +401,7 @@ public class TestCards extends Variables {
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .basePath("/accounts/{id}/cards/{idCard}")
-                    .pathParams("id", 1)
+                    .pathParams("id", 2)
                     .pathParams("idCard", 99).
                 when().
                     get().
@@ -422,7 +422,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0033
     @Tag("Smoke")
     @Test
-    //@Order()
+    @Order(10)
     public void ViewACardFailure403() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0033 - GET a card by id - Status Code: 403 - Forbidden ");
@@ -463,7 +463,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0010
     @Tag("Smoke")
     @Test
-    @Order(9)
+    @Order(11)
     public void AddCardSuccess200() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0010 - POST a card to an account - Status Code: 200 - OK ");
@@ -473,18 +473,18 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 200 - OK");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Alta exitosa de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente");
+        test.info("Alta exitosa de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta.");
 
         Response response;
 
-        Card card = new Card("DH Money", 4817475789962098L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito");
+        Card card = new Card("DH Money", 4817475789962098L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
 
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
                     .basePath("/accounts/{id}/cards")
-                    .pathParams("id", 1)
+                    .pathParams("id", 2)
                     .body(card).
                 when().
                     post().
@@ -498,16 +498,16 @@ public class TestCards extends Variables {
                     .body("$",hasKey("alias"))
                     .body("alias", Matchers.equalTo("DH Money"))
                     .body("$",hasKey("cardNumber"))
-                    .body("cardNumber", Matchers.equalTo(4817475789962098L))
+                    .body("cardNumber", Matchers.equalTo("**** 2098"))
                     .body("$",hasKey("cardHolder"))
                     .body("cardHolder", Matchers.equalTo("Juan Pedro Perez"))
-                    .body("$",hasKey("expirationDate"))
-                    .body("expirationDate", Matchers.equalTo("08/2026"))
-                    .body("$",hasKey("bank"))
                     .body("bank", Matchers.equalTo("Digital Money Bank"))
+                    .body("$",hasKey("cardType"))
+                    .body("cardNetwork", Matchers.equalTo("Visa"))
                     .body("$",hasKey("cardType"))
                     .body("cardType", Matchers.equalTo("Debito"))
                     .body("$", not(hasKey("cvv")))
+                    .body("$", not(hasKey("expirationDate")))
                     .log().all()
                     .extract()
                     .response();
@@ -517,7 +517,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0011
     @Tag("Smoke")
     @Test
-    @Order(10)
+    @Order(12)
     public void AddCardFailure409() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0011 - POST a card to an account - Status Code: 409 - Conflict");
@@ -527,11 +527,11 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 409 - Conflict");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. Tarjeta ya asociada a otro id de cuenta");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta ya asociada a otro id de cuenta.");
 
         Response response;
 
-        Card card = new Card("DH Money", 5412873403403000L, "Martina Zeta", "08/2026", 827, "Digital Money Bank", "Debito");
+        Card card = new Card("DH Money", 5412873403403000L, "Martina Zeta", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -550,6 +550,7 @@ public class TestCards extends Variables {
                     .body("$", Matchers.instanceOf(Map.class))
                     .body("$",hasKey("error"))
                     .body("error", Matchers.equalTo("Already Registered"))
+                    .body("message", Matchers.equalTo("The card you are trying to create already exists"))
                     .log().all()
                     .extract()
                     .response();
@@ -559,7 +560,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0012
     @Tag("Smoke")
     @Test
-    @Order(11)
+    @Order(13)
     public void AddCardFailure404() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0012 - POST a card to an account - Status Code: 404 - Not Found");
@@ -569,11 +570,11 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 404 - Not Found");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta inexistente. Tarjeta no asociada a otro id de cuenta");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta inexistente. Tarjeta no asociada a otro id de cuenta.");
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Martina Zeta", "08/2026", 827, "Digital Money Bank", "Debito");
+        Card card = new Card("DH Money", 4539337010734513L, "Martina Zeta", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -598,11 +599,10 @@ public class TestCards extends Variables {
 
     }
 
-
     //TC_Tarjetas_0013
     @Tag("Smoke")
     @Test
-    @Order(12)
+    @Order(14)
     public void AddCardFailure401() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0013 - POST a card to an account - Status Code: 401 - Unauthorized");
@@ -612,17 +612,17 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 401 - Unauthorized");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario no logueado. ID de cuenta existente. Tarjeta no asociada a otro id de cuenta");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario no logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta.");
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito");
+        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
 
         response = given()
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
                     .basePath("/accounts/{id}/cards")
-                    .pathParams("id", 1)
+                    .pathParams("id", 2)
                     .body(card).
                 when().
                     post().
@@ -633,6 +633,48 @@ public class TestCards extends Variables {
                         .log().all()
                         .extract()
                         .response();
+    }
+
+    //TC_Tarjetas_0034
+    @Tag("Smoke")
+    @Test
+    @Order(15)
+    public void AddCardFailure403() throws InterruptedException {
+
+        test = extent.createTest("TC_Tarjetas_0034 - POST a card to an account - Status Code: 403 - Forbidden");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: POST");
+        test.assignCategory("Status Code: Status Code: 403 - Forbidden");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta no corresponde al usuario. Tarjeta no asociada a otro id de cuenta.");
+
+        Response response;
+
+        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/cards")
+                    .pathParams("id", 1)
+                    .body(card).
+                when().
+                    post().
+                then()
+                    .assertThat()
+                    .statusCode(403)
+                    .statusCode(HttpStatus.SC_FORBIDDEN)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Forbidden"))
+                    .body("message", Matchers.equalTo("You don't have access to that account"))
+                    .log().all()
+                    .extract()
+                    .response();
 
     }
 
@@ -640,7 +682,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0022
     @Tag("Smoke")
     @Test
-    @Order(13)
+    @Order(16)
     public void AddCardFailure400ExpirationDateFormat() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0022 - POST a card to an account - Status Code: 400 - Bad Request");
@@ -650,18 +692,18 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. Tarjeta no asociada a otro id de cuenta. Formato incorrecto (expirationDate)");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. Formato incorrecto (expirationDate)");
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Martina Zeta", "08/01/2026", 827, "Digital Money Bank", "Debito");
+        Card card = new Card("DH Money", 4539337010734513L, "Martina Zeta", "08/01/2026", 827, "Digital Money Bank", "Debito", 10000.00);
 
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
                     .basePath("/accounts/{id}/cards")
-                    .pathParams("id", 1)
+                    .pathParams("id", 2)
                     .body(card).
                 when().
                     post().
@@ -684,7 +726,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0014
     @Tag("Smoke")
     @Test
-    @Order(14)
+    @Order(17)
     public void AddCardFailure400CardHolderEmpty() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0014 - POST a card to an account - Status Code: 400 - Bad Request");
@@ -694,18 +736,18 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. Tarjeta no asociada a otro id de cuenta. Dato vacío (cardHolder)");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. Dato vacío (cardHolder)");
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "", "08/2026", 827, "Digital Money Bank", "Debito");
+        Card card = new Card("DH Money", 4539337010734513L, "", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
 
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
                     .basePath("/accounts/{id}/cards")
-                    .pathParams("id", 1)
+                    .pathParams("id", 2)
                     .body(card).
                 when().
                     post().
@@ -714,6 +756,8 @@ public class TestCards extends Variables {
                     .statusCode(400)
                     .statusCode(HttpStatus.SC_BAD_REQUEST)
                     .contentType(ContentType.JSON)
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
                     .log().all()
                     .extract()
                     .response();
@@ -723,7 +767,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0015
     @Tag("Smoke")
     @Test
-    @Order(15)
+    @Order(18)
     public void AddCardFailure400CardNumberZero() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0015 - POST a card to an account - Status Code: 400 - Bad Request");
@@ -733,18 +777,18 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. Tarjeta no asociada a otro id de cuenta. Dato vacío (cardNumber = 0)");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. Dato vacío (cardNumber = 0)");
 
         Response response;
 
-        Card card = new Card("DH Money", 0L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito");
+        Card card = new Card("DH Money", 0L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
 
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
                     .basePath("/accounts/{id}/cards")
-                    .pathParams("id", 1)
+                    .pathParams("id", 2)
                     .body(card).
                 when().
                     post().
@@ -753,6 +797,8 @@ public class TestCards extends Variables {
                     .statusCode(400)
                     .statusCode(HttpStatus.SC_BAD_REQUEST)
                     .contentType(ContentType.JSON)
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
                     .log().all()
                     .extract()
                     .response();
@@ -762,7 +808,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0016
     @Tag("Smoke")
     @Test
-    @Order(16)
+    @Order(19)
     public void AddCardFailure400CardExpirationDateEmpty() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0016 - POST a card to an account - Status Code: 400 - Bad Request");
@@ -772,18 +818,18 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. Tarjeta no asociada a otro id de cuenta. Dato vacío (expirationDate)");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. Dato vacío (expirationDate)");
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "", 827, "Digital Money Bank", "Debito");
+        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "", 827, "Digital Money Bank", "Debito", 10000.00);
 
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
                     .basePath("/accounts/{id}/cards")
-                    .pathParams("id", 1)
+                    .pathParams("id", 2)
                     .body(card).
                 when().
                     post().
@@ -792,6 +838,8 @@ public class TestCards extends Variables {
                     .statusCode(400)
                     .statusCode(HttpStatus.SC_BAD_REQUEST)
                     .contentType(ContentType.JSON)
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
                     .log().all()
                     .extract()
                     .response();
@@ -801,7 +849,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0017
     @Tag("Smoke")
     @Test
-    @Order(17)
+    @Order(20)
     public void AddCardFailure400CardTypeEmpty() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0017 - POST a card to an account - Status Code: 400 - Bad Request");
@@ -811,18 +859,18 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. Tarjeta no asociada a otro id de cuenta. Dato vacío (cardType)");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. Dato vacío (cardType)");
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "");
+        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "", 10000.00);
 
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
                     .basePath("/accounts/{id}/cards")
-                    .pathParams("id", 1)
+                    .pathParams("id", 2)
                     .body(card).
                 when().
                     post().
@@ -831,6 +879,8 @@ public class TestCards extends Variables {
                     .statusCode(400)
                     .statusCode(HttpStatus.SC_BAD_REQUEST)
                     .contentType(ContentType.JSON)
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
                     .log().all()
                     .extract()
                     .response();
@@ -841,7 +891,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0018
     @Tag("Smoke")
     @Test
-    @Order(18)
+    @Order(21)
     public void AddCardFailure400CardCvvZero() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0018 - POST a card to an account - Status Code: 400 - Bad Request");
@@ -851,18 +901,18 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. Tarjeta no asociada a otro id de cuenta. Dato vacío (cvv = 0)");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. Dato vacío (cvv = 0)");
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 0, "Digital Money Bank", "Debito");
+        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 0, "Digital Money Bank", "Debito", 10000.00);
 
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
                     .basePath("/accounts/{id}/cards")
-                    .pathParams("id", 1)
+                    .pathParams("id", 2)
                     .body(card).
                 when().
                     post().
@@ -883,7 +933,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0019
     @Tag("Smoke")
     @Test
-    @Order(19)
+    @Order(22)
     public void AddCardFailure400CardAliasEmpty() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0019 - POST a card to an account - Status Code: 400 - Bad Request");
@@ -893,18 +943,18 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. Tarjeta no asociada a otro id de cuenta. Dato vacío (alias)");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. Dato vacío (alias)");
 
         Response response;
 
-        Card card = new Card("", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito");
+        Card card = new Card("", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
 
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
                     .basePath("/accounts/{id}/cards")
-                    .pathParams("id", 1)
+                    .pathParams("id", 2)
                     .body(card).
                 when().
                     post().
@@ -913,6 +963,8 @@ public class TestCards extends Variables {
                     .statusCode(400)
                     .statusCode(HttpStatus.SC_BAD_REQUEST)
                     .contentType(ContentType.JSON)
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
                     .log().all()
                     .extract()
                     .response();
@@ -922,7 +974,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0020
     @Tag("Smoke")
     @Test
-    @Order(20)
+    @Order(23)
     public void AddCardFailure400CardBankEmpty() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0020 - POST a card to an account - Status Code: 400 - Bad Request");
@@ -932,18 +984,18 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. Tarjeta no asociada a otro id de cuenta. Dato vacío (bank)");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. Dato vacío (bank)");
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "", "Debito");
+        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "", "Debito", 10000.00);
 
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
                     .basePath("/accounts/{id}/cards")
-                    .pathParams("id", 1)
+                    .pathParams("id", 2)
                     .body(card).
                 when().
                     post().
@@ -952,6 +1004,8 @@ public class TestCards extends Variables {
                     .statusCode(400)
                     .statusCode(HttpStatus.SC_BAD_REQUEST)
                     .contentType(ContentType.JSON)
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
                     .log().all()
                     .extract()
                     .response();
@@ -959,23 +1013,66 @@ public class TestCards extends Variables {
     }
 
 
+    //TC_Tarjetas_0035
+    @Tag("Smoke")
+    @Test
+    @Order(24)
+    public void AddCardFailure400CardBalanceNegative() throws InterruptedException {
+
+        test = extent.createTest("TC_Tarjetas_0035 - POST a card to an account - Status Code: 400 - Bad Request");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: POST");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. Dato vacío (cardBalance = 0)");
+
+        Response response;
+
+        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito", -1.00);
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/cards")
+                    .pathParams("id", 2)
+                    .body(card).
+                when().
+                    post().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("The card you are trying to add has a negative balance. Please make sure the card balance is valid."))
+                    .log().all()
+                    .extract()
+                    .response();
+
+    }
+
 
 //**--------------------------------- DELETE a card (/accounts/{id}/cards/{idCard})-------------------------------**
 
     //TC_Tarjetas_0028
     @Tag("Smoke")
     @Test
-    @Order(21)
+    @Order(25)
     public void DeleteCardSuccess200() throws InterruptedException {
 
-        test = extent.createTest("TC_Tarjetas_0028 - DELETE a card by id - Status Code: 200 - OK\n");
+        test = extent.createTest("TC_Tarjetas_0028 - DELETE a card by id - Status Code: 200 - OK");
         test.assignCategory("Tarjetas");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: DELETE");
         test.assignCategory("Status Code: 200 - OK");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Baja exitosa de tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. ID de tarjeta existente");
+        test.info("Baja exitosa de tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. ID de tarjeta existente");
 
         Response response;
 
@@ -984,8 +1081,8 @@ public class TestCards extends Variables {
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
                     .basePath("/accounts/{id}/cards/{idCard}")
-                    .pathParams("id", 1)
-                    .pathParams("idCard", 5).
+                    .pathParams("id", 2)
+                    .pathParams("idCard", 3).
                 when().
                     delete().
                 then()
@@ -1001,7 +1098,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0029
     @Tag("Smoke")
     @Test
-    @Order(22)
+    @Order(26)
     public void DeleteCardFailure401() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0029 - DELETE a card by id - Status Code: 401 - Unauthorized");
@@ -1011,7 +1108,7 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 401 - Unauthorized");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Baja fallida de tarjeta asociada a cuenta del usuario. Usuario no logueado. ID de cuenta existente. ID de tarjeta existente");
+        test.info("Baja fallida de tarjeta asociada a cuenta del usuario. Usuario no logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. ID de tarjeta existente");
 
         Response response;
 
@@ -1019,8 +1116,8 @@ public class TestCards extends Variables {
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
                     .basePath("/accounts/{id}/cards/{idCard}")
-                    .pathParams("id", 1)
-                    .pathParams("idCard", 2).
+                    .pathParams("id", 2)
+                    .pathParams("idCard", 3).
                 when().
                     delete().
                 then()
@@ -1037,7 +1134,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0030
     @Tag("Smoke")
     @Test
-    @Order(23)
+    @Order(27)
     public void DeleteCardFailure404CardNotFound() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0030- DELETE a card by id - Status Code: 404 - Not Found");
@@ -1047,7 +1144,7 @@ public class TestCards extends Variables {
         test.assignCategory("Status Code: 404 - Not Found");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Baja fallida de tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. ID de tarjeta inexistente");
+        test.info("Baja fallida de tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. ID de tarjeta inexistente");
 
         Response response;
 
@@ -1056,7 +1153,7 @@ public class TestCards extends Variables {
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
                     .basePath("/accounts/{id}/cards/{idCard}")
-                    .pathParams("id", 1)
+                    .pathParams("id", 2)
                     .pathParams("idCard", 99).
                 when().
                     delete().
@@ -1076,7 +1173,7 @@ public class TestCards extends Variables {
     //TC_Tarjetas_0031
     @Tag("Smoke")
     @Test
-    @Order(24)
+    @Order(28)
     public void DeleteCardFailure404AccountNotFound() throws InterruptedException {
 
         test = extent.createTest("TC_Tarjetas_0031- DELETE a card by id - Status Code: 404 - Not Found");
@@ -1096,7 +1193,7 @@ public class TestCards extends Variables {
                     .contentType(ContentType.JSON)
                     .basePath("/accounts/{id}/cards/{idCard}")
                     .pathParams("id", 99)
-                    .pathParams("idCard", 2).
+                    .pathParams("idCard", 3).
                 when().
                     delete().
                 then()
@@ -1107,6 +1204,45 @@ public class TestCards extends Variables {
                     .body("$", Matchers.instanceOf(Map.class))
                     .body("$",hasKey("error"))
                     .body("error", Matchers.equalTo("Not Found"))
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
+    //TC_Tarjetas_0035
+    @Tag("Smoke")
+    @Test
+    @Order(29)
+    public void DeleteCardFailure403Forbidden() throws InterruptedException {
+
+        test = extent.createTest("TC_Tarjetas_0035- DELETE a card by id - Status Code: 403 - Forbidden");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: DELETE");
+        test.assignCategory("Status Code: 403 - Forbidden");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Baja fallida de tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta no corresponde al usuario. ID de tarjeta existente");
+
+        Response response;
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/cards/{idCard}")
+                    .pathParams("id", 1)
+                    .pathParams("idCard", 1).
+                when().
+                    delete().
+                then()
+                    .assertThat()
+                    .statusCode(403)
+                    .statusCode(HttpStatus.SC_FORBIDDEN)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Forbidden"))
                     .log().all()
                     .extract()
                     .response();
