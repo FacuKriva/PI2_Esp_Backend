@@ -1,11 +1,3 @@
-# Conexion a DB MySQL
-#spring:
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://127.0.0.1:3306/user_db?useUnicode=true&characterEncoding=utf8&useSSL=false&requireSSL=false
-#    username: root
-#    password: ek434603
-
 spring:
   config:
     import: env.properties
@@ -14,3 +6,20 @@ spring:
     url: ${MYSQL_HOST_URL}
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
+
+  # JPA - Hibernate
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: false
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
+  properties:
+    hibernate:
+      format_sql: false
+
+  # Lectura del archivo sql
+  sql:
+    init:
+      mode: always
+      data-locations-classpath: import.sql
