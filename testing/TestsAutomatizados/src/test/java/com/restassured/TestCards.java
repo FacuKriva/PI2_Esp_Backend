@@ -1476,7 +1476,7 @@ public class TestCards extends Variables {
                 .formParam("grant_type", "password")
                 //account_id: 4
                 .formParam("username", "amaria@mail.com")
-                .formParam("password", password_accounts)
+                .formParam("password", password)
                 .basePath("/security/oauth/token")
                 .when()
                 .post()

@@ -50,8 +50,8 @@ public class TestTransactions extends Variables {
                     .contentType("application/x-www-form-urlencoded")
                     .formParam("grant_type", "password")
                     //account_id:2
-                    .formParam("username", username_accounts)
-                    .formParam("password", password_accounts)
+                    .formParam("username", username)
+                    .formParam("password", password)
                     .basePath("/security/oauth/token")
                 .when()
                     .post()
@@ -634,7 +634,7 @@ public class TestTransactions extends Variables {
                 .formParam("grant_type", "password")
                 //account_id: 4
                 .formParam("username", "amaria@mail.com")
-                .formParam("password", password_accounts)
+                .formParam("password", password)
                 .basePath("/security/oauth/token")
                 .when()
                 .post()
