@@ -733,45 +733,5 @@ public class TestUserProfile extends Variables {
                     .response();
     }
 
-//    //TC_Perfil_Usuario_0015
-//    @Tag("Regression")
-//    @Test
-//    //@Order()
-//    public void UpdateUserProfileFailure400NameEmpty() throws InterruptedException {
-//
-//        test = extent.createTest("TC_Perfil_Usuario_0015 - PATCH user profile by id - Status Code: 400 - Bad Request");
-//        test.assignCategory("Perfil Usuario");
-//        test.assignCategory("Suite: Smoke");
-//        test.assignCategory("Request Method: PATCH");
-//        test.assignCategory("Status Code: 400 - Bad Request");
-//        test.assignCategory("Sprint: 2");
-//        test.assignAuthor("Ana Laura Fidalgo");
-//        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. Dato vacío (el usuario intenta modificar su name por un campo name vacío).");
-//
-//
-//        Response response;
-//
-//        User user = new User();
-//        user.setName();
-//
-//        response = given()
-//                    .header("Authorization", "Bearer " + token)
-//                    .basePath("/users/{id}")
-//                    .pathParams("id", 1)
-//                    .contentType(ContentType.JSON)
-//                    .body(user).
-//                when().
-//                    patch().
-//                then()
-//                    .assertThat()
-//                    .statusCode(400)
-//                    .statusCode(HttpStatus.SC_BAD_REQUEST)
-//                    .contentType(ContentType.JSON)
-//                    .log().all()
-//                    .extract()
-//                    .response();
-//    }
-
-
 
 }

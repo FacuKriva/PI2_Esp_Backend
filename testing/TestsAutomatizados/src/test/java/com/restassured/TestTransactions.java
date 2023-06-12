@@ -4,6 +4,8 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.google.common.collect.Ordering;
+import com.restassured.model.Card;
+import com.restassured.model.TransactionDeposit;
 import com.restassured.reports.ExtentFactory;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -21,6 +23,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.not;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestTransactions extends Variables {
@@ -249,7 +252,7 @@ public class TestTransactions extends Variables {
         test.assignCategory("Status Code: 403 - Forbidden");
         test.assignCategory("Sprint: 3");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Consulta fallida de ultimas 5 transacciones de la cuenta. ID de cuenta existente. Usuario logueado. El usuario intenta acceder a las transacciones asociadas a un ID de cuenta que no es propio.");
+        test.info("Consulta fallida de ultimas 5 transacciones de la cuenta. ID de cuenta existente. Usuario logueado. El ID de cuenta no corresponde al usuario.");
 
         Response response;
 
@@ -290,7 +293,7 @@ public class TestTransactions extends Variables {
 
         List<String> transactionDateList = given()
                     .header("Authorization", "Bearer " + token)
-                    .basePath("/accounts/{id}/transactions")
+                    .basePath("/accounts/{id}/activity")
                     .pathParams("id", 2).
                 when().
                     get().
@@ -309,7 +312,6 @@ public class TestTransactions extends Variables {
                     .body("transactions[0]", hasKey("toCvu"))
                     .body("transactions[0]", hasKey("type"))
                     .body("transactions[0]", hasKey("transaction_id"))
-                    .body("transactions.size()", Matchers.lessThanOrEqualTo(5))
                     .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
                     .log().all()
                     .extract()
@@ -350,13 +352,13 @@ public class TestTransactions extends Variables {
         test.assignCategory("Status Code: 404 - Not Found");
         test.assignCategory("Sprint: 3");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Consulta fallida de las transacciones de la cuenta. Usuario logueado. ID de cuenta inexistente");
+        test.info("Consulta fallida de todas las transacciones de la cuenta. Usuario logueado. ID de cuenta inexistente");
 
         Response response;
 
         response = given()
                     .header("Authorization", "Bearer " + token)
-                    .basePath("/accounts/{id}/transactions")
+                    .basePath("/accounts/{id}/activity")
                     .pathParams("id", 99).
                 when().
                     get().
@@ -385,12 +387,12 @@ public class TestTransactions extends Variables {
         test.assignCategory("Status Code: 401 - Unauthorized");
         test.assignCategory("Sprint: 3");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Consulta fallida de las transacciones de la cuenta. Usuario no logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+        test.info("Consulta fallida de todas las transacciones de la cuenta. Usuario no logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
 
         Response response;
 
         response = given()
-                    .basePath("/accounts/{id}/transactions")
+                    .basePath("/accounts/{id}/activity")
                     .pathParams("id", 2).
                 when().
                     get().
@@ -416,7 +418,7 @@ public class TestTransactions extends Variables {
         test.assignCategory("Status Code: 204 - No Content");
         test.assignCategory("Sprint: 3");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Consulta Exitosa de las transacciones de la cuenta. ID de cuenta existente. Usuario logueado.El ID de cuenta corresponde al usuario. El usuario no posee ninguna transacción");
+        test.info("Consulta Exitosa de todas las transacciones de la cuenta. ID de cuenta existente. Usuario logueado. El ID de cuenta corresponde al usuario. El usuario no posee ninguna transacción");
 
         Login_Id_4();
 
@@ -424,7 +426,7 @@ public class TestTransactions extends Variables {
 
         response = given()
                     .header("Authorization", "Bearer " + token_id_4)
-                    .basePath("/accounts/{id}/transactions")
+                    .basePath("/accounts/{id}/activity")
                     .pathParams("id", 4).
                 when().
                     get().
@@ -451,13 +453,13 @@ public class TestTransactions extends Variables {
         test.assignCategory("Status Code: 403 - Forbidden");
         test.assignCategory("Sprint: 3");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Consulta fallida de las transacciones de la cuenta. ID de cuenta existente. Usuario logueado. El usuario intenta acceder a las transacciones asociadas a un ID de cuenta que no es propio.");
+        test.info("Consulta fallida de todas las transacciones de la cuenta. ID de cuenta existente. Usuario logueado. El ID de cuenta no corresponde al usuario.");
 
         Response response;
 
         response = given()
                     .header("Authorization", "Bearer " + token)
-                    .basePath("/accounts/{id}/transactions")
+                    .basePath("/accounts/{id}/activity")
                     .pathParams("id", 1).
                 when().
                     get().
@@ -485,13 +487,13 @@ public class TestTransactions extends Variables {
         test.assignCategory("Status Code: 200 - OK");
         test.assignCategory("Sprint: 3");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Consulta exitosa de una transacción en particular (por su id) asociada a un id de cuenta. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+        test.info("Consulta exitosa de una transacción en particular (por su id). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
 
         Response response;
 
         response = given()
                     .header("Authorization", "Bearer " + token)
-                    .basePath("/accounts/{id}/transactions/{transferencesId}")
+                    .basePath("/accounts/{id}/activity/{transferencesId}")
                     .pathParams("id", 2)
                     .pathParams("transferencesId", 2).
                 when().
@@ -502,20 +504,13 @@ public class TestTransactions extends Variables {
                     .statusCode(HttpStatus.SC_OK)
                     .contentType(ContentType.JSON)
                     .body("$", Matchers.instanceOf(Map.class))
-//                    .body("$", hasKey("amount"))
-//                    .body("amount", Matchers.equalTo(100000))
-//                    .body("$", hasKey("realizationDate"))
-//                    .body("realizationDate", Matchers.equalTo("2023-05-10 08:30:20.000000"))
-//                    .body("$", hasKey("description"))
-//                    .body("description", Matchers.equalTo("received transaction"))
-//                    .body("$", hasKey("fromCvu"))
-//                    .body("fromCvu", Matchers.equalTo("1828142364587587491111"))
-//                    .body("$", hasKey("toCvu"))
-//                    .body("$", Matchers.equalTo("1828142364587587493333"))
-//                    .body("$", hasKey("type"))
-//                    .body("type", Matchers.equalTo("INCOMING"))
-//                    .body("$", hasKey("transaction_id"))
-//                    .body("transaction_id", Matchers.equalTo(2))
+                    .body("$", hasKey("amount"))
+                    .body("$", hasKey("realizationDate"))
+                    .body("$", hasKey("description"))
+                    .body("$", hasKey("fromCvu"))
+                    .body("$", hasKey("toCvu"))
+                    .body("$", hasKey("type"))
+                    .body("$", hasKey("transaction_id"))
                     .log().all()
                     .extract()
                     .response();
@@ -541,7 +536,7 @@ public class TestTransactions extends Variables {
 
         response = given()
                     .header("Authorization", "Bearer " + token)
-                    .basePath("/accounts/{id}/transactions/{transferencesId}")
+                    .basePath("/accounts/{id}/activity/{transferencesId}")
                     .pathParams("id", 99)
                     .pathParams("transferencesId", 2).
                 when().
@@ -575,7 +570,7 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                    .basePath("/accounts/{id}/transactions/{transferencesId}")
+                    .basePath("/accounts/{id}/activity/{transferencesId}")
                     .pathParams("id", 2)
                     .pathParams("transferencesId", 2).
                 when().
@@ -603,13 +598,13 @@ public class TestTransactions extends Variables {
         test.assignCategory("Status Code: 403 - Forbidden");
         test.assignCategory("Sprint: 3");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Consulta fallida de una transacción en particular (por su id) asociada a un id de cuenta. Usuario logueado. ID de cuenta existente. El usuario intenta acceder a las transacciones asociadas a un ID de cuenta que no es propio.");
+        test.info("Consulta fallida de una transacción en particular (por su id) asociada a un id de cuenta. Usuario logueado. ID de cuenta existente. El ID de cuenta no corresponde al usuario.");
 
         Response response;
 
         response = given()
                     .header("Authorization", "Bearer " + token)
-                    .basePath("/accounts/{id}/transactions/{transferencesId}")
+                    .basePath("/accounts/{id}/activity/{transferencesId}")
                     .pathParams("id", 1)
                     .pathParams("transferencesId", 1).
                 when().
@@ -623,8 +618,194 @@ public class TestTransactions extends Variables {
                     .response();
     }
 
+    //**------------------ POST a transaction (add money from card) (/accounts/{id}/transferences) -----------------**
 
-    //**----------------------------------------------------- AUX ------------------------------------------------**
+
+    //TC_Transactions_0015
+    @Tag("Smoke")
+    @Test
+    @Order(15)
+    public void AddTransactionDepositMoneySuccess201() throws InterruptedException {
+
+        test = extent.createTest("TC_Transactions_0015 - POST a transaction (deposit money) - Status Code: 201 - Created ");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: POST");
+        test.assignCategory("Status Code: 201 - Created");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Alta exitosa de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta.");
+
+        Response response;
+
+        TransactionDeposit transaction = new TransactionDeposit(50.00, 3L);
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/transferences")
+                    .pathParams("id", 2)
+                    .body(transaction).
+                when().
+                    post().
+                then()
+                    .assertThat()
+                    .statusCode(201)
+                    .statusCode(HttpStatus.SC_CREATED)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$", hasKey("transactionId"))
+                    .body("$", hasKey("amount"))
+                    .body("amount", Matchers.equalTo(50.00F))
+                    .body("$", hasKey("realizationDate"))
+                    .body("$", hasKey("description"))
+                    .body("description", Matchers.equalTo("You deposited $50.0 from Brubank S.A.U. Débito"))
+                    .body("cardNumber", Matchers.equalTo("**** 6269"))
+                    .body("$", hasKey("toCvu"))
+                    .body("toCvu", Matchers.equalTo("1828142364587587493333"))
+                    .body("$", hasKey("type"))
+                    .body("type", Matchers.equalTo("INCOMING"))
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
+        //CHECK ACCOUNT BALANCE Y ACTIVITY LIST
+
+
+//TC_Transactions_0016
+        @Tag("Smoke")
+        @Test
+        @Order(16)
+        public void AddTransactionDepositMoneyFailure400AmountZero() throws InterruptedException {
+
+            test = extent.createTest("TC_Transactions_0016 - POST a transaction (deposit money) - Status Code: 400 - Bad Request ");
+            test.assignCategory("Tarjetas");
+            test.assignCategory("Suite: Smoke");
+            test.assignCategory("Request Method: POST");
+            test.assignCategory("Status Code: 400 - Bad Request");
+            test.assignCategory("Sprint: 3");
+            test.assignAuthor("Ana Laura Fidalgo");
+            test.info("Alta fallida de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. El monto de la transacción es igual a 0 (cero).");
+
+            Response response;
+
+            TransactionDeposit transaction = new TransactionDeposit(0.00, 3L);
+
+            response = given()
+                        .header("Authorization", "Bearer " + token)
+                        .header("Content-type", "application/json")
+                        .contentType(ContentType.JSON)
+                        .basePath("/accounts/{id}/transferences")
+                        .pathParams("id", 2)
+                        .body(transaction).
+                    when().
+                        post().
+                    then()
+                        .assertThat()
+                        .statusCode(400)
+                        .statusCode(HttpStatus.SC_BAD_REQUEST)
+                        .contentType(ContentType.JSON)
+                        .body("$", Matchers.instanceOf(Map.class))
+                        .body("$",hasKey("error"))
+                        .body("error", Matchers.equalTo("Bad Request"))
+                        .body("$",hasKey("message"))
+                        .body("message", Matchers.equalTo("The amount can't be 0. Please enter a valid amount"))
+                        .log().all()
+                        .extract()
+                        .response();
+        }
+
+    //TC_Transactions_0017
+    @Tag("Smoke")
+    @Test
+    @Order(17)
+    public void AddTransactionDepositMoneyFailure400AmountNegative() throws InterruptedException {
+
+        test = extent.createTest("TC_Transactions_0017 - POST a transaction (deposit money) - Status Code: 400 - Bad Request ");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: POST");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Alta fallida de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. El monto de la transacción es un número negativo.");
+
+        Response response;
+
+        TransactionDeposit transaction = new TransactionDeposit(-45.00, 3L);
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/transferences")
+                    .pathParams("id", 2)
+                    .body(transaction).
+                when().
+                    post().
+                then()
+                .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("The amount can't be negative. Please enter a valid amount"))
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
+    //TC_Transactions_0018
+    @Tag("Smoke")
+    @Test
+    @Order(18)
+    public void AddTransactionDepositMoneyFailure400CardExpired() throws InterruptedException {
+
+        test = extent.createTest("TC_Transactions_0018 - POST a transaction (deposit money) - Status Code: 400 - Bad Request ");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: POST");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Alta fallida de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. La tarjeta está expirada.");
+
+        Response response;
+
+        TransactionDeposit transaction = new TransactionDeposit(100.00, 4L);
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/transferences")
+                    .pathParams("id", 2)
+                    .body(transaction).
+                when().
+                    post().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
+                    .body("$",hasKey("message"))
+                    //.body("message", Matchers.equalTo("The amount can't be negative. Please enter a valid amount"))
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
+
+
+    //**------------------------------------------------------ AUX -------------------------------------------------**
 
     public static void Login_Id_4() {
         token_id_4 = given()
