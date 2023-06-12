@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -92,6 +94,16 @@ public class TransactionService implements ITransactionService {
         return transaction.get();
     }
 
+    private boolean isExpirationDateValid(String expirationDate) {
+        try {
+            YearMonth yearMonth = YearMonth.parse(expirationDate, cardMapper.formatter);
+            YearMonth currentYearMonth = YearMonth.now();
+            return yearMonth.isAfter(currentYearMonth) || yearMonth.equals(currentYearMonth);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
     @Transactional
     @Override
     public CardTransactionGetDTO processCardTransaction(Long id, CardTransactionPostDTO cardTransactionPostDTO) throws ResourceNotFoundException, ForbiddenException, PaymentRequiredException, BadRequestException {
@@ -110,6 +122,11 @@ public class TransactionService implements ITransactionService {
         if (card.getCardBalance() < cardTransactionPostDTO.getAmount()) {
             throw new PaymentRequiredException("The card doesn't have enough balance");
         }
+
+       if (!isExpirationDateValid(card.getExpirationDate())) {
+           throw new BadRequestException("The card you are trying to use is expired. ");
+       }
+
         if (cardTransactionPostDTO.getAmount() == 0.0) {
             throw new BadRequestException("The amount can't be 0. Please enter a valid amount");
         } else if (cardTransactionPostDTO.getAmount() < 0.0) {
