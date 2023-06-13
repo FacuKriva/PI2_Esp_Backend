@@ -182,12 +182,16 @@ public class AccountService implements IAccountService {
 
     @Override
     public ResponseEntity <?> getTransactionsByAmountRange(Long accountId, Integer rangoSelected, String token) throws Exception{
+
+        Account account = checkId(accountId);
+        validateAccountBelongsUser(account, token);
+
         ListTransactionDto listTransactionDto = new ListTransactionDto();
 
         List <Transaction> transactions = transactionService.getAllTransactionsByAmountRange(rangoSelected,accountId);
 
         if (transactions.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Lo sentimos. No se encontro contenido para este rango");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Lo sentimos. No se encontró contenido para este rango");
         }
 
         listTransactionDto.setTransactions(transactions);
