@@ -123,4 +123,9 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.CREATED).body(accountService.depositMoney(id, cardTransactionPostDTO, token));
     }
 
+    @GetMapping("/{id}/activity/amount/{amountRange}")
+    public ResponseEntity<?> getTransactionsByAmountRange(@PathVariable("id") Long id, @PathVariable("amountRange") Integer range, @RequestHeader("Authorization") String token) throws Exception{
+        return accountService.getTransactionsByAmountRange(id, range, token);
+
+    }
 }
