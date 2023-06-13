@@ -12,12 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -178,6 +178,22 @@ public class AccountService implements IAccountService {
         Account account = checkId(id);
         validateAccountBelongsUser(account, token);
         return transactionService.processCardTransaction(id, cardTransactionPostDTO);
+    }
+
+    @Override
+    public ResponseEntity <?> getTransactionsByAmountRange(Long accountId, Integer rangoSelected, String token) throws Exception{
+        ListTransactionDto listTransactionDto = new ListTransactionDto();
+
+        List <Transaction> transactions = transactionService.getAllTransactionsByAmountRange(rangoSelected,accountId);
+
+        if (transactions.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Lo sentimos. No se encontro contenido para este rango");
+        }
+
+        listTransactionDto.setTransactions(transactions);
+        listTransactionDto.setAccount(findById(accountId,token));
+
+        return ResponseEntity.status(HttpStatus.OK).body(listTransactionDto);
     }
 
 }

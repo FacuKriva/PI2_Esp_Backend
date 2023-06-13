@@ -1,9 +1,6 @@
 package com.digital.money.msvc.api.account.service.impl;
 
-import com.digital.money.msvc.api.account.handler.BadRequestException;
-import com.digital.money.msvc.api.account.handler.ForbiddenException;
-import com.digital.money.msvc.api.account.handler.PaymentRequiredException;
-import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
+import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Card;
 import com.digital.money.msvc.api.account.model.Transaction;
@@ -23,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -157,5 +155,27 @@ public class TransactionService implements ITransactionService {
         cTGDTO.setCardNumber(cardGetDTO.getCardNumber());
 
         return cTGDTO;
+    }
+
+    @Override
+    public List<Transaction> getAllTransactionsByAmountRange(Integer rangoSelected, Long accountId) throws Exception {
+        Double[] rangos = {0.0,0.0,1000.0,5000.0,20000.0,100000.0};
+        List<Transaction> transactions = new ArrayList<>();
+
+        if(rangoSelected<=0 || rangoSelected>5){
+            throw new SelectOutOfBoundException("Please select a option within the range");
+        }
+
+        Double firstR = rangos[rangoSelected];
+
+
+        if(rangoSelected==5){
+            transactions = transactionRepository.findByAmountGreaterThanEqualAndAccount_AccountId(firstR,accountId);
+        }else{
+            Double secondR = rangos[rangoSelected+1];
+            transactions = transactionRepository.findByAmountBetweenAndAccount_AccountId(firstR,secondR,accountId);
+        }
+
+        return transactions;
     }
 }
