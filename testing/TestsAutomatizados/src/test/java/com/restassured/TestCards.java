@@ -477,7 +477,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("DH Money", 4817475789962098L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
+        Card card = new Card("DH Money", 4817475789962098L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito");
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -531,7 +531,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("DH Money", 5412873403403000L, "Martina Zeta", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
+        Card card = new Card("DH Money", 5412873403403000L, "Martina Zeta", "08/2026", 827, "Digital Money Bank", "Debito");
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -574,7 +574,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Martina Zeta", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
+        Card card = new Card("DH Money", 4539337010734513L, "Martina Zeta", "08/2026", 827, "Digital Money Bank", "Debito");
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -616,7 +616,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
+        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito");
 
         response = given()
                     .header("Content-type", "application/json")
@@ -652,7 +652,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
+        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito");
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -696,7 +696,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Martina Zeta", "08/01/2026", 827, "Digital Money Bank", "Debito", 10000.00);
+        Card card = new Card("DH Money", 4539337010734513L, "Martina Zeta", "08/01/2026", 827, "Digital Money Bank", "Debito");
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -740,7 +740,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
+        Card card = new Card("DH Money", 4539337010734513L, "", "08/2026", 827, "Digital Money Bank", "Debito");
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -781,7 +781,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("DH Money", 0L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
+        Card card = new Card("DH Money", 0L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito");
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -822,7 +822,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "", 827, "Digital Money Bank", "Debito", 10000.00);
+        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "", 827, "Digital Money Bank", "Debito");
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -863,7 +863,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "", 10000.00);
+        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "");
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -905,7 +905,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 0, "Digital Money Bank", "Debito", 10000.00);
+        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 0, "Digital Money Bank", "Debito");
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -947,7 +947,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
+        Card card = new Card("", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito");
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -988,7 +988,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "", "Debito", 10000.00);
+        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "", "Debito");
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -1006,50 +1006,6 @@ public class TestCards extends Variables {
                     .contentType(ContentType.JSON)
                     .body("$",hasKey("error"))
                     .body("error", Matchers.equalTo("Bad Request"))
-                    .log().all()
-                    .extract()
-                    .response();
-
-    }
-
-
-    //TC_Tarjetas_0035
-    @Tag("Regression")
-    @Test
-    @Order(24)
-    public void AddCardFailure400CardBalanceNegative() throws InterruptedException {
-
-        test = extent.createTest("TC_Tarjetas_0035 - POST a card to an account - Status Code: 400 - Bad Request");
-        test.assignCategory("Tarjetas");
-        test.assignCategory("Suite: Smoke");
-        test.assignCategory("Request Method: POST");
-        test.assignCategory("Status Code: 400 - Bad Request");
-        test.assignCategory("Sprint: 3");
-        test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Alta fallida de nueva tarjeta asociada a cuenta del usuario. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta. Dato vacío (cardBalance = 0)");
-
-        Response response;
-
-        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito", -1.00);
-
-        response = given()
-                    .header("Authorization", "Bearer " + token)
-                    .header("Content-type", "application/json")
-                    .contentType(ContentType.JSON)
-                    .basePath("/accounts/{id}/cards")
-                    .pathParams("id", 2)
-                    .body(card).
-                when().
-                    post().
-                then()
-                    .assertThat()
-                    .statusCode(400)
-                    .statusCode(HttpStatus.SC_BAD_REQUEST)
-                    .contentType(ContentType.JSON)
-                    .body("$",hasKey("error"))
-                    .body("error", Matchers.equalTo("Bad Request"))
-                    .body("$",hasKey("message"))
-                    .body("message", Matchers.equalTo("The card you are trying to add has a negative balance. Please make sure the card balance is valid."))
                     .log().all()
                     .extract()
                     .response();
@@ -1074,7 +1030,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Juan", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
+        Card card = new Card("DH Money", 4539337010734513L, "Juan", "08/2026", 827, "Digital Money Bank", "Debito");
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -1117,7 +1073,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 82, "Digital Money Bank", "Debito", 10000.00);
+        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "08/2026", 82, "Digital Money Bank", "Debito");
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -1160,7 +1116,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("D", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
+        Card card = new Card("D", 4539337010734513L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito");
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -1204,7 +1160,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "05/2023", 827, "Digital Money Bank", "Debito", 10000.00);
+        Card card = new Card("DH Money", 4539337010734513L, "Juan Pedro Perez", "05/2023", 827, "Digital Money Bank", "Debito");
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -1248,7 +1204,7 @@ public class TestCards extends Variables {
 
         Response response;
 
-        Card card = new Card("DH Money", 453933701073451L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito", 10000.00);
+        Card card = new Card("DH Money", 453933701073451L, "Juan Pedro Perez", "08/2026", 827, "Digital Money Bank", "Debito");
 
         response = given()
                     .header("Authorization", "Bearer " + token)

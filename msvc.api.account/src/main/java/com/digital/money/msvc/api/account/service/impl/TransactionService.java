@@ -119,9 +119,9 @@ public class TransactionService implements ITransactionService {
         if (!card.getAccount().getAccountId().equals(id)) {
             throw new ForbiddenException("The card doesn't belong to the account");
         }
-        if (card.getCardBalance() < cardTransactionPostDTO.getAmount()) {
-            throw new PaymentRequiredException("The card doesn't have enough balance");
-        }
+//        if (card.getCardBalance() < cardTransactionPostDTO.getAmount()) {
+//            throw new PaymentRequiredException("The card doesn't have enough balance");
+//        }
 
        if (!isExpirationDateValid(card.getExpirationDate())) {
            throw new BadRequestException("The card you are trying to use is expired. ");
@@ -143,7 +143,7 @@ public class TransactionService implements ITransactionService {
         transaction.setType(TransactionType.INCOMING);
         transaction.setAccount(account);
 
-        card.setCardBalance(card.getCardBalance() - cardTransactionPostDTO.getAmount());
+        //card.setCardBalance(card.getCardBalance() - cardTransactionPostDTO.getAmount());
 
         account.setAvailableBalance(account.getAvailableBalance() + cardTransactionPostDTO.getAmount());
 

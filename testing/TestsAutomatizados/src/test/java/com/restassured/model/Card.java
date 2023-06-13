@@ -18,6 +18,6 @@ public class Card {
     private Integer cvv;
     private String bank;
     private String cardType;
-    private Double cardBalance;
+    //private Double cardBalance;
 
 }
