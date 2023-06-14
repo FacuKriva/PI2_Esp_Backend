@@ -22,8 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestTransactions extends Variables {
@@ -70,7 +69,7 @@ public class TestTransactions extends Variables {
                 extent.flush();
     }
 
-    //**---------------------------- GET last 5 transactions (/accounts/{id}/transactions) --------------------------**
+    //**-------------------------- GET last 5 transactions (/accounts/{id}/transactions) ------------------------**
 
     //TC_Transacciones_0001
     @Tag("Smoke")
@@ -144,7 +143,7 @@ public class TestTransactions extends Variables {
     @Order(2)
     public void ViewLastFiveTransactionsFailure404() throws InterruptedException {
 
-        test = extent.createTest("TC_Transacciones_0002 - GET last 5 transactions by account id - Status Code: 404 - Not Found");
+        test = extent.createTest("TC_Transacciones_0002 - GET last 5 transactions by account id - Status Code: 404 - Not Found (Account ID)");
         test.assignCategory("Transacciones");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: GET");
@@ -165,6 +164,9 @@ public class TestTransactions extends Variables {
                     .assertThat()
                     .statusCode(404)
                     .statusCode(HttpStatus.SC_NOT_FOUND)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Not Found"))
                     .log().all()
                     .extract()
                     .response();
@@ -266,6 +268,10 @@ public class TestTransactions extends Variables {
                     .assertThat()
                     .statusCode(403)
                     .statusCode(HttpStatus.SC_FORBIDDEN)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Forbidden"))
+                    .body("message", Matchers.equalTo("You don't have access to that account"))
                     .log().all()
                     .extract()
                     .response();
@@ -345,7 +351,7 @@ public class TestTransactions extends Variables {
     @Order(7)
     public void ViewAllTransactionsFailure404() throws InterruptedException {
 
-        test = extent.createTest("TC_Transacciones_0007 - GET al transactions by account id - Status Code: 404 - Not Found");
+        test = extent.createTest("TC_Transacciones_0007 - GET al transactions by account id - Status Code: 404 - Not Found (Account ID)");
         test.assignCategory("Transacciones");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: GET");
@@ -366,6 +372,9 @@ public class TestTransactions extends Variables {
                 .assertThat()
                     .statusCode(404)
                     .statusCode(HttpStatus.SC_NOT_FOUND)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Not Found"))
                     .contentType(ContentType.JSON)
                     .log().all()
                     .extract()
@@ -467,6 +476,10 @@ public class TestTransactions extends Variables {
                     .assertThat()
                     .statusCode(403)
                     .statusCode(HttpStatus.SC_FORBIDDEN)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Forbidden"))
+                    .body("message", Matchers.equalTo("You don't have access to that account"))
                     .log().all()
                     .extract()
                     .response();
@@ -521,9 +534,9 @@ public class TestTransactions extends Variables {
     @Tag("Smoke")
     @Test
     @Order(12)
-    public void ViewTransactionByIdFailure404() throws InterruptedException {
+    public void ViewTransactionByIdFailure404AccountIdNotFound() throws InterruptedException {
 
-        test = extent.createTest("TC_Transacciones_0012 - GET a an account's transaction by id - Status Code: 404 - Not Found");
+        test = extent.createTest("TC_Transacciones_0012 - GET a an account's transaction by id - Status Code: 404 - Not Found (Account ID)");
         test.assignCategory("Transacciones");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: GET");
@@ -545,6 +558,46 @@ public class TestTransactions extends Variables {
                     .assertThat()
                     .statusCode(404)
                     .statusCode(HttpStatus.SC_NOT_FOUND)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Not Found"))
+                    .log().all()
+                    .extract()
+                    .response();
+
+    }
+
+    //TC_Transacciones_0019
+    @Tag("Smoke")
+    @Test
+    @Order(13)
+    public void ViewTransactionByIdFailure404TransactionIdNotFound() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0012 - GET a an account's transaction by id - Status Code: 404 - Not Found (Transaction ID)");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 404 - Not Found");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta fallida de una transacción en particular (por su id) asociada a un id de cuenta. Usuario logueado. ID de cuenta inexistente.");
+
+        Response response;
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/{transferencesId}")
+                    .pathParams("id", 2)
+                    .pathParams("transferencesId", 99).
+                when().
+                    get().
+                then()
+                    .assertThat()
+                    .statusCode(404)
+                    .statusCode(HttpStatus.SC_NOT_FOUND)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Not Found"))
                     .log().all()
                     .extract()
                     .response();
@@ -555,7 +608,7 @@ public class TestTransactions extends Variables {
     //TC_Transacciones_0013
     @Tag("Smoke")
     @Test
-    @Order(13)
+    @Order(14)
     public void ViewATransactionByIdFailure401() throws InterruptedException {
 
         test = extent.createTest("TC_Transacciones_0013 - GET a an account's transaction by id - Status Code: 401 - Unauthorized");
@@ -588,7 +641,7 @@ public class TestTransactions extends Variables {
     //TC_Transacciones_0014
     @Tag("Smoke")
     @Test
-    @Order(14)
+    @Order(15)
     public void ViewATransactionByIdFailure403() throws InterruptedException {
 
         test = extent.createTest("TC_Transacciones_0014 - GET a an account's transaction by id - Status Code: 403 - Forbidden");
@@ -613,6 +666,10 @@ public class TestTransactions extends Variables {
                     .assertThat()
                     .statusCode(403)
                     .statusCode(HttpStatus.SC_FORBIDDEN)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Forbidden"))
+                    .body("message", Matchers.equalTo("You don't have access to that account"))
                     .log().all()
                     .extract()
                     .response();
@@ -624,7 +681,7 @@ public class TestTransactions extends Variables {
     //TC_Transactions_0015
     @Tag("Smoke")
     @Test
-    @Order(15)
+    @Order(16)
     public void AddTransactionDepositMoneySuccess201() throws InterruptedException {
 
         test = extent.createTest("TC_Transactions_0015 - POST a transaction (deposit money) - Status Code: 201 - Created ");
@@ -671,13 +728,11 @@ public class TestTransactions extends Variables {
                     .response();
     }
 
-        //CHECK ACCOUNT BALANCE Y ACTIVITY LIST
-
 
 //TC_Transactions_0016
         @Tag("Smoke")
         @Test
-        @Order(16)
+        @Order(17)
         public void AddTransactionDepositMoneyFailure400AmountZero() throws InterruptedException {
 
             test = extent.createTest("TC_Transactions_0016 - POST a transaction (deposit money) - Status Code: 400 - Bad Request ");
@@ -720,7 +775,7 @@ public class TestTransactions extends Variables {
     //TC_Transactions_0017
     @Tag("Smoke")
     @Test
-    @Order(17)
+    @Order(18)
     public void AddTransactionDepositMoneyFailure400AmountNegative() throws InterruptedException {
 
         test = extent.createTest("TC_Transactions_0017 - POST a transaction (deposit money) - Status Code: 400 - Bad Request ");
@@ -763,7 +818,7 @@ public class TestTransactions extends Variables {
     //TC_Transactions_0018
     @Tag("Smoke")
     @Test
-    @Order(18)
+    @Order(19)
     public void AddTransactionDepositMoneyFailure400CardExpired() throws InterruptedException {
 
         test = extent.createTest("TC_Transactions_0018 - POST a transaction (deposit money) - Status Code: 400 - Bad Request ");
@@ -797,15 +852,468 @@ public class TestTransactions extends Variables {
                     .body("$",hasKey("error"))
                     .body("error", Matchers.equalTo("Bad Request"))
                     .body("$",hasKey("message"))
-                    //.body("message", Matchers.equalTo("The amount can't be negative. Please enter a valid amount"))
+                    .body("message", Matchers.equalTo("The card you are trying to use is expired"))
                     .log().all()
                     .extract()
                     .response();
     }
 
+    //TC_Transactions_0020
+    @Tag("Smoke")
+    @Test
+    @Order(20)
+    public void AddTransactionDepositMoneyFailure401Unauthorized() throws InterruptedException {
 
+        test = extent.createTest("TC_Transactions_0020 - POST a transaction (deposit money) - Status Code: 401 - Unauthorized");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: POST");
+        test.assignCategory("401 - Unauthorized");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Alta fallida de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario no logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta.");
 
-    //**------------------------------------------------------ AUX -------------------------------------------------**
+        Response response;
+
+        TransactionDeposit transaction = new TransactionDeposit(100.00, 3L);
+
+        response = given()
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/transferences")
+                    .pathParams("id", 2)
+                    .body(transaction).
+                when().
+                    post().
+                then()
+                    .assertThat()
+                    .statusCode(401)
+                    .statusCode(HttpStatus.SC_UNAUTHORIZED)
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
+    //TC_Transactions_0021
+    @Tag("Smoke")
+    @Test
+    @Order(21)
+    public void AddTransactionDepositMoneyFailure403ForbiddenAccountId() throws InterruptedException {
+
+        test = extent.createTest("TC_Transactions_0021 - POST a transaction (deposit money) - Status Code: 403 - Forbidden");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: POST");
+        test.assignCategory("403 - Forbidden");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Alta fallida de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario logueado. ID de cuenta existente. El ID de cuenta no corresponde al usuario. Tarjeta no asociada a otro id de cuenta.");
+
+        Response response;
+
+        TransactionDeposit transaction = new TransactionDeposit(100.00, 3L);
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/transferences")
+                    .pathParams("id", 1)
+                    .body(transaction).
+                when().
+                    post().
+                then()
+                    .assertThat()
+                    .statusCode(403)
+                    .statusCode(HttpStatus.SC_FORBIDDEN)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Forbidden"))
+                    .body("message", Matchers.equalTo("You don't have access to that account"))
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
+    //TC_Transactions_0022
+    @Tag("Smoke")
+    @Test
+    @Order(22)
+    public void AddTransactionDepositMoneyFailure403ForbiddenCardId() throws InterruptedException {
+
+        test = extent.createTest("TC_Transactions_0022 - POST a transaction (deposit money) - Status Code: 403 - Forbidden");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: POST");
+        test.assignCategory("403 - Forbidden");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Alta fallida de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta asociada a otro id de cuenta.");
+
+        Response response;
+
+        TransactionDeposit transaction = new TransactionDeposit(100.00, 1L);
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/transferences")
+                    .pathParams("id", 2)
+                    .body(transaction).
+                when().
+                    post().
+                then()
+                    .assertThat()
+                    .statusCode(403)
+                    .statusCode(HttpStatus.SC_FORBIDDEN)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Forbidden"))
+                    .body("message", Matchers.equalTo("The card doesn't belong to the account"))
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
+    //TC_Transactions_0023
+    @Tag("Smoke")
+    @Test
+    @Order(23)
+    public void AddTransactionDepositMoneyFailure404AccountId() throws InterruptedException {
+
+        test = extent.createTest("TC_Transactions_0023 - POST a transaction (deposit money) - Status Code: 404 - Not Found (Account Id)");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: POST");
+        test.assignCategory("404 - Not Found");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Alta fallida de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario logueado. ID de cuenta inexistente. Tarjeta no asociada a otro id de cuenta.");
+
+        Response response;
+
+        TransactionDeposit transaction = new TransactionDeposit(100.00, 3L);
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/transferences")
+                    .pathParams("id", 99)
+                    .body(transaction).
+                when().
+                    post().
+                then()
+                    .assertThat()
+                    .statusCode(404)
+                    .statusCode(HttpStatus.SC_NOT_FOUND)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Not Found"))
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
+    //TC_Transactions_0024
+    @Tag("Smoke")
+    @Test
+    @Order(24)
+    public void AddTransactionDepositMoneyFailure404CardId() throws InterruptedException {
+
+        test = extent.createTest("TC_Transactions_0024 - POST a transaction (deposit money) - Status Code: 404 - Not Found (Card Id)");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: POST");
+        test.assignCategory("404 - Not Found");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Alta fallida de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario logueado. ID de cuenta existente. ID de tarjeta inexistente.");
+
+        Response response;
+
+        TransactionDeposit transaction = new TransactionDeposit(100.00, 99L);
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/transferences")
+                    .pathParams("id", 2)
+                    .body(transaction).
+                when().
+                    post().
+                then()
+                    .assertThat()
+                    .statusCode(404)
+                    .statusCode(HttpStatus.SC_NOT_FOUND)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Not Found"))
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
+    //TC_Transactions_0025
+    @Tag("Regression")
+    @Test
+    @Order(25)
+    public void AddTransactionDepositMoneyFailure400AmountMoreThan2Decimals() throws InterruptedException {
+
+        test = extent.createTest("TC_Transactions_0025 - POST a transaction (deposit money) - Status Code: 400 - Bad Request (Amount has more than 2 decimals)");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: POST");
+        test.assignCategory("400 - Bad Request");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Alta fallida de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario logueado. ID de cuenta existente. Tarjeta no asociada a otro id de cuenta. El monto de la transacción posee más de dos decimales.");
+
+        Response response;
+
+        TransactionDeposit transaction = new TransactionDeposit(100.012, 3L);
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/transferences")
+                    .pathParams("id", 2)
+                    .body(transaction).
+                when().
+                    post().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("The amount must be a number with two decimal places"))
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
+    //TC_Transactions_0026
+    @Tag("Regression")
+    @Test
+    @Order(26)
+    public void AddTransactionDepositMoneyFailure400AmountMoreThan2DecimalsAllZero() throws InterruptedException {
+
+        test = extent.createTest("TC_Transactions_0026 - POST a transaction (deposit money) - Status Code: 201 - Created (Amount has more than 2 decimals ALL zero)");
+        test.assignCategory("Tarjetas");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: POST");
+        test.assignCategory("201 - Created");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Alta fallida de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario logueado. ID de cuenta existente. Tarjeta no asociada a otro id de cuenta. El monto de la transacción posee más de dos decimales que son todos 0.");
+
+        Response response;
+
+        TransactionDeposit transaction = new TransactionDeposit(100.000, 3L);
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-type", "application/json")
+                    .contentType(ContentType.JSON)
+                    .basePath("/accounts/{id}/transferences")
+                    .pathParams("id", 2)
+                    .body(transaction).
+                when().
+                    post().
+                then()
+                    .assertThat()
+                    .statusCode(201)
+                    .statusCode(HttpStatus.SC_CREATED)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$", hasKey("transactionId"))
+                    .body("$", hasKey("amount"))
+                    .body("amount", Matchers.equalTo(100.00F))
+                    .body("$", hasKey("realizationDate"))
+                    .body("$", hasKey("description"))
+                    .body("description", Matchers.equalTo("You deposited $100.0 from Brubank S.A.U. Débito"))
+                    .body("cardNumber", Matchers.equalTo("**** 6269"))
+                    .body("$", hasKey("toCvu"))
+                    .body("toCvu", Matchers.equalTo("1828142364587587493333"))
+                    .body("$", hasKey("type"))
+                    .body("type", Matchers.equalTo("INCOMING"))
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
+    //**--------- GET all transactions filtered by amount (/accounts/{id}/activity/amount/{amountRange}) --------**
+
+    //TC_Transacciones_0027
+    @Tag("Smoke")
+    @Test
+    @Order(27)
+    public void ViewAllTransactionsFilteredByAmountRangeSuccess200() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0027 - GET all transactions filtered by amount - Status Code: 200 - OK");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 200 - OK");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada por rango de monto 3 (amount entre 5000 y 20000). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        List<Float> transactionAmountList = given()
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/amount/{amountRange}")
+                    .pathParams("id", 2)
+                    .pathParams("amountRange", 3).
+                when().
+                    get().
+                    then()
+                    .assertThat()
+                    .statusCode(200)
+                    .statusCode(HttpStatus.SC_OK)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$", hasKey("account"))
+                    .body("$", hasKey("transactions"))
+                    .body("transactions[0]", hasKey("amount"))
+                    .body("transactions[0]", hasKey("realizationDate"))
+                    .body("transactions[0]", hasKey("description"))
+                    .body("transactions[0]", hasKey("fromCvu"))
+                    .body("transactions[0]", hasKey("toCvu"))
+                    .body("transactions[0]", hasKey("type"))
+                    .body("transactions[0]", hasKey("transaction_id"))
+                    .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                    .log().all()
+                    .extract()
+                    .jsonPath().getList("transactions.amount");
+
+        List<Float> transactionAmountNewList = new ArrayList<>();
+        for (Float amount:transactionAmountList) {
+            if (amount>= 5000 && amount <= 20000){
+                transactionAmountNewList.add(amount);
+          }
+        }
+    Assertions.assertTrue(transactionAmountList.size() == transactionAmountNewList.size());
+
+    }
+
+    //TC_Transacciones_0028
+    @Tag("Smoke")
+    @Test
+    @Order(28)
+    public void ViewAllTransactionsFilteredByAmountRangeSuccess204() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0028 - GET all transactions filtered by amount - Status Code: 204 - No Content");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 204 - No Content");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada por rango de monto 2 (amount entre 1000 y 5000). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/amount/{amountRange}")
+                    .pathParams("id", 2)
+                    .pathParams("amountRange", 2).
+                when().
+                    get().
+                then()
+                    .assertThat()
+                    .statusCode(204)
+                    .statusCode(HttpStatus.SC_NO_CONTENT)
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
+    //TC_Transacciones_0029
+    @Tag("Regression")
+    @Test
+    @Order(29)
+    public void ViewAllTransactionsFilteredByAmountRangeFailure400RangeLessThan1() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0029 - GET all transactions filtered by amount - Status Code: 400 - Bad Request (Range < 1)");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada por rango de monto < 1 (los rangos posibles son entre 1 y 5). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/amount/{amountRange}")
+                    .pathParams("id", 2)
+                    .pathParams("amountRange", 0).
+                when().
+                    get().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Select index out of range"))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("Please select a option within the range"))
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
+    //TC_Transacciones_0030
+    @Tag("Regression")
+    @Test
+    @Order(30)
+    public void ViewAllTransactionsFilteredByAmountRangeFailure400RangeGreaterThan5() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0030 - GET all transactions filtered by amount - Status Code: 400 - Bad Request (Range > 5)");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada por rango de monto > 5 (los rangos posibles son entre 1 y 5). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/amount/{amountRange}")
+                    .pathParams("id", 2)
+                    .pathParams("amountRange", 6).
+                when().
+                    get().
+                then()
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Select index out of range"))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("Please select a option within the range"))
+                    .log().all()
+                    .extract()
+                    .response();
+    }
+
+    //**--------------------------------------------------- AUX -------------------------------------------------**
 
     public static void Login_Id_4() {
         token_id_4 = given()
@@ -824,6 +1332,5 @@ public class TestTransactions extends Variables {
                 .extract()
                 .jsonPath().get("access_token");
     }
-
 
 }
