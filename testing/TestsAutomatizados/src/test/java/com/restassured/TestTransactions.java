@@ -1192,8 +1192,6 @@ public class TestTransactions extends Variables {
                     .body("transactions[0]", hasKey("type"))
                     .body("transactions[0]", hasKey("transaction_id"))
                     .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
-                    //.body("transactions..realizationDate", Matchers.everyItem(greaterThanOrEqualTo(5000)))
-                    //.body("transactions..realizationDate", Matchers.everyItem(lessThanOrEqualTo(20000)))
                     .log().all()
                     .extract()
                     .jsonPath().getList("transactions.amount");
