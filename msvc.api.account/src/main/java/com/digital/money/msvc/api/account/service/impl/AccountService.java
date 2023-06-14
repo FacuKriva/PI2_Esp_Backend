@@ -3,6 +3,7 @@ package com.digital.money.msvc.api.account.service.impl;
 import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Transaction;
+import com.digital.money.msvc.api.account.model.TransactionType;
 import com.digital.money.msvc.api.account.model.dto.*;
 import com.digital.money.msvc.api.account.repository.IAccountRepository;
 import com.digital.money.msvc.api.account.service.IAccountService;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -198,6 +200,13 @@ public class AccountService implements IAccountService {
         listTransactionDto.setAccount(findById(accountId,token));
 
         return ResponseEntity.status(HttpStatus.OK).body(listTransactionDto);
+    }
+
+    @Override
+    public List<Transaction> getTransactionsWithFilters(Long accountId, String startDate, String endDate,Integer rangeSelect, String type, String token) throws Exception{
+        Account account = checkId(accountId);
+        validateAccountBelongsUser(account,token);
+        return transactionService.getTransactionsWithFilters(startDate,endDate,rangeSelect,type);
     }
 
 }

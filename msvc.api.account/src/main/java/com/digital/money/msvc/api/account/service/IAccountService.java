@@ -21,6 +21,7 @@ public interface IAccountService extends ICheckId<Account> {
     Transaction findTransactionById(Long accountId, Long transactionId, String token) throws Exception;
     ResponseEntity <?> getTransactionsByAmountRange(Long accountId, Integer rangoSelect, String token) throws Exception;
 
+    List <Transaction> getTransactionsWithFilters(Long accountId, String startDate, String endDate,Integer rangeSelect, String type, String token) throws Exception;
     //* ///////// CARDS ///////// *//
     CardGetDTO addCard(Long id, CardPostDTO cardPostDTO, String token) throws ResourceNotFoundException, AlreadyRegisteredException, BadRequestException, ForbiddenException, JSONException;
     List<CardGetDTO> listAllCards(Long id, String token) throws ResourceNotFoundException, ForbiddenException, JSONException;

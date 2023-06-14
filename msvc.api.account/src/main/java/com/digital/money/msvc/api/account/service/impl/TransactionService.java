@@ -14,9 +14,11 @@ import com.digital.money.msvc.api.account.utils.mapper.AccountMapper;
 import com.digital.money.msvc.api.account.utils.mapper.CardMapper;
 import com.digital.money.msvc.api.account.utils.mapper.TransactionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
@@ -177,5 +179,112 @@ public class TransactionService implements ITransactionService {
         }
 
         return transactions;
+    }
+
+    @Value("${spring.datasource.url}")
+    private String urlDB;
+
+    @Value("${spring.datasource.username}")
+    private String userDB;
+
+    @Value("${spring.datasource.password}")
+    private String passDB;
+    @Override
+    public List<Transaction> getTransactionsWithFilters(String startDate, String endDate, Integer rangeSelect, String type) throws Exception{
+
+        String query = "SELECT * FROM transactions WHERE";
+        Boolean ampersand = false;
+        ArrayList<Object> params = new ArrayList<Object>();
+
+        System.out.println(startDate);
+        System.out.println(endDate);
+        System.out.println(rangeSelect);
+        System.out.println(type);
+
+
+        if(startDate!=null){
+            LocalDateTime startDateLDT, endDateLDT;
+            startDateLDT = LocalDateTime.parse(startDate);
+
+            if(endDate!=null){
+                endDateLDT = LocalDateTime.parse(endDate);
+            }
+            else {
+                endDateLDT = LocalDateTime.now();
+            }
+            params.add(startDateLDT);
+            params.add(endDateLDT);
+
+            query+=" realizationDate BETWEEN ? AND ?";
+            ampersand=true;
+        }
+
+        TransactionType transactionType = TransactionType.INCOMING;
+
+        if(type.equals("INCOMING")){
+            transactionType = TransactionType.INCOMING;
+        } else if (type.equals("OUTGOING")) {
+            transactionType = TransactionType.OUTGOING;
+        }
+
+        if (transactionType!=null){
+            if(ampersand){
+                query+= " AND";
+            }
+            query+=" type = ?";
+            params.add(transactionType);
+            ampersand=true;
+        }
+
+        Double[] rangos = {0.0,0.0,1000.0,5000.0,20000.0,100000.0};
+
+        if(rangeSelect!=null) {
+            if (rangeSelect >= 1 && rangeSelect <= 5) {
+                if (ampersand) {
+                    query += " AND";
+                }
+                Double firstR = rangos[rangeSelect];
+                params.add(firstR);
+
+                if (rangeSelect == 5) {
+                    query += " amount < ?";
+                } else {
+                    Double secondR = rangos[rangeSelect + 1];
+                    query += " amount BETWEEN ? AND ? ";
+                    params.add(secondR);
+                }
+
+            }
+        }
+
+        Object[] parameters = params.toArray();
+
+        System.out.println(query);
+
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection connection= DriverManager.getConnection(urlDB,userDB,passDB);
+
+
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+        for(int i = 0; i < parameters.length; i++) {
+            preparedStatement.setObject(i+1, parameters[i]);
+            System.out.println(parameters[i]);
+        }
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        ResultSetMetaData rsmd = resultSet.getMetaData();
+        int columnsNumber = rsmd.getColumnCount();
+        while (resultSet.next()) {
+            for (int i = 1; i <= columnsNumber; i++) {
+                if (i > 1) System.out.print(",  ");
+                String columnValue = resultSet.getString(i);
+                System.out.print(columnValue + " " + rsmd.getColumnName(i));
+            }
+            System.out.println("");
+        }
+
+        return null;
     }
 }

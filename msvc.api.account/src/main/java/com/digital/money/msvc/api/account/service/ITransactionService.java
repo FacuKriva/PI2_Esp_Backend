@@ -25,5 +25,6 @@ public interface ITransactionService extends IService<TransactionPostDto, Transa
     CardTransactionGetDTO processCardTransaction(Long accountId, CardTransactionPostDTO cardTransactionPostDTO) throws ResourceNotFoundException, ForbiddenException, PaymentRequiredException, BadRequestException;
 
     List<Transaction> getAllTransactionsByAmountRange(Integer rangoSelected, Long accountId) throws Exception;
+    List<Transaction> getTransactionsWithFilters(String startDate, String endDate, Integer rangeSelect, String type) throws Exception;
 
 }
