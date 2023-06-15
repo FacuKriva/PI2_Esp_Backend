@@ -4,7 +4,10 @@ import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.dto.*;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -21,6 +24,7 @@ public interface IAccountService extends ICheckId<Account> {
     Transaction findTransactionById(Long accountId, Long transactionId, String token) throws Exception;
     ResponseEntity <?> getTransactionsByAmountRange(Long accountId, Integer rangoSelect, String token) throws Exception;
 
+    ResponseEntity<ListTransactionDto> getTransactionsWithFilters(Long accountId, String startDate, String endDate, Integer rangeSelect, String type, String token) throws Exception;
     //* ///////// CARDS ///////// *//
     CardGetDTO addCard(Long id, CardPostDTO cardPostDTO, String token) throws ResourceNotFoundException, AlreadyRegisteredException, BadRequestException, ForbiddenException, JSONException;
     List<CardGetDTO> listAllCards(Long id, String token) throws ResourceNotFoundException, ForbiddenException, JSONException;

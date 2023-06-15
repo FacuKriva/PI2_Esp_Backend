@@ -1256,7 +1256,7 @@ public class TestCards extends Variables {
                     .contentType(ContentType.JSON)
                     .basePath("/accounts/{id}/cards/{idCard}")
                     .pathParams("id", 2)
-                    .pathParams("idCard", 3).
+                    .pathParams("idCard", 4).
                 when().
                     delete().
                 then()

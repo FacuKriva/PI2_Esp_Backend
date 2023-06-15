@@ -13,12 +13,21 @@ import com.digital.money.msvc.api.account.service.ITransactionService;
 import com.digital.money.msvc.api.account.utils.mapper.AccountMapper;
 import com.digital.money.msvc.api.account.utils.mapper.CardMapper;
 import com.digital.money.msvc.api.account.utils.mapper.TransactionMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.*;
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -168,7 +177,6 @@ public class TransactionService implements ITransactionService {
 
         Double firstR = rangos[rangoSelected];
 
-
         if(rangoSelected==5){
             transactions = transactionRepository.findByAmountGreaterThanEqualAndAccount_AccountId(firstR,accountId);
         }else{
@@ -178,4 +186,150 @@ public class TransactionService implements ITransactionService {
 
         return transactions;
     }
+
+    @Value("${spring.datasource.url}")
+    private String urlDB;
+
+    @Value("${spring.datasource.username}")
+    private String userDB;
+
+    @Value("${spring.datasource.password}")
+    private String passDB;
+
+    @Value("${spring.datasource.driver-class-name}")
+    private String connectorDB;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+
+    @Override
+    public ResultSet getTransactionsFromDB(Long accountId, String startDate, String endDate, Integer rangeSelect, String type) throws Exception{
+
+        String query = "SELECT * FROM transactions WHERE account_id = ?";
+        ArrayList<Object> params = new ArrayList<Object>();
+        LocalDateTime startDateLDT, endDateLDT;
+
+        params.add(accountId);
+
+        if (startDate!=null) {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+
+            try {
+                startDateLDT = LocalDate.parse(startDate, dateFormatter).atStartOfDay();
+
+                if(endDate!=null){
+                    try {
+                        endDateLDT = LocalDate.parse(endDate, dateFormatter).atStartOfDay();
+                    }
+                    catch (DateTimeException e) {
+                        String msg = e.getMessage();
+                        throw new BadRequestException(msg);
+                    }
+                }else {
+                    endDateLDT = LocalDateTime.now();
+                }
+
+            } catch (DateTimeException e) {
+                String msg = e.getMessage();
+                throw new BadRequestException(msg);
+            }
+
+            if (endDateLDT.isBefore(startDateLDT)) {
+                throw new BadRequestException("The start date must be before the end date");
+            }
+
+            params.add(startDateLDT);
+            params.add(endDateLDT);
+
+            query+=" AND realization_date BETWEEN ? AND ?";
+        }else{
+            if(endDate!=null){
+                throw new BadRequestException("Only an end date was entered. You must enter a start date.");
+            }
+        }
+
+        TransactionType transactionType = null;
+
+        if(type!=null) {
+            if (type.equals("INCOMING")) {
+                transactionType = TransactionType.INCOMING;
+            } else if (type.equals("OUTGOING")) {
+                transactionType = TransactionType.OUTGOING;
+            }else{
+                throw new BadRequestException("Incorrect transaction type. Please choose INCOMING or OUTGOING");
+            }
+        }
+
+        if (transactionType!=null){
+            query+=" AND type = ?";
+            params.add(transactionType.toString());
+        }
+
+        Double[] rangos = {0.0,0.0,1000.0,5000.0,20000.0,100000.0};
+
+        if(rangeSelect!=null) {
+            if (rangeSelect >= 1 && rangeSelect <= 5) {
+                Double firstR = rangos[rangeSelect];
+                params.add(firstR);
+
+                if (rangeSelect == 5) {
+                    query += " AND amount >= ?";
+                } else {
+                    Double secondR = rangos[rangeSelect + 1];
+                    query += " AND amount BETWEEN ? AND ? ";
+                    params.add(secondR);
+                }
+
+            }
+            else {
+                throw new SelectOutOfBoundException("Please select a option within the range");
+            }
+        }
+
+        Object[] parameters = params.toArray();
+
+        Class.forName(connectorDB);
+        Connection connection= DriverManager.getConnection(urlDB,userDB,passDB);
+
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+        for(int i = 0; i < parameters.length; i++) {
+            preparedStatement.setObject(i+1, parameters[i]);
+        }
+
+        return preparedStatement.executeQuery();
+
+    }
+
+    @Override
+    public List<Transaction> getTransactionsFromResultSet(ResultSet resultSet, Account account) throws Exception{
+
+        ResultSetMetaData rsmd = resultSet.getMetaData();
+        int columnsNumber = rsmd.getColumnCount();
+
+        List<Transaction> transactionList = new ArrayList<>();
+
+        while (resultSet.next()) {
+
+            Transaction transaction = new Transaction();
+            JSONObject jsonObject = new JSONObject();
+
+            for (int i = 1; i <= columnsNumber; i++) {
+
+                String columnName = rsmd.getColumnName(i);
+                String columnValue = resultSet.getString(i);
+
+                jsonObject.put(columnName,columnValue);
+            }
+
+            transaction = transactionMapper.jsonToTransaction(jsonObject);
+            transaction.setAccount(account);
+            transactionList.add(transaction);
+        }
+
+        return transactionList;
+    }
+
+
 }

@@ -128,4 +128,10 @@ public class AccountController {
         return accountService.getTransactionsByAmountRange(id, range, token);
 
     }
+
+    @GetMapping("/{id}/activity/filters")
+    public ResponseEntity<?> getTransactionsWithFilters(@PathVariable("id") Long id, @RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value ="endDate", required = false) String endDate, @RequestParam(value ="amountRange", required = false) Integer amount, @RequestParam(value ="type", required = false) String type, @RequestHeader("Authorization") String token) throws Exception{
+        return accountService.getTransactionsWithFilters(id, startDate, endDate, amount, type, token);
+
+    }
 }
