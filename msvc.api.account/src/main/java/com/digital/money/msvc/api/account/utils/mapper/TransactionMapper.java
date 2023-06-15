@@ -1,11 +1,20 @@
 package com.digital.money.msvc.api.account.utils.mapper;
 
+import com.digital.money.msvc.api.account.handler.BadRequestException;
 import com.digital.money.msvc.api.account.model.Transaction;
+import com.digital.money.msvc.api.account.model.TransactionType;
 import com.digital.money.msvc.api.account.model.dto.CardTransactionGetDTO;
 import com.digital.money.msvc.api.account.model.dto.CardTransactionPostDTO;
 import com.digital.money.msvc.api.account.model.dto.TransactionGetDto;
 import com.digital.money.msvc.api.account.model.dto.TransactionPostDto;
+import org.json.JSONObject;
 import org.mapstruct.Mapper;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Mapper(componentModel = "spring")
 public abstract class TransactionMapper {
@@ -17,6 +26,41 @@ public abstract class TransactionMapper {
     public abstract Transaction cTPDTOToTransaction(CardTransactionPostDTO cardTransactionPostDTO);
 
     public abstract CardTransactionGetDTO transactionToCardTransactionGetDTO(Transaction transaction);
+
+    public Transaction jsonToTransaction(JSONObject jsonObject) throws Exception {
+
+        String stringDate = jsonObject.getString("realization_date");
+        Integer end = stringDate.indexOf(" ");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime realizationDate = LocalDate.parse(stringDate.substring(0,end), dateFormatter).atStartOfDay();
+        String type = jsonObject.getString("type");
+
+        TransactionType transactionType = null;
+
+        if(type!=null) {
+            if (type.equals("INCOMING")) {
+                transactionType = TransactionType.INCOMING;
+            } else if (type.equals("OUTGOING")) {
+                transactionType = TransactionType.OUTGOING;
+            }
+        }
+
+
+        Transaction transaction = new Transaction(
+                jsonObject.getLong("transaction_id"),
+                jsonObject.getDouble("amount"),
+                realizationDate,
+                jsonObject.getString("description"),
+                jsonObject.getString("from_cvu"),
+                jsonObject.getString("to_cvu"),
+                transactionType,
+               null
+        );
+
+        return transaction;
+
+
+    };
 
 //    @Mappings({
 //            @Mapping(target = "email", expression="java(clientPostUpdateDto.getEmail().toLowerCase())"),

@@ -9,7 +9,9 @@ import com.digital.money.msvc.api.account.repository.IAccountRepository;
 import com.digital.money.msvc.api.account.service.IAccountService;
 import com.digital.money.msvc.api.account.utils.GeneratorKeys;
 import com.digital.money.msvc.api.account.utils.mapper.AccountMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -203,10 +206,24 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public List<Transaction> getTransactionsWithFilters(Long accountId, String startDate, String endDate,Integer rangeSelect, String type, String token) throws Exception{
+    public ResponseEntity<ListTransactionDto> getTransactionsWithFilters(Long accountId, String startDate, String endDate, Integer rangeSelect, String type, String token) throws Exception{
         Account account = checkId(accountId);
         validateAccountBelongsUser(account,token);
-        return transactionService.getTransactionsWithFilters(startDate,endDate,rangeSelect,type);
+
+        ResultSet resultSet = transactionService.getTransactionsFromDB(accountId,startDate,endDate,rangeSelect,type);
+
+        List <Transaction> transactions = transactionService.getTransactionsFromResultSet(resultSet, account);
+
+        if(transactions.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        }
+
+        ListTransactionDto listTransactionDto = new ListTransactionDto();
+
+        listTransactionDto.setTransactions(transactions);
+        listTransactionDto.setAccount(accountMapper.toAccountGetDto(account));
+
+        return ResponseEntity.status(HttpStatus.OK).body(listTransactionDto);
     }
 
 }

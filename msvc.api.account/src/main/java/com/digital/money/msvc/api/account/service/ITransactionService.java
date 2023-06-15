@@ -14,7 +14,11 @@ import com.digital.money.msvc.api.account.model.dto.TransactionGetDto;
 import com.digital.money.msvc.api.account.model.dto.TransactionPostDto;
 import com.digital.money.msvc.api.account.service.ICheckId;
 import com.digital.money.msvc.api.account.service.IService;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +29,8 @@ public interface ITransactionService extends IService<TransactionPostDto, Transa
     CardTransactionGetDTO processCardTransaction(Long accountId, CardTransactionPostDTO cardTransactionPostDTO) throws ResourceNotFoundException, ForbiddenException, PaymentRequiredException, BadRequestException;
 
     List<Transaction> getAllTransactionsByAmountRange(Integer rangoSelected, Long accountId) throws Exception;
-    List<Transaction> getTransactionsWithFilters(String startDate, String endDate, Integer rangeSelect, String type) throws Exception;
+    ResultSet getTransactionsFromDB(Long accountId, String startDate, String endDate, Integer rangeSelect, String type) throws Exception;
+
+    List<Transaction> getTransactionsFromResultSet(ResultSet resultSet, Account account) throws Exception;
 
 }

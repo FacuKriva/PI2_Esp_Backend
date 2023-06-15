@@ -13,14 +13,21 @@ import com.digital.money.msvc.api.account.service.ITransactionService;
 import com.digital.money.msvc.api.account.utils.mapper.AccountMapper;
 import com.digital.money.msvc.api.account.utils.mapper.CardMapper;
 import com.digital.money.msvc.api.account.utils.mapper.TransactionMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.*;
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -170,7 +177,6 @@ public class TransactionService implements ITransactionService {
 
         Double firstR = rangos[rangoSelected];
 
-
         if(rangoSelected==5){
             transactions = transactionRepository.findByAmountGreaterThanEqualAndAccount_AccountId(firstR,accountId);
         }else{
@@ -189,102 +195,137 @@ public class TransactionService implements ITransactionService {
 
     @Value("${spring.datasource.password}")
     private String passDB;
+
+    @Value("${spring.datasource.driver-class-name}")
+    private String connectorDB;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+
     @Override
-    public List<Transaction> getTransactionsWithFilters(String startDate, String endDate, Integer rangeSelect, String type) throws Exception{
+    public ResultSet getTransactionsFromDB(Long accountId, String startDate, String endDate, Integer rangeSelect, String type) throws Exception{
 
-        String query = "SELECT * FROM transactions WHERE";
-        Boolean ampersand = false;
+        String query = "SELECT * FROM transactions WHERE account_id = ?";
         ArrayList<Object> params = new ArrayList<Object>();
+        LocalDateTime startDateLDT, endDateLDT;
 
-        System.out.println(startDate);
-        System.out.println(endDate);
-        System.out.println(rangeSelect);
-        System.out.println(type);
+        params.add(accountId);
 
+        if (startDate!=null) {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
-        if(startDate!=null){
-            LocalDateTime startDateLDT, endDateLDT;
-            startDateLDT = LocalDateTime.parse(startDate);
+            try {
+                startDateLDT = LocalDate.parse(startDate, dateFormatter).atStartOfDay();
 
-            if(endDate!=null){
-                endDateLDT = LocalDateTime.parse(endDate);
+                if(endDate!=null){
+                    try {
+                        endDateLDT = LocalDate.parse(endDate, dateFormatter).atStartOfDay();
+                    }
+                    catch (DateTimeException e) {
+                        String msg = e.getMessage();
+                        throw new BadRequestException(msg);
+                    }
+                }else {
+                    endDateLDT = LocalDateTime.now();
+                }
+
+            } catch (DateTimeException e) {
+                String msg = e.getMessage();
+                throw new BadRequestException(msg);
             }
-            else {
-                endDateLDT = LocalDateTime.now();
+
+            if (endDateLDT.isBefore(startDateLDT)) {
+                throw new BadRequestException("The start date must be before the end date");
             }
+
             params.add(startDateLDT);
             params.add(endDateLDT);
 
-            query+=" realizationDate BETWEEN ? AND ?";
-            ampersand=true;
+            query+=" AND realization_date BETWEEN ? AND ?";
         }
 
-        TransactionType transactionType = TransactionType.INCOMING;
+        TransactionType transactionType = null;
 
-        if(type.equals("INCOMING")){
-            transactionType = TransactionType.INCOMING;
-        } else if (type.equals("OUTGOING")) {
-            transactionType = TransactionType.OUTGOING;
+        if(type!=null) {
+            if (type.equals("INCOMING")) {
+                transactionType = TransactionType.INCOMING;
+            } else if (type.equals("OUTGOING")) {
+                transactionType = TransactionType.OUTGOING;
+            }else{
+                throw new BadRequestException("Incorrect transaction type. Please choose INCOMING or OUTGOING");
+            }
         }
 
         if (transactionType!=null){
-            if(ampersand){
-                query+= " AND";
-            }
-            query+=" type = ?";
-            params.add(transactionType);
-            ampersand=true;
+            query+=" AND type = ?";
+            params.add(transactionType.toString());
         }
 
         Double[] rangos = {0.0,0.0,1000.0,5000.0,20000.0,100000.0};
 
         if(rangeSelect!=null) {
             if (rangeSelect >= 1 && rangeSelect <= 5) {
-                if (ampersand) {
-                    query += " AND";
-                }
                 Double firstR = rangos[rangeSelect];
                 params.add(firstR);
 
                 if (rangeSelect == 5) {
-                    query += " amount < ?";
+                    query += " AND amount < ";
                 } else {
                     Double secondR = rangos[rangeSelect + 1];
-                    query += " amount BETWEEN ? AND ? ";
+                    query += " AND amount BETWEEN ? AND ? ";
                     params.add(secondR);
                 }
 
+            }
+            else {
+                throw new SelectOutOfBoundException("Please select a option within the range");
             }
         }
 
         Object[] parameters = params.toArray();
 
-        System.out.println(query);
-
-        Class.forName("com.mysql.cj.jdbc.Driver");
+        Class.forName(connectorDB);
         Connection connection= DriverManager.getConnection(urlDB,userDB,passDB);
-
 
         PreparedStatement preparedStatement = connection.prepareStatement(query);
 
         for(int i = 0; i < parameters.length; i++) {
             preparedStatement.setObject(i+1, parameters[i]);
-            System.out.println(parameters[i]);
         }
 
-        ResultSet resultSet = preparedStatement.executeQuery();
+        return preparedStatement.executeQuery();
+
+    }
+
+    @Override
+    public List<Transaction> getTransactionsFromResultSet(ResultSet resultSet, Account account) throws Exception{
 
         ResultSetMetaData rsmd = resultSet.getMetaData();
         int columnsNumber = rsmd.getColumnCount();
+
+        List<Transaction> transactionList = new ArrayList<>();
+
         while (resultSet.next()) {
+
+            Transaction transaction = new Transaction();
+            JSONObject jsonObject = new JSONObject();
+
             for (int i = 1; i <= columnsNumber; i++) {
-                if (i > 1) System.out.print(",  ");
+
+                String columnName = rsmd.getColumnName(i);
                 String columnValue = resultSet.getString(i);
-                System.out.print(columnValue + " " + rsmd.getColumnName(i));
+
+                jsonObject.put(columnName,columnValue);
             }
-            System.out.println("");
+
+            transaction = transactionMapper.jsonToTransaction(jsonObject);
+            transaction.setAccount(account);
+            transactionList.add(transaction);
         }
 
-        return null;
+        return transactionList;
     }
+
+
 }
