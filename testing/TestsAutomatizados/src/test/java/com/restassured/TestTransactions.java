@@ -834,7 +834,7 @@ public class TestTransactions extends Variables {
 
         Response response;
 
-        TransactionDeposit transaction = new TransactionDeposit(100.00, 4L);
+        TransactionDeposit transaction = new TransactionDeposit(100.00, 5L);
 
         response = given()
                     .header("Authorization", "Bearer " + token)
@@ -1173,7 +1173,7 @@ public class TestTransactions extends Variables {
                     .header("Authorization", "Bearer " + token)
                     .basePath("/accounts/{id}/activity/amount/{amountRange}")
                     .pathParams("id", 2)
-                    .pathParams("amountRange", 4).
+                    .pathParams("amountRange", 3).
                 when().
                     get().
                     then()

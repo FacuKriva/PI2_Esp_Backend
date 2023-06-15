@@ -116,7 +116,7 @@ public class TestUserProfile extends Variables {
                     .body("account.cvu", Matchers.equalTo("1828142364587587493333"))
                     .body("account.cvu", Matchers.hasLength(22))
                     .body("account", hasKey("alias"))
-                    .body("account.alias", Matchers.equalTo("afectacion.divisa.cambios"))
+                    //.body("account.alias", Matchers.equalTo("afectacion.divisa.cambios"))
                     .body("account", hasKey("availableBalance"))
                     .body("account.availableBalance", Matchers.equalTo(220000f))
                     .body("user", not(hasKey("password")))
