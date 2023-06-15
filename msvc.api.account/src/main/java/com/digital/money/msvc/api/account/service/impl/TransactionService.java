@@ -270,7 +270,7 @@ public class TransactionService implements ITransactionService {
                 params.add(firstR);
 
                 if (rangeSelect == 5) {
-                    query += " AND amount < ";
+                    query += " AND amount < ?";
                 } else {
                     Double secondR = rangos[rangeSelect + 1];
                     query += " AND amount BETWEEN ? AND ? ";
