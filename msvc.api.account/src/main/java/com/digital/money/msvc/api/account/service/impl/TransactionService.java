@@ -243,6 +243,10 @@ public class TransactionService implements ITransactionService {
             params.add(endDateLDT);
 
             query+=" AND realization_date BETWEEN ? AND ?";
+        }else{
+            if(endDate!=null){
+                throw new BadRequestException("Only an end date was entered. You must enter a start date.");
+            }
         }
 
         TransactionType transactionType = null;
