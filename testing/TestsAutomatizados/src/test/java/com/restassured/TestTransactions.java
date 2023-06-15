@@ -1169,11 +1169,11 @@ public class TestTransactions extends Variables {
 
         Response response;
 
-        List<Float> transactionAmountList = given()
+        response = given()
                     .header("Authorization", "Bearer " + token)
                     .basePath("/accounts/{id}/activity/amount/{amountRange}")
                     .pathParams("id", 2)
-                    .pathParams("amountRange", 3).
+                    .pathParams("amountRange", 4).
                 when().
                     get().
                     then()
@@ -1192,17 +1192,11 @@ public class TestTransactions extends Variables {
                     .body("transactions[0]", hasKey("type"))
                     .body("transactions[0]", hasKey("transaction_id"))
                     .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                    .body("transactions.amount", Matchers.everyItem(greaterThanOrEqualTo(5000F)))
+                    .body("transactions.amount", Matchers.everyItem(lessThanOrEqualTo(20000F)))
                     .log().all()
                     .extract()
-                    .jsonPath().getList("transactions.amount");
-
-        List<Float> transactionAmountNewList = new ArrayList<>();
-        for (Float amount:transactionAmountList) {
-            if (amount>= 5000 && amount <= 20000){
-                transactionAmountNewList.add(amount);
-          }
-        }
-    Assertions.assertTrue(transactionAmountList.size() == transactionAmountNewList.size());
+                    .response();
 
     }
 
@@ -1421,334 +1415,738 @@ public class TestTransactions extends Variables {
                     .response();
         }
 
-//    //**----------------- GET all transactions filtered by type (/accounts/{id}/activity/type) ---------------**
-//
-//    //TC_Transacciones_0031
-//    @Tag("Smoke")
-//    @Test
-//    @Order(31)
-//    public void ViewAllTransactionsFilteredByTypeIncomingSuccess200() throws InterruptedException {
-//
-//        test = extent.createTest("TC_Transacciones_0031 - GET all transactions filtered by type - Status Code: 200 - OK");
-//        test.assignCategory("Transacciones");
-//        test.assignCategory("Suite: Smoke");
-//        test.assignCategory("Request Method: GET");
-//        test.assignCategory("Status Code: 200 - OK");
-//        test.assignCategory("Sprint: 3");
-//        test.assignAuthor("Ana Laura Fidalgo");
-//        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada por tipo de transaccion (INCOMING). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
-//
-//        Response response;
-//
-//        List<String> transactionTypeList = given()
-//                    .header("Authorization", "Bearer " + token)
-//                    .basePath("/accounts/{id}/activity/type")
-//                    .pathParams("id", 2)
-//                    .queryParam("transaction_type", "INCOMING").
-//                when().
-//                    get().
-//                then()
-//                    .assertThat()
-//                    .statusCode(200)
-//                    .statusCode(HttpStatus.SC_OK)
-//                    .contentType(ContentType.JSON)
-//                    .body("$", Matchers.instanceOf(Map.class))
-//                    .body("$", hasKey("account"))
-//                    .body("$", hasKey("transactions"))
-//                    .body("transactions[0]", hasKey("amount"))
-//                    .body("transactions[0]", hasKey("realizationDate"))
-//                    .body("transactions[0]", hasKey("description"))
-//                    .body("transactions[0]", hasKey("fromCvu"))
-//                    .body("transactions[0]", hasKey("toCvu"))
-//                    .body("transactions[0]", hasKey("type"))
-//                    .body("transactions[0]", hasKey("transaction_id"))
-//                    .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
-//                    .body("transactions.type", Matchers.everyItem(equalTo("INCOMING")))
-//                    .log().all()
-//                    .extract()
-//                    .jsonPath().getList("transactions.type");
-//
-//                    //System.out.println(transactionTypeList);
-//    }
-//
-//    //TC_Transacciones_0032
-//    @Tag("Smoke")
-//    @Test
-//    @Order(32)
-//    public void ViewAllTransactionsFilteredByTypeOutgoingSuccess200() throws InterruptedException {
-//
-//        test = extent.createTest("TC_Transacciones_0032 - GET all transactions filtered by type - Status Code: 200 - OK");
-//        test.assignCategory("Transacciones");
-//        test.assignCategory("Suite: Smoke");
-//        test.assignCategory("Request Method: GET");
-//        test.assignCategory("Status Code: 200 - OK");
-//        test.assignCategory("Sprint: 3");
-//        test.assignAuthor("Ana Laura Fidalgo");
-//        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada por tipo de transaccion (OUTGOING). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
-//
-//        Response response;
-//
-//        List<String> transactionTypeList = given()
-//                    .header("Authorization", "Bearer " + token)
-//                    .basePath("/accounts/{id}/activity/type")
-//                    .pathParams("id", 2)
-//                    .queryParam("transaction_type", "OUTGOING").
-//                when().
-//                    get().
-//                then()
-//                    .assertThat()
-//                    .statusCode(200)
-//                    .statusCode(HttpStatus.SC_OK)
-//                    .contentType(ContentType.JSON)
-//                    .body("$", Matchers.instanceOf(Map.class))
-//                    .body("$", hasKey("account"))
-//                    .body("$", hasKey("transactions"))
-//                    .body("transactions[0]", hasKey("amount"))
-//                    .body("transactions[0]", hasKey("realizationDate"))
-//                    .body("transactions[0]", hasKey("description"))
-//                    .body("transactions[0]", hasKey("fromCvu"))
-//                    .body("transactions[0]", hasKey("toCvu"))
-//                    .body("transactions[0]", hasKey("type"))
-//                    .body("transactions[0]", hasKey("transaction_id"))
-//                    .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
-//                    .body("transactions.type", Matchers.everyItem(equalTo("OUTGOING")))
-//                    .log().all()
-//                    .extract()
-//                    .jsonPath().getList("transactions.type");
-//
-//                //System.out.println(transactionTypeList);
-//    }
-//
-//    //TC_Transacciones_0033
-//    @Tag("Smoke")
-//    @Test
-//    @Order(33)
-//    public void ViewAllTransactionsFilteredByTypeFailure400WrongTransactionType() throws InterruptedException {
-//
-//        test = extent.createTest("TC_Transacciones_0033 - GET all transactions filtered by type - Status Code: 400 - Bad Request (Wrong transaction type)");
-//        test.assignCategory("Transacciones");
-//        test.assignCategory("Suite: Smoke");
-//        test.assignCategory("Request Method: GET");
-//        test.assignCategory("Status Code: 400 - Bad Request");
-//        test.assignCategory("Sprint: 3");
-//        test.assignAuthor("Ana Laura Fidalgo");
-//        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada por tipo de transaccion. La transaccion no es de tipo OUTGOING ni INCOMING. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
-//
-//        Response response;
-//
-//        response = given()
-//                    .header("Authorization", "Bearer " + token)
-//                    .basePath("/accounts/{id}/activity/type")
-//                    .pathParams("id", 2)
-//                    .queryParam("transaction_type", "DEPOSIT").
-//                when().
-//                    get().
-//                then()
-//                    .assertThat()
-//                    .statusCode(400)
-//                    .statusCode(HttpStatus.SC_BAD_REQUEST)
-//                    .body("$", Matchers.instanceOf(Map.class))
-//                    .body("$",hasKey("error"))
-//                    .body("error", Matchers.equalTo("Bad Request"))
-//                    .body("$",hasKey("message"))
-//                    .body("message", Matchers.equalTo("The transaction is not correct"))
-//                    .log().all()
-//                    .extract()
-//                    .response();
-//    }
-//
-//    //TC_Transacciones_0034
-//    @Tag("Smoke")
-//    @Test
-//    @Order(34)
-//    public void ViewAllTransactionsFilteredByTypeFailure404AccountID() throws InterruptedException {
-//
-//        test = extent.createTest("TC_Transacciones_0034 - GET all transactions filtered by type - Status Code: 404 - Not Found (Account ID)");
-//        test.assignCategory("Transacciones");
-//        test.assignCategory("Suite: Smoke");
-//        test.assignCategory("Request Method: GET");
-//        test.assignCategory("Status Code: 404 - Not Found");
-//        test.assignCategory("Sprint: 3");
-//        test.assignAuthor("Ana Laura Fidalgo");
-//        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada por tipo de transaccion. Usuario logueado. ID de cuenta inexistente. El ID de cuenta corresponde al usuario.");
-//
-//        Response response;
-//
-//        response = given()
-//                    .header("Authorization", "Bearer " + token)
-//                    .basePath("/accounts/{id}/activity/type")
-//                    .pathParams("id", 99)
-//                    .queryParam("transaction_type", "INCOMING").
-//                when().
-//                    get().
-//                then()
-//                    .assertThat()
-//                    .statusCode(404)
-//                    .statusCode(HttpStatus.SC_NOT_FOUND)
-//                    .body("$", Matchers.instanceOf(Map.class))
-//                    .body("$",hasKey("error"))
-//                    .body("error", Matchers.equalTo("Not Found"))
-//                    .log().all()
-//                    .extract()
-//                    .response();
-//    }
-//
-//    //TC_Transacciones_0035
-//    @Tag("Smoke")
-//    @Test
-//    @Order(35)
-//    public void ViewAllTransactionsFilteredByTypeFailure401() throws InterruptedException {
-//
-//        test = extent.createTest("TC_Transacciones_0035 - GET all transactions filtered by type - Status Code: 401 - Unauthorized");
-//        test.assignCategory("Transacciones");
-//        test.assignCategory("Suite: Smoke");
-//        test.assignCategory("Request Method: GET");
-//        test.assignCategory("Status Code: 401 - Unauthorized");
-//        test.assignCategory("Sprint: 3");
-//        test.assignAuthor("Ana Laura Fidalgo");
-//        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada por tipo de transaccion. Usuario no logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
-//
-//        Response response;
-//
-//        response = given()
-//                    .basePath("/accounts/{id}/activity/type")
-//                    .pathParams("id", 2)
-//                    .queryParam("transaction_type", "INCOMING").
-//                when().
-//                    get().
-//                then()
-//                    .assertThat()
-//                    .statusCode(401)
-//                    .statusCode(HttpStatus.SC_UNAUTHORIZED)
-//                    .log().all()
-//                    .extract()
-//                    .response();
-//    }
-//
-//    //TC_Transacciones_0036
-//    @Tag("Smoke")
-//    @Test
-//    @Order(36)
-//    public void ViewAllTransactionsFilteredByTypeFailure403() throws InterruptedException {
-//
-//        test = extent.createTest("TC_Transacciones_0036 - GET all transactions filtered by type - Status Code: 403 - Forbidden");
-//        test.assignCategory("Transacciones");
-//        test.assignCategory("Suite: Smoke");
-//        test.assignCategory("Request Method: GET");
-//        test.assignCategory("Status Code: 403 - Forbidden");
-//        test.assignCategory("Sprint: 3");
-//        test.assignAuthor("Ana Laura Fidalgo");
-//        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada por tipo de transaccion. Usuario logueado. ID de cuenta existente. El ID de cuenta no corresponde al usuario.");
-//
-//        Response response;
-//
-//        response = given()
-//                    .header("Authorization", "Bearer " + token)
-//                    .basePath("/accounts/{id}/activity/type")
-//                    .pathParams("id", 1)
-//                    .queryParam("transaction_type", "INCOMING").
-//                when().
-//                    get().
-//                then()
-//                    .assertThat()
-//                    .statusCode(403)
-//                    .statusCode(HttpStatus.SC_FORBIDDEN)
-//                    .body("$", Matchers.instanceOf(Map.class))
-//                    .body("$",hasKey("error"))
-//                    .body("error", Matchers.equalTo("Forbidden"))
-//                    .body("$",hasKey("message"))
-//                    .body("message", Matchers.equalTo("You don't have access to that account"))
-//                    .log().all()
-//                    .extract()
-//                    .response();
-//    }
-//
-//    //TC_Transacciones_0037
-//    @Tag("Smoke")
-//    @Test
-//    @Order(37)
-//    public void ViewAllTransactionsFilteredByTypeSuccess204() throws InterruptedException {
-//
-//        test = extent.createTest("TC_Transacciones_0037 - GET all transactions filtered by type - Status Code: 204 - No Content");
-//        test.assignCategory("Transacciones");
-//        test.assignCategory("Suite: Smoke");
-//        test.assignCategory("Request Method: GET");
-//        test.assignCategory("Status Code: 204 - No Content");
-//        test.assignCategory("Sprint: 3");
-//        test.assignAuthor("Ana Laura Fidalgo");
-//        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada por tipo de transaccion. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. La cuenta no registra transacciones.");
-//
-//        Response response;
-//
-//        Login_Id_4();
-//
-//        response = given()
-//                    .header("Authorization", "Bearer " + token_id_4)
-//                    .basePath("/accounts/{id}/activity/type")
-//                    .pathParams("id", 4)
-//                    .queryParam("transaction_type", "INCOMING").
-//                when().
-//                    get().
-//                then()
-//                    .assertThat()
-//                    .statusCode(204)
-//                    .statusCode(HttpStatus.SC_NO_CONTENT)
-//                    .log().all()
-//                    .extract()
-//                    .response();
-//    }
 
-//    //**---------------- GET all transactions filtered by period (/accounts/{id}/activity/dates) ----------------**
-//
-//    //TC_Transacciones_0038
-//    @Tag("Smoke")
-//    @Test
-//    @Order(38)
-//    public void ViewAllTransactionsFilteredByPeriodSuccess200() throws InterruptedException {
-//
-//        test = extent.createTest("TC_Transacciones_0038 - GET all transactions filtered by period - Status Code: 200 - OK");
-//        test.assignCategory("Transacciones");
-//        test.assignCategory("Suite: Smoke");
-//        test.assignCategory("Request Method: GET");
-//        test.assignCategory("Status Code: 200 - OK");
-//        test.assignCategory("Sprint: 3");
-//        test.assignAuthor("Ana Laura Fidalgo");
-//        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada por periodo. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
-//
-//        Response response;
-//
-//        List<String> transactionDateList = given()
-//                .header("Authorization", "Bearer " + token)
-//                .basePath("/accounts/{id}/activity/dates")
-//                .pathParams("id", 2)
-//                .queryParam("start_date", "2023-05-12")
-//                .queryParam("end_date", "2023-05-13").
-//                when().
-//                get().
-//                then()
-//                .assertThat()
-//                .statusCode(200)
-//                .statusCode(HttpStatus.SC_OK)
-//                .contentType(ContentType.JSON)
-//                .body("$", Matchers.instanceOf(Map.class))
-//                .body("$", hasKey("account"))
-//                .body("$", hasKey("transactions"))
-//                .body("transactions[0]", hasKey("amount"))
-//                .body("transactions[0]", hasKey("realizationDate"))
-//                .body("transactions[0]", hasKey("description"))
-//                .body("transactions[0]", hasKey("fromCvu"))
-//                .body("transactions[0]", hasKey("toCvu"))
-//                .body("transactions[0]", hasKey("type"))
-//                .body("transactions[0]", hasKey("transaction_id"))
-//                .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
-//                .body("transactions.realizationDate", Matchers.everyItem(greaterThanOrEqualTo("2023-05-12")))
-//                .body("transactions.realizationDate", Matchers.everyItem(lessThanOrEqualTo("2023-05-13")))
-//                .log().all()
-//                .extract()
-//                .jsonPath().getList("transactions.type");
-//
-//        System.out.println(transactionDateList);
-//    }
+    //TC_Transacciones_0034
+    @Tag("Smoke")
+    @Test
+    @Order(34)
+    public void ViewAllTransactionsFilteredByDynamicFilterAmountPeriodTypeSuccess200() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0034 - GET all transactions filtered (Dynamic Filter: amount, period, type) - Status Code: 200 - OK");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 200 - OK");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (monto, tipo transaccion y periodo). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/activity/filters")
+                .pathParams("id", 2)
+                .queryParams("startDate", "2022-01-01")
+                .queryParams("endDate", "2023-05-16")
+                .queryParams("amountRange", 3)
+                .queryParams("type", "INCOMING").
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$", hasKey("account"))
+                .body("$", hasKey("transactions"))
+                .body("transactions[0]", hasKey("amount"))
+                .body("transactions[0]", hasKey("realizationDate"))
+                .body("transactions[0]", hasKey("description"))
+                .body("transactions[0]", hasKey("fromCvu"))
+                .body("transactions[0]", hasKey("toCvu"))
+                .body("transactions[0]", hasKey("type"))
+                .body("transactions[0]", hasKey("transaction_id"))
+                .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                .body("transactions.type", Matchers.everyItem(equalTo("INCOMING")))
+                .body("transactions.amount", Matchers.everyItem(greaterThanOrEqualTo(5000F)))
+                .body("transactions.amount", Matchers.everyItem(lessThanOrEqualTo(20000F)))
+                .body("transactions.realizationDate", Matchers.everyItem(greaterThanOrEqualTo("2022-01-01")))
+                .body("transactions.realizationDate", Matchers.everyItem(lessThanOrEqualTo("2023-05-16")))
+                .log().all()
+                .extract().response();
+
+    }
+
+    //TC_Transacciones_0035
+    @Tag("Smoke")
+    @Test
+    @Order(35)
+    public void ViewAllTransactionsFilteredByDynamicFilterAmountPeriodTypeSuccess204() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0035 - GET all transactions filtered (Dynamic Filter: amount, period, type) - Status Code: 204 - No Content");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 204 - No Content");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (monto, tipo transaccion y periodo). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. No se encuentran transacciones acordes a los filtros ingresados por el usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/activity/filters")
+                .pathParams("id", 2)
+                .queryParams("startDate", "2022-01-01")
+                .queryParams("endDate", "2023-05-16")
+                .queryParams("amountRange", 2)
+                .queryParams("type", "INCOMING").
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(204)
+                .statusCode(HttpStatus.SC_NO_CONTENT)
+                .log().all()
+                .extract().response();
+
+    }
+
+    //TC_Transacciones_0036
+    @Tag("Smoke")
+    @Test
+    @Order(36)
+    public void ViewAllTransactionsFilteredByDynamicFilterAmountPeriodSuccess200() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0036 - GET all transactions filtered (Dynamic Filter: amount, period) - Status Code: 200 - OK");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 200 - OK");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (monto y periodo). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/activity/filters")
+                .pathParams("id", 2)
+                .queryParams("startDate", "2022-01-01")
+                .queryParams("endDate", "2023-05-16")
+                .queryParams("amountRange", 3).
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$", hasKey("account"))
+                .body("$", hasKey("transactions"))
+                .body("transactions[0]", hasKey("amount"))
+                .body("transactions[0]", hasKey("realizationDate"))
+                .body("transactions[0]", hasKey("description"))
+                .body("transactions[0]", hasKey("fromCvu"))
+                .body("transactions[0]", hasKey("toCvu"))
+                .body("transactions[0]", hasKey("type"))
+                .body("transactions[0]", hasKey("transaction_id"))
+                .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                .body("transactions.amount", Matchers.everyItem(greaterThanOrEqualTo(5000F)))
+                .body("transactions.amount", Matchers.everyItem(lessThanOrEqualTo(20000F)))
+                .body("transactions.realizationDate", Matchers.everyItem(greaterThanOrEqualTo("2022-01-01")))
+                .body("transactions.realizationDate", Matchers.everyItem(lessThanOrEqualTo("2023-05-16")))
+                .log().all()
+                .extract().response();
+
+    }
+
+    //TC_Transacciones_0037
+    @Tag("Smoke")
+    @Test
+    @Order(37)
+    public void ViewAllTransactionsFilteredByDynamicFilterAmountTypeSuccess200() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0037 - GET all transactions filtered (Dynamic Filter: amount, type) - Status Code: 200 - OK");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 200 - OK");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (monto y tipo). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/activity/filters")
+                .pathParams("id", 2)
+                .queryParams("type", "OUTGOING")
+                .queryParams("amountRange", 3).
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$", hasKey("account"))
+                .body("$", hasKey("transactions"))
+                .body("transactions[0]", hasKey("amount"))
+                .body("transactions[0]", hasKey("realizationDate"))
+                .body("transactions[0]", hasKey("description"))
+                .body("transactions[0]", hasKey("fromCvu"))
+                .body("transactions[0]", hasKey("toCvu"))
+                .body("transactions[0]", hasKey("type"))
+                .body("transactions[0]", hasKey("transaction_id"))
+                .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                .body("transactions.amount", Matchers.everyItem(greaterThanOrEqualTo(5000F)))
+                .body("transactions.amount", Matchers.everyItem(lessThanOrEqualTo(20000F)))
+                .body("transactions.type", Matchers.everyItem(equalTo("OUTGOING")))
+                .log().all()
+                .extract().response();
+
+    }
+
+    //TC_Transacciones_0038
+    @Tag("Smoke")
+    @Test
+    @Order(38)
+    public void ViewAllTransactionsFilteredByDynamicFilterAmountSuccess200() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0038 - GET all transactions filtered (Dynamic Filter: amount) - Status Code: 200 - OK");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 200 - OK");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (monto). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/activity/filters")
+                .pathParams("id", 2)
+                .queryParams("amountRange", 3).
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$", hasKey("account"))
+                .body("$", hasKey("transactions"))
+                .body("transactions[0]", hasKey("amount"))
+                .body("transactions[0]", hasKey("realizationDate"))
+                .body("transactions[0]", hasKey("description"))
+                .body("transactions[0]", hasKey("fromCvu"))
+                .body("transactions[0]", hasKey("toCvu"))
+                .body("transactions[0]", hasKey("type"))
+                .body("transactions[0]", hasKey("transaction_id"))
+                .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                .body("transactions.amount", Matchers.everyItem(greaterThanOrEqualTo(5000F)))
+                .body("transactions.amount", Matchers.everyItem(lessThanOrEqualTo(20000F)))
+                .log().all()
+                .extract().response();
+    }
+
+    //TC_Transacciones_0039
+    @Tag("Smoke")
+    @Test
+    @Order(39)
+    public void ViewAllTransactionsFilteredByDynamicFilterAmountFailure400AmountRangeGreaterThan5() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0039 - GET all transactions filtered (Dynamic Filter: amount) - Status Code: 400 - Bad Request (AmountRange > 5");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta fallida de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (monto). Monto ingresado fuera de rango (>5) Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/activity/filters")
+                .pathParams("id", 2)
+                .queryParams("amountRange", 6).
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(400)
+                .statusCode(HttpStatus.SC_BAD_REQUEST)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$",hasKey("error"))
+                .body("error", Matchers.equalTo("Select index out of range"))
+                .body("$",hasKey("message"))
+                .body("message", Matchers.equalTo("Please select a option within the range"))
+                .log().all()
+                .extract().response();
+    }
+
+
+    //TC_Transacciones_0040
+    @Tag("Smoke")
+    @Test
+    @Order(40)
+    public void ViewAllTransactionsFilteredByDynamicFilterAmountFailure400AmountRangeLessThan1() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0040 - GET all transactions filtered (Dynamic Filter: amount) - Status Code: 400 - Bad Request (AmountRange < 1");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta fallida de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (monto). Monto ingresado fuera de rango (<1) Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/activity/filters")
+                .pathParams("id", 2)
+                .queryParams("amountRange", 0).
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(400)
+                .statusCode(HttpStatus.SC_BAD_REQUEST)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$",hasKey("error"))
+                .body("error", Matchers.equalTo("Select index out of range"))
+                .body("$",hasKey("message"))
+                .body("message", Matchers.equalTo("Please select a option within the range"))
+                .log().all()
+                .extract().response();
+    }
+
+    //TC_Transacciones_0041
+    @Tag("Smoke")
+    @Test
+    @Order(41)
+    public void ViewAllTransactionsFilteredByDynamicFilterPeriodTypeSuccess200() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0041 - GET all transactions filtered (Dynamic Filter: period, type) - Status Code: 200 - OK");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 200 - OK");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (tipo transaccion y periodo). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/activity/filters")
+                .pathParams("id", 2)
+                .queryParams("startDate", "2022-01-01")
+                .queryParams("endDate", "2023-05-16")
+                .queryParams("type", "INCOMING").
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$", hasKey("account"))
+                .body("$", hasKey("transactions"))
+                .body("transactions[0]", hasKey("amount"))
+                .body("transactions[0]", hasKey("realizationDate"))
+                .body("transactions[0]", hasKey("description"))
+                .body("transactions[0]", hasKey("fromCvu"))
+                .body("transactions[0]", hasKey("toCvu"))
+                .body("transactions[0]", hasKey("type"))
+                .body("transactions[0]", hasKey("transaction_id"))
+                .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                .body("transactions.realizationDate", Matchers.everyItem(greaterThanOrEqualTo("2022-01-01")))
+                .body("transactions.realizationDate", Matchers.everyItem(lessThanOrEqualTo("2023-05-16")))
+                .body("transactions.type", Matchers.everyItem(equalTo("INCOMING")))
+                .log().all()
+                .extract().response();
+
+    }
+
+    //TC_Transacciones_0042
+    @Tag("Smoke")
+    @Test
+    @Order(42)
+    public void ViewAllTransactionsFilteredByDynamicFilterPeriodSuccess200() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0042 - GET all transactions filtered (Dynamic Filter: period) - Status Code: 200 - OK");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 200 - OK");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (periodo). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/activity/filters")
+                .pathParams("id", 2)
+                .queryParams("startDate", "2023-01-01")
+                .queryParams("endDate", "2023-05-16").
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$", hasKey("account"))
+                .body("$", hasKey("transactions"))
+                .body("transactions[0]", hasKey("amount"))
+                .body("transactions[0]", hasKey("realizationDate"))
+                .body("transactions[0]", hasKey("description"))
+                .body("transactions[0]", hasKey("fromCvu"))
+                .body("transactions[0]", hasKey("toCvu"))
+                .body("transactions[0]", hasKey("type"))
+                .body("transactions[0]", hasKey("transaction_id"))
+                .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                .body("transactions.realizationDate", Matchers.everyItem(greaterThanOrEqualTo("2023-01-01")))
+                .body("transactions.realizationDate", Matchers.everyItem(lessThanOrEqualTo("2023-05-16")))
+                .log().all()
+                .extract().response();
+
+    }
+
+    //TC_Transacciones_0043
+    @Tag("Smoke")
+    @Test
+    @Order(43)
+    public void ViewAllTransactionsFilteredByDynamicFilterPeriodFailure400EndDateBeforeStartDate() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0043 - GET all transactions filtered (Dynamic Filter: period) - Status Code: 400 - Bad Request (EndDate before startDate");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 400 - Bad Request");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta fallida de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (periodo). La endDate es anterior a la startDate. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/activity/filters")
+                .pathParams("id", 2)
+                .queryParams("startDate", "2023-01-01")
+                .queryParams("endDate", "2022-05-16").
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(400)
+                .statusCode(HttpStatus.SC_BAD_REQUEST)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$",hasKey("error"))
+                .body("error", Matchers.equalTo("Bad Request"))
+                .body("$",hasKey("message"))
+                .body("message", Matchers.equalTo("The start date must be before the end date"))
+                .log().all()
+                .extract().response();
+
+    }
+
+    //TC_Transacciones_0044
+    @Tag("Smoke")
+    @Test
+    @Order(44)
+    public void ViewAllTransactionsFilteredByDynamicFilterPeriodSuccess200OnlyStartDate() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0044 - GET all transactions filtered (Dynamic Filter: period) - Status Code: 200 - OK (only startDate)");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 200 - OK");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (periodo). El usuario solo ingresa startDate. El sistema devuelve todas las transacciones desde esa fecha hasta hoy. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/activity/filters")
+                .pathParams("id", 2)
+                .queryParams("startDate", "2023-01-01").
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$", hasKey("account"))
+                .body("$", hasKey("transactions"))
+                .body("transactions[0]", hasKey("amount"))
+                .body("transactions[0]", hasKey("realizationDate"))
+                .body("transactions[0]", hasKey("description"))
+                .body("transactions[0]", hasKey("fromCvu"))
+                .body("transactions[0]", hasKey("toCvu"))
+                .body("transactions[0]", hasKey("type"))
+                .body("transactions[0]", hasKey("transaction_id"))
+                .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                .body("transactions.realizationDate", Matchers.everyItem(greaterThanOrEqualTo("2023-01-01")))
+                .log().all()
+                .extract().response();
+    }
+
+    //TC_Transacciones_0045
+    @Tag("Smoke")
+    @Test
+    @Order(45)
+    public void ViewAllTransactionsFilteredByDynamicFilterPeriodFailure400OnlyEndDate() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0045 - GET all transactions filtered (Dynamic Filter: period) - Status Code: 400 - Bad Request (only endDate)");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("400 - Bad Request");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta fallida de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (periodo). El usuario solo ingresa endDate. Debe ingresar tanto startDate como endDate o unicamente startDate. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/activity/filters")
+                .pathParams("id", 2)
+                .queryParams("endDate", "2022-01-01").
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(400)
+                .statusCode(HttpStatus.SC_BAD_REQUEST)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$",hasKey("error"))
+                .body("error", Matchers.equalTo("Bad Request"))
+                .body("$",hasKey("message"))
+                .body("message", Matchers.equalTo("Only an end date was entered. You must enter a start date."))
+                .log().all()
+                .extract().response();
+    }
+
+    //TC_Transacciones_0046
+    @Tag("Smoke")
+    @Test
+    @Order(46)
+    public void ViewAllTransactionsFilteredByDynamicFilterTypeSuccess200() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0046 - GET all transactions filtered (Dynamic Filter: type) - Status Code: 200 - OK");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 200 - OK");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta exitosa de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (tipo). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/activity/filters")
+                .pathParams("id", 2)
+                .queryParams("type", "INCOMING").
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$", hasKey("account"))
+                .body("$", hasKey("transactions"))
+                .body("transactions[0]", hasKey("amount"))
+                .body("transactions[0]", hasKey("realizationDate"))
+                .body("transactions[0]", hasKey("description"))
+                .body("transactions[0]", hasKey("fromCvu"))
+                .body("transactions[0]", hasKey("toCvu"))
+                .body("transactions[0]", hasKey("type"))
+                .body("transactions[0]", hasKey("transaction_id"))
+                .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                .body("transactions.type", Matchers.everyItem(equalTo("INCOMING")))
+                .log().all()
+                .extract().response();
+
+    }
+
+    //TC_Transacciones_0047
+    @Tag("Smoke")
+    @Test
+    @Order(47)
+    public void ViewAllTransactionsFilteredByDynamicFilterTypeFailure400WrongType() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0047 - GET all transactions filtered (Dynamic Filter: type) - Status Code: 200 - OK");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 200 - OK");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta fallida de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (tipo). El tipo ingresado (DEPOSIT) es incorrecto: debe ser INCOMING o OUTGOING. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/activity/filters")
+                .pathParams("id", 2)
+                .queryParams("type", "DEPOSIT").
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(400)
+                .statusCode(HttpStatus.SC_BAD_REQUEST)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$",hasKey("error"))
+                .body("error", Matchers.equalTo("Bad Request"))
+                .body("$",hasKey("message"))
+                .body("message", Matchers.equalTo("Incorrect transaction type. Please choose INCOMING or OUTGOING"))
+                .log().all()
+                .extract().response();
+    }
+
+    //TC_Transacciones_0048
+    @Tag("Smoke")
+    @Test
+    @Order(48)
+    public void ViewAllTransactionsFilteredByDynamicFilterAmountPeriodTypeFailure401() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0048 - GET all transactions filtered (Dynamic Filter: amount, period, type) - Status Code: 401 - Unauthorized");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 401 - Unauthorized");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta fallida de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (monto, tipo transaccion y periodo). Usuario no logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                .basePath("/accounts/{id}/activity/filters")
+                .pathParams("id", 2)
+                .queryParams("startDate", "2022-01-01")
+                .queryParams("endDate", "2023-05-16")
+                .queryParams("amountRange", 2)
+                .queryParams("type", "INCOMING").
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(401)
+                .statusCode(HttpStatus.SC_UNAUTHORIZED)
+                .log().all()
+                .extract().response();
+
+    }
+
+    //TC_Transacciones_0049
+    @Tag("Smoke")
+    @Test
+    @Order(49)
+    public void ViewAllTransactionsFilteredByDynamicFilterAmountPeriodTypeFailure403() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0049 - GET all transactions filtered (Dynamic Filter: amount, period, type) - Status Code: 403 - Forbidden");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 403 - Forbidden");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta fallida de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (monto, tipo transaccion y periodo). Usuario logueado. ID de cuenta existente. El ID de cuenta no corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/activity/filters")
+                .pathParams("id", 1)
+                .queryParams("startDate", "2022-01-01")
+                .queryParams("endDate", "2023-05-16")
+                .queryParams("amountRange", 2)
+                .queryParams("type", "INCOMING").
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(403)
+                .statusCode(HttpStatus.SC_FORBIDDEN)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$",hasKey("error"))
+                .body("error", Matchers.equalTo("Forbidden"))
+                .body("$",hasKey("message"))
+                .body("message", Matchers.equalTo("You don't have access to that account"))
+                .log().all()
+                .extract().response();
+
+    }
+
+    //TC_Transacciones_0050
+    @Tag("Smoke")
+    @Test
+    @Order(50)
+    public void ViewAllTransactionsFilteredByDynamicFilterAmountPeriodTypeFailure400AccountId() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0050 - GET all transactions filtered (Dynamic Filter: amount, period, type) - Status Code: 404 - Not Found");
+        test.assignCategory("Transacciones");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 404 - Not Found");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta fallida de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (monto, tipo transaccion y periodo). Usuario logueado. ID de cuenta inexistente. El ID de cuenta corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/activity/filters")
+                .pathParams("id", 99)
+                .queryParams("startDate", "2022-01-01")
+                .queryParams("endDate", "2023-05-16")
+                .queryParams("amountRange", 2)
+                .queryParams("type", "DEPOSIT").
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(404)
+                .statusCode(HttpStatus.SC_NOT_FOUND)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$",hasKey("error"))
+                .body("error", Matchers.equalTo("Not Found"))
+                .log().all()
+                .extract().response();
+
+    }
 
 
     //**--------------------------------------------------- AUX -------------------------------------------------**
