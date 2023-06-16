@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigInteger;
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -20,5 +18,6 @@ public class Card {
     private Integer cvv;
     private String bank;
     private String cardType;
+    //private Double cardBalance;
 
 }

@@ -3,21 +3,26 @@ package com.digital.money.msvc.api.account.service.impl;
 import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Transaction;
+import com.digital.money.msvc.api.account.model.TransactionType;
 import com.digital.money.msvc.api.account.model.dto.*;
 import com.digital.money.msvc.api.account.repository.IAccountRepository;
 import com.digital.money.msvc.api.account.service.IAccountService;
 import com.digital.money.msvc.api.account.utils.GeneratorKeys;
 import com.digital.money.msvc.api.account.utils.mapper.AccountMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.sql.ResultSet;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -178,6 +183,47 @@ public class AccountService implements IAccountService {
         Account account = checkId(id);
         validateAccountBelongsUser(account, token);
         return transactionService.processCardTransaction(id, cardTransactionPostDTO);
+    }
+
+    @Override
+    public ResponseEntity <?> getTransactionsByAmountRange(Long accountId, Integer rangoSelected, String token) throws Exception{
+
+        Account account = checkId(accountId);
+        validateAccountBelongsUser(account, token);
+
+        ListTransactionDto listTransactionDto = new ListTransactionDto();
+
+        List <Transaction> transactions = transactionService.getAllTransactionsByAmountRange(rangoSelected,accountId);
+
+        if (transactions.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Lo sentimos. No se encontró contenido para este rango");
+        }
+
+        listTransactionDto.setTransactions(transactions);
+        listTransactionDto.setAccount(findById(accountId,token));
+
+        return ResponseEntity.status(HttpStatus.OK).body(listTransactionDto);
+    }
+
+    @Override
+    public ResponseEntity<ListTransactionDto> getTransactionsWithFilters(Long accountId, String startDate, String endDate, Integer rangeSelect, String type, String token) throws Exception{
+        Account account = checkId(accountId);
+        validateAccountBelongsUser(account,token);
+
+        ResultSet resultSet = transactionService.getTransactionsFromDB(accountId,startDate,endDate,rangeSelect,type);
+
+        List <Transaction> transactions = transactionService.getTransactionsFromResultSet(resultSet, account);
+
+        if(transactions.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        }
+
+        ListTransactionDto listTransactionDto = new ListTransactionDto();
+
+        listTransactionDto.setTransactions(transactions);
+        listTransactionDto.setAccount(accountMapper.toAccountGetDto(account));
+
+        return ResponseEntity.status(HttpStatus.OK).body(listTransactionDto);
     }
 
 }

@@ -47,9 +47,9 @@ public class Card {
 
     @Column(name = "cardNetwork", nullable = false)
     private String cardNetwork;
-
-    @Column(name = "cardBalance", nullable = false)
-    private Double cardBalance;
+//
+//    @Column(name = "cardBalance", nullable = false)
+//    private Double cardBalance;
 
     @Column(name = "isEnabled", nullable = false)
     private boolean isEnabled = true;
@@ -67,7 +67,7 @@ public class Card {
                 ", bank='" + bank + '\'' +
                 ", cardType='" + cardType + '\'' +
                 ", cardNetwork='" + cardNetwork + '\'' +
-                ", cardBalance=" + cardBalance +
+                //", cardBalance=" + cardBalance +
                 ", enabled=" + isEnabled +
                 '}';
     }

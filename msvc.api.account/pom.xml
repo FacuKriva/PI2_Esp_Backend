@@ -8,6 +8,28 @@
 		<version>3.0.7</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<!-- Spring Boot properties -->
+				<spring.profile>dev</spring.profile>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<!-- Spring Boot properties -->
+				<spring.profile>prod</spring.profile>
+				<!-- <maven.test.skip>true</maven.test.skip> -->
+			</properties>
+		</profile>
+	</profiles>
+
 	<groupId>com.digital.money</groupId>
 	<artifactId>msvc.api.account</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -95,10 +117,6 @@
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>1.6.9</version>
 		</dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-openfeign-core</artifactId>

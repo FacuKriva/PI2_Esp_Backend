@@ -74,4 +74,10 @@ public class GlobalExceptionHandler {
         log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).body(new PaymentRequiredResponse(ex.getMessage(), request.getRequestURI()));
     }
+
+    @ExceptionHandler({SelectOutOfBoundException.class})
+    public ResponseEntity<Object> processSelectOutOfBound(SelectOutOfBoundException ex, HttpServletRequest request){
+        log.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SelectOutOfBoundResponse(ex.getMessage(), request.getRequestURI()));
+    }
 }

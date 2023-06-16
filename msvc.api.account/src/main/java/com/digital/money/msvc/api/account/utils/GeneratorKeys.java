@@ -3,8 +3,7 @@ package com.digital.money.msvc.api.account.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -25,9 +24,7 @@ public class GeneratorKeys {
     }
 
     public static String generateAlias() {
-        //String pathFile = "msvc.api.account\\src\\main\\resources\\words.txt";
-        String pathFile = "./src/main/resources/words.txt";
-        List<String> words = readFile(pathFile);
+        List<String> words = readFile();
         Random random = new Random();
         int index1 = random.nextInt(words.size());
         int index2 = random.nextInt(words.size());
@@ -46,20 +43,27 @@ public class GeneratorKeys {
         return combination.toLowerCase();
     }
 
-    public static List<String> readFile(String rutaArchivo) {
+    public static List<String> readFile() {
+
+        GeneratorKeys keysGenerator = new GeneratorKeys();
+
         List<String> words = new ArrayList<>();
-        try {
-            File archivo = new File(rutaArchivo);
-            Scanner scanner = new Scanner(archivo);
-            while (scanner.hasNextLine()) {
-                String palabra = scanner.nextLine();
-                words.add(palabra);
+
+        String path = "/words.txt";
+
+        try (InputStream in = keysGenerator.getClass().getResourceAsStream(path);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+
+            while(reader.readLine()!=null){
+                words.add(reader.readLine());
             }
-            scanner.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("Error: Could not find file " + rutaArchivo);
-            e.printStackTrace();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
+
         return words;
     }
+
 }

@@ -10,6 +10,27 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<!-- Spring Boot properties -->
+				<spring.profile>dev</spring.profile>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<!-- Spring Boot properties -->
+				<spring.profile>prod</spring.profile>
+				<!-- <maven.test.skip>true</maven.test.skip> -->
+			</properties>
+		</profile>
+	</profiles>
+
 	<groupId>com.msvc.gateway.api.sprgbt</groupId>
 	<artifactId>msvc-gateway-api-sprgbt</artifactId>
 	<version>0.0.1-SNAPSHOT</version>

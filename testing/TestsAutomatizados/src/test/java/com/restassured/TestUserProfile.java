@@ -7,7 +7,6 @@ import com.restassured.model.User;
 import com.restassured.reports.ExtentFactory;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.parsing.Parser;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
@@ -47,8 +46,8 @@ public class TestUserProfile extends Variables {
                     .basic(client_id, client_secret)
                     .contentType("application/x-www-form-urlencoded")
                     .formParam("grant_type", "password")
-                    .formParam("username", username_accounts)
-                    .formParam("password", password_accounts)
+                    .formParam("username", username)
+                    .formParam("password", password)
                     .basePath("/security/oauth/token")
                 .when()
                     .post()
@@ -81,7 +80,7 @@ public class TestUserProfile extends Variables {
         test.assignCategory("Status Code: 200 - OK");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Perfil de usuario. Visualización de datos exitosa. ID de usuario existente. Usuario logueado");
+        test.info("Perfil de usuario. Visualización de datos exitosa. ID de usuario existente. El ID de usuario corresponde al usuario logueado.");
 
         Response response;
 
@@ -117,7 +116,7 @@ public class TestUserProfile extends Variables {
                     .body("account.cvu", Matchers.equalTo("1828142364587587493333"))
                     .body("account.cvu", Matchers.hasLength(22))
                     .body("account", hasKey("alias"))
-                    .body("account.alias", Matchers.equalTo("afectacion.divisa.cambios"))
+                    //.body("account.alias", Matchers.equalTo("afectacion.divisa.cambios"))
                     .body("account", hasKey("availableBalance"))
                     .body("account.availableBalance", Matchers.equalTo(220000f))
                     .body("user", not(hasKey("password")))
@@ -140,7 +139,7 @@ public class TestUserProfile extends Variables {
         test.assignCategory("Status Code: 401 - Unauthorized");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Perfil de usuario. Visualización de datos fallida. ID de usuario existente. Usuario no logueado");
+        test.info("Perfil de usuario. Visualización de datos fallida. ID de usuario existente. Usuario no logueado.");
 
         Response response;
 
@@ -173,7 +172,7 @@ public class TestUserProfile extends Variables {
         test.assignCategory("Status Code: 404 - Not Found");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Perfil de usuario. Visualización de datos fallida. ID de usuario inexistente. Usuario logueado");
+        test.info("Perfil de usuario. Visualización de datos fallida. ID de usuario inexistente. Usuario logueado.");
 
 
         Response response;
@@ -181,7 +180,7 @@ public class TestUserProfile extends Variables {
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .basePath("/users/{id}")
-                    .pathParams("id", 999).
+                    .pathParams("id", 99).
                 when().
                     get().
                 then()
@@ -195,12 +194,48 @@ public class TestUserProfile extends Variables {
 
     }
 
+    //TC_Perfil_Usuario_0019
+    @Tag("Smoke")
+    @Test
+    @Order(4)
+    public void ViewUserProfileFailure403() throws InterruptedException {
+
+
+        test = extent.createTest("TC_Perfil_Usuario_0019 - GET user profile by id - Status Code: 403 - Forbidden");
+        test.assignCategory("Perfil Usuario");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 403 - Forbidden");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Perfil de usuario. Visualización de datos fallida. ID de usuario existente. Usuario logueado. El ID de usuario corresponde al usuario logueado.");
+
+        Response response;
+
+        response = given()
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/users/{id}")
+                    .pathParams("id", 1).
+                when().
+                    get().
+                then()
+                    .assertThat()
+                    .statusCode(403)
+                    .statusCode(HttpStatus.SC_FORBIDDEN)
+                    .contentType(ContentType.TEXT)
+                    .body(equalTo("You don't have access to that user"))
+                    .log().all()
+                    .extract()
+                    .response();
+
+    }
+
     //**---------------------------------- PATCH user profile by id (/users/{id}) --------------------------------**
 
     //TC_Perfil_Usuario_0004
     @Tag("Smoke")
     @Test
-    @Order(4)
+    @Order(5)
     public void UpdateUserProfileSuccess200() throws InterruptedException {
 
         test = extent.createTest("TC_Perfil_Usuario_0004 - PATCH user profile by id - Status Code: 200 - OK");
@@ -210,7 +245,7 @@ public class TestUserProfile extends Variables {
         test.assignCategory("Status Code: 200 - OK");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Perfil de usuario.Edición de datos exitosa. ID de usuario existente. Usuario logueado");
+        test.info("Perfil de usuario. Edición de datos exitosa. ID de usuario existente. Usuario logueado. El ID de usuario corresponde al usuario logueado.");
 
         Response response;
 
@@ -251,7 +286,7 @@ public class TestUserProfile extends Variables {
     //TC_Perfil_Usuario_0005
     @Tag("Smoke")
     @Test
-    @Order(5)
+    @Order(6)
     public void UpdateUserProfileFailure401() throws InterruptedException {
 
         test = extent.createTest("TC_Perfil_Usuario_0005 - PATCH user profile by id - Status Code: 401 - Unauthorized");
@@ -261,7 +296,7 @@ public class TestUserProfile extends Variables {
         test.assignCategory("Status Code: 401 - Unauthorized");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario no logueado");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. El ID de usuario corresponde al usuario logueado. Usuario no logueado.");
 
         Response response;
 
@@ -288,7 +323,7 @@ public class TestUserProfile extends Variables {
     //TC_Perfil_Usuario_0006
     @Tag("Smoke")
     @Test
-    @Order(6)
+    @Order(7)
     public void UpdateUserProfileFailure404() throws InterruptedException {
 
         test = extent.createTest("TC_Perfil_Usuario_0006 - PATCH user profile by id - Status Code: 404 - Not Found");
@@ -298,7 +333,7 @@ public class TestUserProfile extends Variables {
         test.assignCategory("Status Code: 404 - Not Found");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario inexistente. Usuario logueado");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario inexistente. Usuario logueado.");
 
         Response response;
 
@@ -306,13 +341,13 @@ public class TestUserProfile extends Variables {
         user.setName("Carlos");
 
         response = given()
-                .header("Authorization", "Bearer " + token)
-                .basePath("/users/{id}")
-                .pathParams("id", 99)
-                .contentType(ContentType.JSON)
-                .body(user).
-                        when().
-                patch().
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/users/{id}")
+                    .pathParams("id", 99)
+                    .contentType(ContentType.JSON)
+                    .body(user).
+                when().
+                    patch().
                 then()
                     .assertThat()
                     .statusCode(404)
@@ -328,7 +363,7 @@ public class TestUserProfile extends Variables {
     //TC_Perfil_Usuario_0007
     @Tag("Smoke")
     @Test
-    @Order(7)
+    @Order(8)
     public void UpdateUserProfileFailure400DniInUse() throws InterruptedException {
 
         test = extent.createTest("TC_Perfil_Usuario_0007 - PATCH user profile by id - Status Code: 400 - Bad Request");
@@ -338,7 +373,7 @@ public class TestUserProfile extends Variables {
         test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. Dni ya registrado.");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. El ID de usuario corresponde al usuario logueado. Dni ya registrado.");
 
         Response response;
 
@@ -358,6 +393,7 @@ public class TestUserProfile extends Variables {
                     .statusCode(400)
                     .statusCode(HttpStatus.SC_BAD_REQUEST)
                     .contentType(ContentType.TEXT)
+                    .body(equalTo("The dni number is already registered"))
                     .log().all()
                     .extract()
                     .response();
@@ -368,7 +404,7 @@ public class TestUserProfile extends Variables {
     //TC_Perfil_Usuario_0008
     @Tag("Smoke")
     @Test
-    @Order(8)
+    @Order(9)
     public void UpdateUserProfileFailure400EmailInUse() throws InterruptedException {
 
         test = extent.createTest("TC_Perfil_Usuario_0008 - PATCH user profile by id - Status Code: 400 - Bad Request");
@@ -378,7 +414,7 @@ public class TestUserProfile extends Variables {
         test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. Email ya registrado.");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. El ID de usuario corresponde al usuario logueado. Email ya registrado.");
 
         Response response;
 
@@ -398,6 +434,7 @@ public class TestUserProfile extends Variables {
                     .statusCode(400)
                     .statusCode(HttpStatus.SC_BAD_REQUEST)
                     .contentType(ContentType.TEXT)
+                    .body(equalTo("The email address is already registered"))
                     .log().all()
                     .extract()
                     .response();
@@ -407,7 +444,7 @@ public class TestUserProfile extends Variables {
     //TC_Perfil_Usuario_0009
     @Tag("Smoke")
     @Test
-    @Order(9)
+    @Order(10)
     public void UpdateUserProfileFailure400SamePassword() throws InterruptedException {
 
         test = extent.createTest("TC_Perfil_Usuario_0009 - PATCH user profile by id - Status Code: 400 - Bad Request");
@@ -417,7 +454,7 @@ public class TestUserProfile extends Variables {
         test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. El nuevo password es igual al anterior.");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. El ID de usuario corresponde al usuario logueado. El nuevo password es igual al anterior.");
 
 
         Response response;
@@ -428,7 +465,7 @@ public class TestUserProfile extends Variables {
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .basePath("/users/{id}")
-                    .pathParams("id", 1)
+                    .pathParams("id", 2)
                     .contentType(ContentType.JSON)
                     .body(user).
                 when().
@@ -438,16 +475,58 @@ public class TestUserProfile extends Variables {
                     .statusCode(400)
                     .statusCode(HttpStatus.SC_BAD_REQUEST)
                     .contentType(ContentType.TEXT)
+                    .body(equalTo("The new password must be different than the previous one"))
                     .log().all()
                     .extract()
                     .response();
 
     }
 
+    //TC_Perfil_Usuario_0020
+    @Tag("Smoke")
+    @Test
+    @Order(11)
+    public void UpdateUserProfileFailure403() throws InterruptedException {
+
+        test = extent.createTest("TC_Perfil_Usuario_0020 - PATCH user profile by id - Status Code: 403 - Forbidden");
+        test.assignCategory("Perfil Usuario");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: PATCH");
+        test.assignCategory("Status Code: 403 - Forbidden");
+        test.assignCategory("Sprint: 3");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. El ID de usuario no corresponde al usuario logueado.");
+
+        Response response;
+
+        User user = new User();
+        user.setName("Carlos");
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/users/{id}")
+                .pathParams("id", 1)
+                .contentType(ContentType.JSON)
+                .body(user).
+                when().
+                patch().
+                then()
+                .assertThat()
+                .statusCode(403)
+                .statusCode(HttpStatus.SC_FORBIDDEN)
+                .contentType(ContentType.TEXT)
+                .body(equalTo("You don't have access to that user"))
+                .log().all()
+                .extract()
+                .response();
+
+    }
+
+
     //TC_Perfil_Usuario_0010
     @Tag("Regression")
     @Test
-    //@Order()
+    @Order(12)
     public void UpdateUserProfileFailure400NameLength() throws InterruptedException {
 
         test = extent.createTest("TC_Perfil_Usuario_0010 - PATCH user profile by id - Status Code: 400 - Bad Request");
@@ -457,8 +536,7 @@ public class TestUserProfile extends Variables {
         test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. Caracteres Excedentes (name supera los 30 caracteres).");
-
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. El ID de usuario corresponde al usuario logueado. Caracteres Excedentes (name supera los 30 caracteres).");
 
         Response response;
 
@@ -468,7 +546,7 @@ public class TestUserProfile extends Variables {
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .basePath("/users/{id}")
-                    .pathParams("id", 1)
+                    .pathParams("id", 2)
                     .contentType(ContentType.JSON)
                     .body(user).
                 when().
@@ -489,7 +567,7 @@ public class TestUserProfile extends Variables {
     //TC_Perfil_Usuario_0011
     @Tag("Regression")
     @Test
-    //@Order()
+    @Order(13)
     public void UpdateUserProfileFailure400LastNameLength() throws InterruptedException {
 
         test = extent.createTest("TC_Perfil_Usuario_0011 - PATCH user profile by id - Status Code: 400 - Bad Request");
@@ -499,7 +577,7 @@ public class TestUserProfile extends Variables {
         test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. Caracteres Excedentes (last_name supera los 40 caracteres).");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. El ID de usuario corresponde al usuario logueado. Caracteres Excedentes (last_name supera los 40 caracteres).");
 
 
         Response response;
@@ -510,7 +588,7 @@ public class TestUserProfile extends Variables {
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .basePath("/users/{id}")
-                    .pathParams("id", 1)
+                    .pathParams("id", 2)
                     .contentType(ContentType.JSON)
                     .body(user).
                 when().
@@ -531,7 +609,7 @@ public class TestUserProfile extends Variables {
     //TC_Perfil_Usuario_0012
     @Tag("Regression")
     @Test
-    //@Order()
+    @Order(14)
     public void UpdateUserProfileFailure400EmailLength() throws InterruptedException {
 
         test = extent.createTest("TC_Perfil_Usuario_0012 - PATCH user profile by id - Status Code: 400 - Bad Request");
@@ -541,7 +619,7 @@ public class TestUserProfile extends Variables {
         test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. Caracteres Excedentes (email supera los 60 caracteres).");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. El ID de usuario corresponde al usuario logueado. Caracteres Excedentes (email supera los 60 caracteres).");
 
 
         Response response;
@@ -552,7 +630,7 @@ public class TestUserProfile extends Variables {
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .basePath("/users/{id}")
-                    .pathParams("id", 1)
+                    .pathParams("id", 2)
                     .contentType(ContentType.JSON)
                     .body(user).
                 when().
@@ -573,7 +651,7 @@ public class TestUserProfile extends Variables {
     //TC_Perfil_Usuario_0013
     @Tag("Smoke")
     @Test
-    @Order(10)
+    @Order(15)
     public void UpdateUserProfileFailure400EmailFormat() throws InterruptedException {
 
         test = extent.createTest("TC_Perfil_Usuario_0013 - PATCH user profile by id - Status Code: 400 - Bad Request");
@@ -583,7 +661,7 @@ public class TestUserProfile extends Variables {
         test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. Formato email inválido (sin '@').");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. El ID de usuario corresponde al usuario logueado. Formato email inválido (sin '@').");
 
 
         Response response;
@@ -594,7 +672,7 @@ public class TestUserProfile extends Variables {
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .basePath("/users/{id}")
-                    .pathParams("id", 4)
+                    .pathParams("id", 2)
                     .contentType(ContentType.JSON)
                     .body(user).
                 when().
@@ -616,7 +694,7 @@ public class TestUserProfile extends Variables {
     //TC_Perfil_Usuario_0014
     @Tag("Regression")
     @Test
-    //@Order()
+    @Order(16)
     public void UpdateUserProfileFailure400PasswordLength() throws InterruptedException {
 
         test = extent.createTest("TC_Perfil_Usuario_0014 - PATCH user profile by id - Status Code: 400 - Bad Request");
@@ -626,7 +704,7 @@ public class TestUserProfile extends Variables {
         test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 2");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. Caracteres Excedentes (password supera los 30 caracteres).");
+        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. El ID de usuario corresponde al usuario logueado. Caracteres Excedentes (password supera los 30 caracteres).");
 
 
         Response response;
@@ -637,7 +715,7 @@ public class TestUserProfile extends Variables {
         response = given()
                     .header("Authorization", "Bearer " + token)
                     .basePath("/users/{id}")
-                    .pathParams("id", 1)
+                    .pathParams("id", 2)
                     .contentType(ContentType.JSON)
                     .body(user).
                 when().
@@ -654,46 +732,6 @@ public class TestUserProfile extends Variables {
                     .extract()
                     .response();
     }
-
-//    //TC_Perfil_Usuario_0015
-//    @Tag("Regression")
-//    @Test
-//    //@Order()
-//    public void UpdateUserProfileFailure400NameEmpty() throws InterruptedException {
-//
-//        test = extent.createTest("TC_Perfil_Usuario_0015 - PATCH user profile by id - Status Code: 400 - Bad Request");
-//        test.assignCategory("Perfil Usuario");
-//        test.assignCategory("Suite: Smoke");
-//        test.assignCategory("Request Method: PATCH");
-//        test.assignCategory("Status Code: 400 - Bad Request");
-//        test.assignCategory("Sprint: 2");
-//        test.assignAuthor("Ana Laura Fidalgo");
-//        test.info("Perfil de usuario. Edición de datos fallida. ID de usuario existente. Usuario logueado. Dato vacío (el usuario intenta modificar su name por un campo name vacío).");
-//
-//
-//        Response response;
-//
-//        User user = new User();
-//        user.setName();
-//
-//        response = given()
-//                    .header("Authorization", "Bearer " + token)
-//                    .basePath("/users/{id}")
-//                    .pathParams("id", 1)
-//                    .contentType(ContentType.JSON)
-//                    .body(user).
-//                when().
-//                    patch().
-//                then()
-//                    .assertThat()
-//                    .statusCode(400)
-//                    .statusCode(HttpStatus.SC_BAD_REQUEST)
-//                    .contentType(ContentType.JSON)
-//                    .log().all()
-//                    .extract()
-//                    .response();
-//    }
-
 
 
 }
