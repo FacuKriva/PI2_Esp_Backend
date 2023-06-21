@@ -6,6 +6,7 @@ import com.digital.money.msvc.api.account.model.Card;
 import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.TransactionType;
 import com.digital.money.msvc.api.account.model.dto.*;
+import com.digital.money.msvc.api.account.model.projections.GetCVUOnly;
 import com.digital.money.msvc.api.account.repository.IAccountRepository;
 import com.digital.money.msvc.api.account.repository.ICardRepository;
 import com.digital.money.msvc.api.account.repository.ITransactionRepository;
@@ -19,6 +20,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,15 +59,29 @@ public class TransactionService implements ITransactionService {
 
     @Transactional
     @Override
-    public TransactionGetDto save(TransactionPostDto transactionPostDto) {
-        Transaction transaction = transactionMapper.toTransaction(transactionPostDto);
-        if (accountRepository.findByCvu(transaction.getToCvu()).get().getAccountId() == transaction.getAccount().getAccountId()) {
-            transaction.setType(TransactionType.INCOMING);
-        } else {
-            transaction.setType(TransactionType.OUTGOING);
+    public TransactionGetDto save(TransactionPostDto transactionPostDto, Account fromAccount, Account toAccount) {
+        Transaction transactionFromUser = transactionMapper.transactionPostToTransaction(transactionPostDto);
+
+        transactionFromUser.setFromCvu(fromAccount.getCvu());
+        transactionFromUser.setToCvu(toAccount.getCvu());
+
+        transactionFromUser.setType(TransactionType.OUTGOING);
+        transactionFromUser.setAccount(fromAccount);
+        transactionRepository.save(transactionFromUser);
+
+        if(!toAccount.getAccountId().equals(-1L)) {
+
+            Transaction transactionToUser = transactionMapper.transactionPostToTransaction(transactionPostDto);
+
+            transactionToUser.setFromCvu(fromAccount.getCvu());
+            transactionToUser.setToCvu(toAccount.getCvu());
+
+            transactionToUser.setType(TransactionType.INCOMING);
+            transactionToUser.setAccount(toAccount);
+            transactionRepository.save(transactionToUser);
         }
-        transactionRepository.save(transaction);
-        return transactionMapper.toTransactionGetDto(transaction);
+
+        return transactionMapper.toTransactionGetDto(transactionFromUser);
     }
 
     @Transactional(readOnly = true)
@@ -329,6 +346,16 @@ public class TransactionService implements ITransactionService {
         }
 
         return transactionList;
+    }
+
+    @Override
+    public List<GetCVUOnly> getLastFiveReceivers(Long id) throws Exception {
+        return transactionRepository.findLastFiveReceivers(id, PageRequest.of(0,5));
+    }
+
+    @Override
+    public TransactionPostDto transferMoney(Long id, Long sendAccountID) throws Exception {
+        return null;
     }
 
 

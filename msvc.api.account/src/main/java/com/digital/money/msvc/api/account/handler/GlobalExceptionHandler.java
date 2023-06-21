@@ -80,4 +80,10 @@ public class GlobalExceptionHandler {
         log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SelectOutOfBoundResponse(ex.getMessage(), request.getRequestURI()));
     }
+
+    @ExceptionHandler({AmountOfMoneyException.class})
+    public ResponseEntity<Object> processAmountOfMoneyException(AmountOfMoneyException ex, HttpServletRequest request){
+        log.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AmountOfMoneyResponse(ex.getMessage(), request.getRequestURI()));
+    }
 }

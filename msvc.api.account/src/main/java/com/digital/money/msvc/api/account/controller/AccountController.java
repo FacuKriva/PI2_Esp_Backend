@@ -1,8 +1,10 @@
 package com.digital.money.msvc.api.account.controller;
 
 import com.digital.money.msvc.api.account.handler.*;
+import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.dto.*;
+import com.digital.money.msvc.api.account.model.projections.GetCVUOnly;
 import com.digital.money.msvc.api.account.service.impl.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -116,7 +118,7 @@ public class AccountController {
     }
 
     @Operation(summary = "Deposit money into account from card")
-    @PostMapping(value = "/{id}/transferences", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/{id}/deposit", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Object> deposit(@PathVariable("id") Long id,
                                           @RequestHeader("Authorization") String token,
                                           @Valid @RequestBody CardTransactionPostDTO cardTransactionPostDTO) throws PaymentRequiredException, ForbiddenException, ResourceNotFoundException, BadRequestException, JSONException {
@@ -133,5 +135,19 @@ public class AccountController {
     public ResponseEntity<?> getTransactionsWithFilters(@PathVariable("id") Long id, @RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value ="endDate", required = false) String endDate, @RequestParam(value ="amountRange", required = false) Integer amount, @RequestParam(value ="type", required = false) String type, @RequestHeader("Authorization") String token) throws Exception{
         return accountService.getTransactionsWithFilters(id, startDate, endDate, amount, type, token);
 
+    }
+
+    @GetMapping(value = "/{id}/transferences")
+    public ResponseEntity<List <GetCVUOnly>> getLastFiveAccountsTransferred(@PathVariable("id") Long id,
+                                                                            @RequestHeader("Authorization") String token) throws Exception {
+        return accountService.getLastFiveAccountsTransferred(id, token);
+    }
+
+
+    @PostMapping(value = "/{id}/transferences", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<TransactionGetDto> transferMoney(@PathVariable("id") Long id,
+                                          @RequestHeader("Authorization") String token,
+                                          @RequestBody TransactionPostDto transactionPostDto) throws Exception {
+        return accountService.transferMoney(id, token, transactionPostDto);
     }
 }

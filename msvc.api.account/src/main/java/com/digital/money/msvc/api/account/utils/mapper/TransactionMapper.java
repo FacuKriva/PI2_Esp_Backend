@@ -1,6 +1,7 @@
 package com.digital.money.msvc.api.account.utils.mapper;
 
 import com.digital.money.msvc.api.account.handler.BadRequestException;
+import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.TransactionType;
 import com.digital.money.msvc.api.account.model.dto.CardTransactionGetDTO;
@@ -20,6 +21,17 @@ import java.time.format.DateTimeFormatter;
 public abstract class TransactionMapper {
 
     public abstract Transaction toTransaction(TransactionPostDto transactionPostDto);
+
+    public Transaction transactionPostToTransaction(TransactionPostDto transactionPostDto){
+        Transaction transaction = new Transaction();
+        transaction.setAmount(transactionPostDto.getAmount());
+        transaction.setDescription(transactionPostDto.getDescription());
+        transaction.setFromCvu(transactionPostDto.getFromAccount());
+        transaction.setToCvu(transactionPostDto.getToAccount());
+        transaction.setRealizationDate(LocalDateTime.now());
+        return  transaction;
+
+    }
 
     public abstract TransactionGetDto toTransactionGetDto(Transaction transaction);
 

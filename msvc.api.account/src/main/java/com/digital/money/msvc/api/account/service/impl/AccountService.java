@@ -3,15 +3,13 @@ package com.digital.money.msvc.api.account.service.impl;
 import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Transaction;
-import com.digital.money.msvc.api.account.model.TransactionType;
 import com.digital.money.msvc.api.account.model.dto.*;
+import com.digital.money.msvc.api.account.model.projections.GetCVUOnly;
 import com.digital.money.msvc.api.account.repository.IAccountRepository;
 import com.digital.money.msvc.api.account.service.IAccountService;
 import com.digital.money.msvc.api.account.utils.GeneratorKeys;
 import com.digital.money.msvc.api.account.utils.mapper.AccountMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
-import java.time.LocalDateTime;
 import java.util.*;
+import java.util.random.RandomGenerator;
 
 @Slf4j
 @Service
@@ -225,5 +223,93 @@ public class AccountService implements IAccountService {
 
         return ResponseEntity.status(HttpStatus.OK).body(listTransactionDto);
     }
+
+    @Override
+    public ResponseEntity<List <GetCVUOnly>> getLastFiveAccountsTransferred(Long id, String token)throws Exception {
+
+        findById(id,token);
+        List <GetCVUOnly> getCVUOnlyList = transactionService.getLastFiveReceivers(id);
+
+        if(getCVUOnlyList.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(getCVUOnlyList);
+    }
+
+    @Override
+    public ResponseEntity<TransactionGetDto> transferMoney(Long id, String token, TransactionPostDto transactionPostDto) throws Exception{
+        AccountGetDto accountGetDto = findById(id,token);
+
+        if (transactionPostDto.getAmount()<1){
+            throw new BadRequestException("Amount cannot be less than 0 ");
+        }
+
+        Optional <Account> fromAccount = accountRepository.findByCvu(transactionPostDto.getFromAccount());
+
+        if(fromAccount.isEmpty()){
+            fromAccount = accountRepository.findByAlias(transactionPostDto.getFromAccount());
+
+            if(fromAccount.isEmpty()) {
+                throw new ResourceNotFoundException("The account from which you are sending money does not exist");
+            }
+        }
+
+        if(!accountGetDto.getAccountId().equals(fromAccount.get().getAccountId())){
+            throw new ForbiddenException("The account you are sending money from does not belong to you");
+        }
+
+        if(fromAccount.get().getAlias().equals(transactionPostDto.getToAccount()) || fromAccount.get().getCvu().equals(transactionPostDto.getToAccount())){
+            throw new BadRequestException("You can't transfer money to the same account");
+        }
+
+        if (transactionPostDto.getAmount()>fromAccount.get().getAvailableBalance()){
+            throw new AmountOfMoneyException("Account balance less than the chosen amount");
+        }
+
+        Optional<Account> toAccount = accountRepository.findByCvu(transactionPostDto.getToAccount());
+        Account accountAux = new Account();
+
+        if (toAccount.isEmpty()){
+            toAccount = accountRepository.findByAlias(transactionPostDto.getToAccount());
+
+            if (toAccount.isEmpty()){
+                accountAux.setAccountId(-1L);
+
+                try {
+                    Long cvu = Long.parseLong(transactionPostDto.getToAccount().substring(0,5));
+                    accountAux.setCvu(transactionPostDto.getToAccount());
+                }catch (Exception e){
+                    Long hash = 0L;
+                    for (char c : transactionPostDto.getToAccount().toCharArray()) {
+                        hash = 31L*hash + c;
+                    }
+
+                    Random random = new Random(hash);
+                    String cvu = "";
+                    for(int f=1;f<=22;f++){
+                        cvu += String.valueOf(random.nextInt(9));
+                    }
+
+                    accountAux.setCvu(cvu);
+                }
+
+
+            }
+        }
+
+        fromAccount.get().setAvailableBalance(fromAccount.get().getAvailableBalance() - transactionPostDto.getAmount());
+        accountRepository.save(fromAccount.get());
+
+        if(toAccount.isPresent()){
+            toAccount.get().setAvailableBalance(toAccount.get().getAvailableBalance() + transactionPostDto.getAmount());
+            accountAux= toAccount.get();
+            accountRepository.save(toAccount.get());
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.save(transactionPostDto,fromAccount.get(),accountAux));
+    }
+
+
 
 }

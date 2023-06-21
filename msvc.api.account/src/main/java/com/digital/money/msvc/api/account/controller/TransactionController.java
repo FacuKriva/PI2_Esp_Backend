@@ -1,5 +1,6 @@
 package com.digital.money.msvc.api.account.controller;
 
+import com.digital.money.msvc.api.account.model.dto.TransactionGetDto;
 import com.digital.money.msvc.api.account.model.dto.TransactionPostDto;
 import com.digital.money.msvc.api.account.service.impl.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,12 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class TransactionController {
     @Autowired
     private TransactionService transactionService;
-
+/*
     @Operation(summary = "Save an transaction", hidden = true)
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody TransactionPostDto transactionPostDto) {
+    public ResponseEntity<TransactionGetDto> save(@RequestBody TransactionPostDto transactionPostDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.save(transactionPostDto));
-    }
+    }*/
 
 //    @GetMapping
 //    public List<TransactionGetDto> getLastFive(@RequestParam Long id) throws ResourceNotFoundException {

@@ -1,6 +1,9 @@
 package com.digital.money.msvc.api.account.repository;
 
 import com.digital.money.msvc.api.account.model.Transaction;
+import com.digital.money.msvc.api.account.model.TransactionType;
+import com.digital.money.msvc.api.account.model.projections.GetCVUOnly;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,5 +26,13 @@ public interface ITransactionRepository extends JpaRepository<Transaction, Long>
 
     @Query("select t from Transaction t where t.amount >= ?1 and t.account.accountId = ?2")
     List<Transaction> findByAmountGreaterThanEqualAndAccount_AccountId(Double amount, Long accountId);
+
+    @Query(value = "SELECT distinct(to_cvu) from transactions where account_id = ?1 and type = 'OUTGOING'", nativeQuery = true)
+    List<GetCVUOnly> findLastFiveReceivers(Long accountId, Pageable pageable);
+
+
+
+
+
 
 }
