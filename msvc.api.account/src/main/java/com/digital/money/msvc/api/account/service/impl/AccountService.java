@@ -242,17 +242,32 @@ public class AccountService implements IAccountService {
         AccountGetDto accountGetDto = findById(id,token);
 
         if (transactionPostDto.getAmount()<1){
-            throw new BadRequestException("Amount cannot be less than 0 ");
+            throw new BadRequestException("Amount cannot be less than 1");
         }
 
-        Optional <Account> fromAccount = accountRepository.findByCvu(transactionPostDto.getFromAccount());
+        Optional <Account> fromAccount;
+
+       try{
+           Long cvuFromAccount = Long.parseLong(transactionPostDto.getFromAccount().substring(0,5));
+           fromAccount = accountRepository.findByCvu(transactionPostDto.getFromAccount());
+
+       }catch (Exception e){
+
+           int posPunto1=0, posPunto2 =0;
+
+           posPunto1=transactionPostDto.getFromAccount().indexOf(".");
+           posPunto2=transactionPostDto.getFromAccount().indexOf(".",posPunto1+1);
+
+           if(posPunto2==-1 && posPunto1==-1){
+               throw new BadRequestException("The account from which you want to send that you have entered does not comply with the alias, cvu or cbu rules");
+           }else{
+               fromAccount = accountRepository.findByAlias(transactionPostDto.getFromAccount());
+           }
+
+       }
 
         if(fromAccount.isEmpty()){
-            fromAccount = accountRepository.findByAlias(transactionPostDto.getFromAccount());
-
-            if(fromAccount.isEmpty()) {
-                throw new ResourceNotFoundException("The account from which you are sending money does not exist");
-            }
+            throw new ResourceNotFoundException("The account from which you are sending money does not exist");
         }
 
         if(!accountGetDto.getAccountId().equals(fromAccount.get().getAccountId())){
@@ -277,9 +292,18 @@ public class AccountService implements IAccountService {
                 accountAux.setAccountId(-1L);
 
                 try {
-                    Long cvu = Long.parseLong(transactionPostDto.getToAccount().substring(0,5));
+                    Long cvuToAccount = Long.parseLong(transactionPostDto.getToAccount().substring(0,5));
                     accountAux.setCvu(transactionPostDto.getToAccount());
                 }catch (Exception e){
+
+                    int posPunto = 0;
+
+                    posPunto=transactionPostDto.getToAccount().indexOf(".");
+
+                    if(posPunto==-1){
+                        throw new BadRequestException("The account you are trying to send to does not meet the alias/CBU/CVU rules");
+                    }
+
                     Long hash = 0L;
                     for (char c : transactionPostDto.getToAccount().toCharArray()) {
                         hash = 31L*hash + c;

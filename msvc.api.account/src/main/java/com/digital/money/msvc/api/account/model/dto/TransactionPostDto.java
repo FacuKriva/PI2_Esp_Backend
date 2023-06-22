@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,22 +19,21 @@ import java.time.LocalDateTime;
 @ToString
 public class TransactionPostDto {
     @NotNull(message = "The amount cannot be null")
-    @NotEmpty(message = "The amount cannot be empty")
     private Double amount;
 
     @JsonProperty("description")
-    @NotNull(message = "The description cannot be null")
-    @NotEmpty(message = "The description cannot be empty")
     private String description;
 
     @JsonProperty("from_account")
-    @NotNull(message = "The from_cvu cannot be null")
-    @NotEmpty(message = "The from_cvu cannot be empty")
+    @NotNull(message = "The account from your account cannot be null")
+    @NotEmpty(message = "The account from your account cannot be empty")
+    @Size(min = 5, max = 39, message = "The account from which you want to send that you have entered does not comply with the alias, cvu or cbu rules")
     private String fromAccount;
 
     @JsonProperty("to_account")
-    @NotNull(message = "The to_cvu cannot be null")
-    @NotEmpty(message = "The to_cvu cannot be empty")
+    @NotNull(message = "The account to which you trying to send cannot be null")
+    @NotEmpty(message = "The account to which you trying to send cannot be empty")
+    @Size(min = 5, max = 39, message = "The account to which you are sending that you have entered does not comply with the alias, cvu or cbu rules")
     private String toAccount;
 
 }

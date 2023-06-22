@@ -27,7 +27,7 @@ public interface ITransactionRepository extends JpaRepository<Transaction, Long>
     @Query("select t from Transaction t where t.amount >= ?1 and t.account.accountId = ?2")
     List<Transaction> findByAmountGreaterThanEqualAndAccount_AccountId(Double amount, Long accountId);
 
-    @Query(value = "SELECT distinct(to_cvu) from transactions where account_id = ?1 and type = 'OUTGOING'", nativeQuery = true)
+    @Query(value = "SELECT distinct(to_cvu) from transactions where account_id = ?1 and type = 'OUTGOING' ORDER BY realization_date DESC", nativeQuery = true)
     List<GetCVUOnly> findLastFiveReceivers(Long accountId, Pageable pageable);
 
 

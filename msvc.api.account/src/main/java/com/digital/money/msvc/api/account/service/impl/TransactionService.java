@@ -353,10 +353,4 @@ public class TransactionService implements ITransactionService {
         return transactionRepository.findLastFiveReceivers(id, PageRequest.of(0,5));
     }
 
-    @Override
-    public TransactionPostDto transferMoney(Long id, Long sendAccountID) throws Exception {
-        return null;
-    }
-
-
 }

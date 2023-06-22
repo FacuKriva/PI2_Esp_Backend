@@ -147,7 +147,7 @@ public class AccountController {
     @PostMapping(value = "/{id}/transferences", consumes = "application/json", produces = "application/json")
     public ResponseEntity<TransactionGetDto> transferMoney(@PathVariable("id") Long id,
                                           @RequestHeader("Authorization") String token,
-                                          @RequestBody TransactionPostDto transactionPostDto) throws Exception {
+                                          @Valid @RequestBody TransactionPostDto transactionPostDto) throws Exception {
         return accountService.transferMoney(id, token, transactionPostDto);
     }
 }

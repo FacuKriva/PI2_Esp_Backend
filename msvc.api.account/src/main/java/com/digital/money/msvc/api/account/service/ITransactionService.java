@@ -38,6 +38,5 @@ public interface ITransactionService extends ICheckId<Transaction> {
     List<Transaction> getTransactionsFromResultSet(ResultSet resultSet, Account account) throws Exception;
 
     List<GetCVUOnly> getLastFiveReceivers(Long id) throws Exception;
-    TransactionPostDto transferMoney(Long id, Long sendAccountID) throws Exception;
 
 }
