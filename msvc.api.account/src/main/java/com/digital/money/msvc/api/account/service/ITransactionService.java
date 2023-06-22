@@ -4,7 +4,6 @@ import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.handler.BadRequestException;
 import com.digital.money.msvc.api.account.handler.PaymentRequiredException;
-import com.digital.money.msvc.api.account.handler.ResourceNotFoundException;
 import com.digital.money.msvc.api.account.handler.ForbiddenException;
 import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.dto.ListTransactionDto;
@@ -12,17 +11,10 @@ import com.digital.money.msvc.api.account.model.dto.CardTransactionGetDTO;
 import com.digital.money.msvc.api.account.model.dto.CardTransactionPostDTO;
 import com.digital.money.msvc.api.account.model.dto.TransactionGetDto;
 import com.digital.money.msvc.api.account.model.dto.TransactionPostDto;
-import com.digital.money.msvc.api.account.model.projections.GetCVUOnly;
-import com.digital.money.msvc.api.account.service.ICheckId;
-import com.digital.money.msvc.api.account.service.IService;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.springframework.http.ResponseEntity;
+import com.digital.money.msvc.api.account.model.projections.GetLastCVUs;
 
 import java.sql.ResultSet;
 import java.util.List;
-import java.util.Optional;
 
 public interface ITransactionService extends ICheckId<Transaction> {
     ListTransactionDto getLastFive(Long id, Account account);
@@ -37,6 +29,6 @@ public interface ITransactionService extends ICheckId<Transaction> {
 
     List<Transaction> getTransactionsFromResultSet(ResultSet resultSet, Account account) throws Exception;
 
-    List<GetCVUOnly> getLastFiveReceivers(Long id) throws Exception;
+    List<GetLastCVUs> getLastFiveReceivers(Long id) throws Exception;
 
 }

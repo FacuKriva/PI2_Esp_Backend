@@ -4,7 +4,7 @@ import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.dto.*;
-import com.digital.money.msvc.api.account.model.projections.GetCVUOnly;
+import com.digital.money.msvc.api.account.model.projections.GetLastCVUs;
 import com.digital.money.msvc.api.account.repository.IAccountRepository;
 import com.digital.money.msvc.api.account.service.IAccountService;
 import com.digital.money.msvc.api.account.utils.GeneratorKeys;
@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.util.*;
-import java.util.random.RandomGenerator;
 
 @Slf4j
 @Service
@@ -225,16 +224,25 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public ResponseEntity<List <GetCVUOnly>> getLastFiveAccountsTransferred(Long id, String token)throws Exception {
+    public ResponseEntity<List <Map <String, String>>> getLastFiveAccountsTransferred(Long id, String token)throws Exception {
 
         findById(id,token);
-        List <GetCVUOnly> getCVUOnlyList = transactionService.getLastFiveReceivers(id);
+        List <GetLastCVUs> getLastCVUsList = transactionService.getLastFiveReceivers(id);
 
-        if(getCVUOnlyList.isEmpty()){
+        if(getLastCVUsList.isEmpty()){
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(getCVUOnlyList);
+        List<Map <String, String>> cvus = new ArrayList<>();
+
+        for(GetLastCVUs getLastCVUs : getLastCVUsList){
+            Map mapper = new HashMap<>();
+            mapper.put("cvu",getLastCVUs.getTo_Cvu());
+
+            cvus.add(mapper);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(cvus);
     }
 
     @Override
@@ -248,7 +256,7 @@ public class AccountService implements IAccountService {
         Optional <Account> fromAccount;
 
        try{
-           Long cvuFromAccount = Long.parseLong(transactionPostDto.getFromAccount().substring(0,5));
+           Long.parseLong(transactionPostDto.getFromAccount().substring(0,5));
            fromAccount = accountRepository.findByCvu(transactionPostDto.getFromAccount());
 
        }catch (Exception e){
@@ -292,7 +300,7 @@ public class AccountService implements IAccountService {
                 accountAux.setAccountId(-1L);
 
                 try {
-                    Long cvuToAccount = Long.parseLong(transactionPostDto.getToAccount().substring(0,5));
+                    Long.parseLong(transactionPostDto.getToAccount().substring(0,5));
                     accountAux.setCvu(transactionPostDto.getToAccount());
                 }catch (Exception e){
 

@@ -1,10 +1,8 @@
 package com.digital.money.msvc.api.account.controller;
 
 import com.digital.money.msvc.api.account.handler.*;
-import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.dto.*;
-import com.digital.money.msvc.api.account.model.projections.GetCVUOnly;
 import com.digital.money.msvc.api.account.service.impl.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -16,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Validated
@@ -138,8 +137,8 @@ public class AccountController {
     }
 
     @GetMapping(value = "/{id}/transferences")
-    public ResponseEntity<List <GetCVUOnly>> getLastFiveAccountsTransferred(@PathVariable("id") Long id,
-                                                                            @RequestHeader("Authorization") String token) throws Exception {
+    public ResponseEntity<List <Map<String,String>>> getLastFiveAccountsTransferred(@PathVariable("id") Long id,
+                                                                                    @RequestHeader("Authorization") String token) throws Exception {
         return accountService.getLastFiveAccountsTransferred(id, token);
     }
 
