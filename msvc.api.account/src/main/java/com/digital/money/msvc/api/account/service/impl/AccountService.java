@@ -216,6 +216,9 @@ public class AccountService implements IAccountService {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         }
 
+        accountRepository.findAll();
+
+
         ListTransactionDto listTransactionDto = new ListTransactionDto();
 
         listTransactionDto.setTransactions(transactions);
@@ -247,90 +250,97 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public ResponseEntity<TransactionGetDto> transferMoney(Long id, String token, TransactionPostDto transactionPostDto) throws Exception{
-        AccountGetDto accountGetDto = findById(id,token);
+    public ResponseEntity<TransactionGetDto> transferMoney(Long id, String token, TransactionPostDto transactionPostDto) throws Exception {
+        AccountGetDto accountGetDto = findById(id, token);
 
-        if (transactionPostDto.getAmount()<1){
+        if (transactionPostDto.getAmount() < 1) {
             throw new BadRequestException("Amount cannot be less than 1");
         }
 
-        Optional <Account> fromAccount;
+        Optional<Account> fromAccount;
 
-       try{
-          new BigInteger(transactionPostDto.getFromAccount());
+        Boolean numericError =  Boolean.FALSE;
+        try {
+            new BigInteger(transactionPostDto.getFromAccount());
 
-          if(transactionPostDto.getFromAccount().length()!=22){
-              throw new BadRequestException("The account from which you want to send that you have entered does not comply with CVU/CBU rules. Please enter a 22 digit number");
-          }
+            if (transactionPostDto.getFromAccount().length() != 22) {
+                numericError = Boolean.TRUE;
+                throw new Exception();
+            }
 
-           fromAccount = accountRepository.findByCvu(transactionPostDto.getFromAccount());
+            fromAccount = accountRepository.findByCvu(transactionPostDto.getFromAccount());
 
-       }catch (Exception e){
+        } catch (Exception e) {
 
-           int posPunto1=0, posPunto2 =0;
+            if(numericError){
+                throw new BadRequestException("The account from which you want to send that you have entered does not comply with CVU/CBU rules. Please enter a 22 digit number");
+            }
 
-           posPunto1=transactionPostDto.getFromAccount().indexOf(".");
-           posPunto2=transactionPostDto.getFromAccount().indexOf(".",posPunto1+1);
+            int posPunto1 = 0, posPunto2 = 0;
 
-           if(posPunto2==-1 && posPunto1==-1){
-               throw new BadRequestException("The account from which you want to send that you have entered does not comply with the alias, cvu or cbu rules");
-           }else{
-               fromAccount = accountRepository.findByAlias(transactionPostDto.getFromAccount());
-           }
+            posPunto1 = transactionPostDto.getFromAccount().indexOf(".");
+            posPunto2 = transactionPostDto.getFromAccount().indexOf(".", posPunto1 + 1);
 
-       }
+            int aux = transactionPostDto.getFromAccount().length()-1;
 
-        if(fromAccount.isEmpty()){
+            if (posPunto2 == -1 || posPunto1 == -1 || posPunto1==0 || transactionPostDto.getFromAccount().charAt(aux)=='.') {
+                throw new BadRequestException("The account from which you want to send that you have entered does not comply with the alias rules");
+            } else {
+                fromAccount = accountRepository.findByAlias(transactionPostDto.getFromAccount());
+            }
+
+        }
+
+        if (fromAccount.isEmpty()) {
             throw new ResourceNotFoundException("The account from which you are sending money does not exist");
         }
 
-        if(!accountGetDto.getAccountId().equals(fromAccount.get().getAccountId())){
-            throw new ForbiddenException("The account you are sending money from does not belong to you");
+        if (!accountGetDto.getAccountId().equals(fromAccount.get().getAccountId())) {
+            throw new ForbiddenException("The account from which you are sending money from does not belong to you");
         }
 
-        if(fromAccount.get().getAlias().equals(transactionPostDto.getToAccount()) || fromAccount.get().getCvu().equals(transactionPostDto.getToAccount())){
+        if (fromAccount.get().getAlias().equals(transactionPostDto.getToAccount()) || fromAccount.get().getCvu().equals(transactionPostDto.getToAccount())) {
             throw new BadRequestException("You can't transfer money to the same account");
         }
 
-        if (transactionPostDto.getAmount()>fromAccount.get().getAvailableBalance()){
+        if (transactionPostDto.getAmount() > fromAccount.get().getAvailableBalance()) {
             throw new AmountOfMoneyException("Account balance less than the chosen amount");
         }
 
         Optional<Account> toAccount = accountRepository.findByCvu(transactionPostDto.getToAccount());
         Account accountAux = new Account();
 
-        if (toAccount.isEmpty()){
+        if (toAccount.isEmpty()) {
             toAccount = accountRepository.findByAlias(transactionPostDto.getToAccount());
 
-            if (toAccount.isEmpty()){
+            if (toAccount.isEmpty()) {
                 accountAux.setAccountId(-1L);
+
+                numericError = Boolean.FALSE;
 
                 try {
                     new BigInteger(transactionPostDto.getToAccount());
 
-                    if(transactionPostDto.getFromAccount().length()!=22){
-                        throw new BadRequestException("The account you are trying to send to does not meet the CVU/CBU rules. Please enter a 22 digit number");
+                    if (transactionPostDto.getToAccount().length() != 22) {
+                        numericError = Boolean.TRUE;
                     }
 
                     accountAux.setCvu(transactionPostDto.getToAccount());
-                }catch (Exception e){
+                } catch (Exception e) {
 
-                    int posPunto = 0;
-
-                    posPunto=transactionPostDto.getToAccount().indexOf(".");
-
-                    if(posPunto==-1){
-                        throw new BadRequestException("The account you are trying to send to does not meet the alias rules. Please enter a valid alias");
+                    if (numericError) {
+                        throw new BadRequestException("The account you are trying to send to does not meet the CVU/CBU rules. Please enter a 22 digit number");
                     }
+
 
                     Long hash = 0L;
                     for (char c : transactionPostDto.getToAccount().toCharArray()) {
-                        hash = 31L*hash + c;
+                        hash = 31L * hash + c;
                     }
 
                     Random random = new Random(hash);
                     String cvu = "";
-                    for(int f=1;f<=22;f++){
+                    for (int f = 1; f <= 22; f++) {
                         cvu += String.valueOf(random.nextInt(9));
                     }
 
@@ -344,13 +354,13 @@ public class AccountService implements IAccountService {
         fromAccount.get().setAvailableBalance(fromAccount.get().getAvailableBalance() - transactionPostDto.getAmount());
         accountRepository.save(fromAccount.get());
 
-        if(toAccount.isPresent()){
+        if (toAccount.isPresent()) {
             toAccount.get().setAvailableBalance(toAccount.get().getAvailableBalance() + transactionPostDto.getAmount());
-            accountAux= toAccount.get();
+            accountAux = toAccount.get();
             accountRepository.save(toAccount.get());
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.save(transactionPostDto,fromAccount.get(),accountAux));
+        return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.save(transactionPostDto, fromAccount.get(), accountAux));
     }
 
 
