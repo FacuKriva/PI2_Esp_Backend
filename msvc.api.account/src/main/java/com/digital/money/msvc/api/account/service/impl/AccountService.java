@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.util.*;
 
@@ -256,7 +257,7 @@ public class AccountService implements IAccountService {
         Optional <Account> fromAccount;
 
        try{
-           Long.parseLong(transactionPostDto.getFromAccount().substring(0,5));
+          new BigInteger(transactionPostDto.getFromAccount());
            fromAccount = accountRepository.findByCvu(transactionPostDto.getFromAccount());
 
        }catch (Exception e){
@@ -300,7 +301,7 @@ public class AccountService implements IAccountService {
                 accountAux.setAccountId(-1L);
 
                 try {
-                    Long.parseLong(transactionPostDto.getToAccount().substring(0,5));
+                    new BigInteger(transactionPostDto.getToAccount());
                     accountAux.setCvu(transactionPostDto.getToAccount());
                 }catch (Exception e){
 
