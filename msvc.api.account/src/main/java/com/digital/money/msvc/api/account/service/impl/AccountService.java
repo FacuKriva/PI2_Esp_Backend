@@ -258,6 +258,11 @@ public class AccountService implements IAccountService {
 
        try{
           new BigInteger(transactionPostDto.getFromAccount());
+
+          if(transactionPostDto.getFromAccount().length()!=22){
+              throw new BadRequestException("The account from which you want to send that you have entered does not comply with CVU/CBU rules. Please enter a 22 digit number");
+          }
+
            fromAccount = accountRepository.findByCvu(transactionPostDto.getFromAccount());
 
        }catch (Exception e){
@@ -302,6 +307,11 @@ public class AccountService implements IAccountService {
 
                 try {
                     new BigInteger(transactionPostDto.getToAccount());
+
+                    if(transactionPostDto.getFromAccount().length()!=22){
+                        throw new BadRequestException("The account you are trying to send to does not meet the CVU/CBU rules. Please enter a 22 digit number");
+                    }
+
                     accountAux.setCvu(transactionPostDto.getToAccount());
                 }catch (Exception e){
 
@@ -310,7 +320,7 @@ public class AccountService implements IAccountService {
                     posPunto=transactionPostDto.getToAccount().indexOf(".");
 
                     if(posPunto==-1){
-                        throw new BadRequestException("The account you are trying to send to does not meet the alias/CBU/CVU rules");
+                        throw new BadRequestException("The account you are trying to send to does not meet the alias rules. Please enter a valid alias");
                     }
 
                     Long hash = 0L;

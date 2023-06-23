@@ -27,7 +27,7 @@ public class TransactionPostDto {
     @JsonProperty("from_account")
     @NotNull(message = "The account from your account cannot be null")
     @NotEmpty(message = "The account from your account cannot be empty")
-    @Size(min = 5, max = 39, message = "The account from which you want to send that you have entered does not comply with the alias, cvu or cbu rules")
+    @Size(min = 14, max = 39, message = "The account from which you want to send that you have entered does not comply with the alias, cvu or cbu rules")
     private String fromAccount;
 
     @JsonProperty("to_account")
