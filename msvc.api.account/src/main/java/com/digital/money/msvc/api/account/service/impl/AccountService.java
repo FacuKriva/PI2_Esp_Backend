@@ -45,7 +45,7 @@ public class AccountService implements IAccountService {
     @Override
     public AccountGetDto findById(Long id, String token) throws ResourceNotFoundException, ForbiddenException, JSONException {
         Account account = checkId(id);
-        validateAccountBelongsUser(account, token);
+        //validateAccountBelongsUser(account, token);
         return accountMapper.toAccountGetDto(account);
     }
 
@@ -184,35 +184,35 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public ResponseEntity <?> getTransactionsByAmountRange(Long accountId, Integer rangoSelected, String token) throws Exception{
+    public ResponseEntity<?> getTransactionsByAmountRange(Long accountId, Integer rangoSelected, String token) throws Exception {
 
         Account account = checkId(accountId);
         validateAccountBelongsUser(account, token);
 
         ListTransactionDto listTransactionDto = new ListTransactionDto();
 
-        List <Transaction> transactions = transactionService.getAllTransactionsByAmountRange(rangoSelected,accountId);
+        List<Transaction> transactions = transactionService.getAllTransactionsByAmountRange(rangoSelected, accountId);
 
-        if (transactions.isEmpty()){
+        if (transactions.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Lo sentimos. No se encontró contenido para este rango");
         }
 
         listTransactionDto.setTransactions(transactions);
-        listTransactionDto.setAccount(findById(accountId,token));
+        listTransactionDto.setAccount(findById(accountId, token));
 
         return ResponseEntity.status(HttpStatus.OK).body(listTransactionDto);
     }
 
     @Override
-    public ResponseEntity<ListTransactionDto> getTransactionsWithFilters(Long accountId, String startDate, String endDate, Integer rangeSelect, String type, String token) throws Exception{
+    public ResponseEntity<ListTransactionDto> getTransactionsWithFilters(Long accountId, String startDate, String endDate, Integer rangeSelect, String type, String token) throws Exception {
         Account account = checkId(accountId);
-        validateAccountBelongsUser(account,token);
+        validateAccountBelongsUser(account, token);
 
-        ResultSet resultSet = transactionService.getTransactionsFromDB(accountId,startDate,endDate,rangeSelect,type);
+        ResultSet resultSet = transactionService.getTransactionsFromDB(accountId, startDate, endDate, rangeSelect, type);
 
-        List <Transaction> transactions = transactionService.getTransactionsFromResultSet(resultSet, account);
+        List<Transaction> transactions = transactionService.getTransactionsFromResultSet(resultSet, account);
 
-        if(transactions.isEmpty()){
+        if (transactions.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         }
 
@@ -228,20 +228,20 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public ResponseEntity<List <Map <String, String>>> getLastFiveAccountsTransferred(Long id, String token)throws Exception {
+    public ResponseEntity<List<Map<String, String>>> getLastFiveAccountsTransferred(Long id, String token) throws Exception {
 
-        findById(id,token);
-        List <GetLastCVUs> getLastCVUsList = transactionService.getLastFiveReceivers(id);
+        findById(id, token);
+        List<GetLastCVUs> getLastCVUsList = transactionService.getLastFiveReceivers(id);
 
-        if(getLastCVUsList.isEmpty()){
+        if (getLastCVUsList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         }
 
-        List<Map <String, String>> cvus = new ArrayList<>();
+        List<Map<String, String>> cvus = new ArrayList<>();
 
-        for(GetLastCVUs getLastCVUs : getLastCVUsList){
+        for (GetLastCVUs getLastCVUs : getLastCVUsList) {
             Map mapper = new HashMap<>();
-            mapper.put("cvu",getLastCVUs.getTo_Cvu());
+            mapper.put("cvu", getLastCVUs.getTo_Cvu());
 
             cvus.add(mapper);
         }
@@ -259,7 +259,7 @@ public class AccountService implements IAccountService {
 
         Optional<Account> fromAccount;
 
-        Boolean numericError =  Boolean.FALSE;
+        Boolean numericError = Boolean.FALSE;
         try {
             new BigInteger(transactionPostDto.getFromAccount());
 
@@ -272,7 +272,7 @@ public class AccountService implements IAccountService {
 
         } catch (Exception e) {
 
-            if(numericError){
+            if (numericError) {
                 throw new BadRequestException("The account from which you want to send that you have entered does not comply with CVU/CBU rules. Please enter a 22 digit number");
             }
 
@@ -281,9 +281,9 @@ public class AccountService implements IAccountService {
             posPunto1 = transactionPostDto.getFromAccount().indexOf(".");
             posPunto2 = transactionPostDto.getFromAccount().indexOf(".", posPunto1 + 1);
 
-            int aux = transactionPostDto.getFromAccount().length()-1;
+            int aux = transactionPostDto.getFromAccount().length() - 1;
 
-            if (posPunto2 == -1 || posPunto1 == -1 || posPunto1==0 || transactionPostDto.getFromAccount().charAt(aux)=='.') {
+            if (posPunto2 == -1 || posPunto1 == -1 || posPunto1 == 0 || transactionPostDto.getFromAccount().charAt(aux) == '.') {
                 throw new BadRequestException("The account from which you want to send that you have entered does not comply with the alias rules");
             } else {
                 fromAccount = accountRepository.findByAlias(transactionPostDto.getFromAccount());
@@ -362,7 +362,4 @@ public class AccountService implements IAccountService {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.save(transactionPostDto, fromAccount.get(), accountAux));
     }
-
-
-
 }

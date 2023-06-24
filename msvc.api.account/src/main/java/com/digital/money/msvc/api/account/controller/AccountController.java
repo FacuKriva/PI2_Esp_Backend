@@ -125,19 +125,19 @@ public class AccountController {
     }
 
     @GetMapping("/{id}/activity/amount/{amountRange}")
-    public ResponseEntity<?> getTransactionsByAmountRange(@PathVariable("id") Long id, @PathVariable("amountRange") Integer range, @RequestHeader("Authorization") String token) throws Exception{
+    public ResponseEntity<?> getTransactionsByAmountRange(@PathVariable("id") Long id, @PathVariable("amountRange") Integer range, @RequestHeader("Authorization") String token) throws Exception {
         return accountService.getTransactionsByAmountRange(id, range, token);
 
     }
 
     @GetMapping("/{id}/activity/filters")
-    public ResponseEntity<?> getTransactionsWithFilters(@PathVariable("id") Long id, @RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value ="endDate", required = false) String endDate, @RequestParam(value ="amountRange", required = false) Integer amount, @RequestParam(value ="type", required = false) String type, @RequestHeader("Authorization") String token) throws Exception{
+    public ResponseEntity<?> getTransactionsWithFilters(@PathVariable("id") Long id, @RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value = "endDate", required = false) String endDate, @RequestParam(value = "amountRange", required = false) Integer amount, @RequestParam(value = "type", required = false) String type, @RequestHeader("Authorization") String token) throws Exception {
         return accountService.getTransactionsWithFilters(id, startDate, endDate, amount, type, token);
 
     }
 
     @GetMapping(value = "/{id}/transferences")
-    public ResponseEntity<List <Map<String,String>>> getLastFiveAccountsTransferred(@PathVariable("id") Long id,
+    public ResponseEntity<List<Map<String, String>>> getLastFiveAccountsTransferred(@PathVariable("id") Long id,
                                                                                     @RequestHeader("Authorization") String token) throws Exception {
         return accountService.getLastFiveAccountsTransferred(id, token);
     }
@@ -145,8 +145,15 @@ public class AccountController {
 
     @PostMapping(value = "/{id}/transferences", consumes = "application/json", produces = "application/json")
     public ResponseEntity<TransactionGetDto> transferMoney(@PathVariable("id") Long id,
-                                          @RequestHeader("Authorization") String token,
-                                          @Valid @RequestBody TransactionPostDto transactionPostDto) throws Exception {
+                                                           @RequestHeader("Authorization") String token,
+                                                           @Valid @RequestBody TransactionPostDto transactionPostDto) throws Exception {
+        return accountService.transferMoney(id, token, transactionPostDto);
+    }
+
+    @PostMapping(value = "/{id}/transferences/pdf", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> viewPdf(@PathVariable("id") Long id,
+                                     @RequestHeader("Authorization") String token,
+                                     @Valid @RequestBody TransactionPostDto transactionPostDto) throws Exception {
         return accountService.transferMoney(id, token, transactionPostDto);
     }
 }
