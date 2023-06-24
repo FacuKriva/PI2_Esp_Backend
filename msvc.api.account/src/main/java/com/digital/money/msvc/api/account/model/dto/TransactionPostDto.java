@@ -22,6 +22,9 @@ public class TransactionPostDto {
     private Double amount;
 
     @JsonProperty("description")
+    @NotNull(message = "The description cannot be null")
+    @NotEmpty(message = "The description cannot be empty")
+    @Size(min = 5, max = 50, message = "Please enter a brief description for the transaction (between 5 to 50 characters)")
     private String description;
 
     @JsonProperty("from_account")
