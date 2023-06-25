@@ -22,7 +22,7 @@ public class GeneratorPdf {
     public void generate(HttpServletResponse response) throws DocumentException, IOException {
 
         // Creating the Object of Document
-        Document document = new Document(PageSize.A6);
+        Document document = new Document(new RectangleReadOnly(600.0F, 320.0F));
         // Getting instance of PdfWriter
         PdfWriter.getInstance(document, response.getOutputStream());
         // Opening the created document to modify it
@@ -30,9 +30,9 @@ public class GeneratorPdf {
 
         // Creating font
         // Setting font style and size
-        Font fontTiltle = FontFactory.getFont(FontFactory.TIMES_ROMAN);
-        fontTiltle.setSize(16);
-        fontTiltle.setColor(Color.BLACK);
+        Font fontTiltle = FontFactory.getFont(FontFactory.TIMES_BOLD);
+        fontTiltle.setSize(20);
+        fontTiltle.setColor(Color.BLUE);
 
         // Creating paragraph
         Paragraph paragraph = new Paragraph("Successful Transfer", fontTiltle);
@@ -42,19 +42,21 @@ public class GeneratorPdf {
 
         // Creating a table of 3 columns
         PdfPTable table = new PdfPTable(2);
+        table.setComplete(true);
         table.setWidthPercentage(100f);
-        table.setWidths(new int[]{3, 3});
+        table.setWidths(new int[]{2, 3});
         table.setSpacingBefore(5);
+        table.setSpacingAfter(5);
 
         // Create Table Cells for table header
         PdfPCell cell = new PdfPCell();
-        //cell.setBackgroundColor(CMYKColor.CYAN);
-        cell.setPadding(4);
+        cell.setPadding(4f);
+        cell.setPaddingLeft(2f);
         cell.setIndent(4f);
 
         // Creating font
         // Setting font style and size
-        Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN, 8);
+        Font font = FontFactory.getFont(FontFactory.COURIER_BOLD, 14);
         font.setColor(CMYKColor.BLACK);
 
         // Adding headings in the created table cell/ header
