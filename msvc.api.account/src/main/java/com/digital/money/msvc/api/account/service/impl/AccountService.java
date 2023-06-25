@@ -45,7 +45,7 @@ public class AccountService implements IAccountService {
     @Override
     public AccountGetDto findById(Long id, String token) throws ResourceNotFoundException, ForbiddenException, JSONException {
         Account account = checkId(id);
-        //validateAccountBelongsUser(account, token);
+        validateAccountBelongsUser(account, token);
         return accountMapper.toAccountGetDto(account);
     }
 
