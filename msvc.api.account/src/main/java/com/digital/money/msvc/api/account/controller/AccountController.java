@@ -147,13 +147,20 @@ public class AccountController {
     public ResponseEntity<TransactionGetDto> transferMoney(@PathVariable("id") Long id,
                                                            @RequestHeader("Authorization") String token,
                                                            @Valid @RequestBody TransactionPostDto transactionPostDto) throws Exception {
-        return accountService.transferMoney(id, token, transactionPostDto);
+
+        TransactionGetDto transactionSuccessful = accountService.transferMoney(id, token, transactionPostDto);
+        return new ResponseEntity<>(transactionSuccessful, HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "/{id}/transferences/pdf", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/{id}/transferences/pdf")
     public ResponseEntity<?> viewPdf(@PathVariable("id") Long id,
                                      @RequestHeader("Authorization") String token,
                                      @Valid @RequestBody TransactionPostDto transactionPostDto) throws Exception {
-        return accountService.transferMoney(id, token, transactionPostDto);
+
+        TransactionGetDto transactionSuccessful = accountService.transferMoney(id, token, transactionPostDto);
+
+
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

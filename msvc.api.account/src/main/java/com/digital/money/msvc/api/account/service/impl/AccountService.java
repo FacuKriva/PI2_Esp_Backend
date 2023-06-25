@@ -250,7 +250,7 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public ResponseEntity<TransactionGetDto> transferMoney(Long id, String token, TransactionPostDto transactionPostDto) throws Exception {
+    public TransactionGetDto transferMoney(Long id, String token, TransactionPostDto transactionPostDto) throws Exception {
         AccountGetDto accountGetDto = findById(id, token);
 
         if (transactionPostDto.getAmount() < 1) {
@@ -360,6 +360,6 @@ public class AccountService implements IAccountService {
             accountRepository.save(toAccount.get());
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.save(transactionPostDto, fromAccount.get(), accountAux));
+        return transactionService.save(transactionPostDto, fromAccount.get(), accountAux);
     }
 }
