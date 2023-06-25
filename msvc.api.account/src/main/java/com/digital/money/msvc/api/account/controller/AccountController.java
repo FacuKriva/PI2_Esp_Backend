@@ -168,7 +168,7 @@ public class AccountController {
         DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD:HH:MM:SS");
         String currentDateTime = dateFormat.format(new Date());
         String headerkey = "Content-Disposition";
-        String headervalue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
+        String headervalue = "attachment; filename=transfer_".concat(currentDateTime).concat(".pdf");
         response.setHeader(headerkey, headervalue);
 
         TransactionGetDto transaction = accountService.transferMoney(id, token, transactionPostDto);

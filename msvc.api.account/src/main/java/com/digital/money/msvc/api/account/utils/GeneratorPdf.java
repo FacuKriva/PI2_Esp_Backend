@@ -56,46 +56,52 @@ public class GeneratorPdf {
 
         // Creating font
         // Setting font style and size
-        Font font = FontFactory.getFont(FontFactory.COURIER_BOLD, 14);
+        Font font = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14);
         font.setColor(CMYKColor.BLACK);
+        Font fontNoBold = FontFactory.getFont(FontFactory.COURIER_BOLD, 14);
+        fontNoBold.setColor(CMYKColor.BLACK);
+        Font fontBlue = FontFactory.getFont(FontFactory.COURIER_BOLD, 14);
+        fontBlue.setColor(CMYKColor.BLUE);
+        Font fontRed = FontFactory.getFont(FontFactory.COURIER_BOLD, 14);
+        fontRed.setColor(CMYKColor.RED);
 
         // Adding headings in the created table cell/ header
         // Adding Cell to table
         cell.setPhrase(new Phrase("ID", font));
         table.addCell(cell);
-        cell.setPhrase(new Phrase(String.valueOf(transactionSuccessful.getTransactionId()), font));
+        cell.setPhrase(new Phrase(String.valueOf(transactionSuccessful.getTransactionId()), fontNoBold));
         table.addCell(cell);
         cell.setPhrase(new Phrase("Amount", font));
         table.addCell(cell);
-        cell.setPhrase(new Phrase(String.valueOf(transactionSuccessful.getAmount()), font));
+        cell.setPhrase(new Phrase("$".concat(String.valueOf(transactionSuccessful.getAmount())), fontRed));
         table.addCell(cell);
         cell.setPhrase(new Phrase("Date", font));
         table.addCell(cell);
-        cell.setPhrase(new Phrase(String.valueOf(transactionSuccessful.getRealizationDate()), font));
+        cell.setPhrase(new Phrase(String.valueOf(transactionSuccessful.getRealizationDate()), fontNoBold));
         table.addCell(cell);
         cell.setPhrase(new Phrase("Description", font));
         table.addCell(cell);
-        cell.setPhrase(new Phrase(transactionSuccessful.getDescription(), font));
+        cell.setPhrase(new Phrase(transactionSuccessful.getDescription(), fontNoBold));
         table.addCell(cell);
         cell.setPhrase(new Phrase("From", font));
         table.addCell(cell);
-        cell.setPhrase(new Phrase(transactionSuccessful.getFromCvu(), font));
+        cell.setPhrase(new Phrase(transactionSuccessful.getFromCvu(), fontNoBold));
         table.addCell(cell);
         cell.setPhrase(new Phrase("To", font));
         table.addCell(cell);
-        cell.setPhrase(new Phrase(transactionSuccessful.getToCvu(), font));
+        cell.setPhrase(new Phrase(transactionSuccessful.getToCvu(), fontNoBold));
         table.addCell(cell);
         cell.setPhrase(new Phrase("Type", font));
         table.addCell(cell);
-        cell.setPhrase(new Phrase(transactionSuccessful.getType().name(), font));
+        cell.setPhrase(new Phrase(transactionSuccessful.getType().name(), fontBlue));
         table.addCell(cell);
         cell.setPhrase(new Phrase("Account", font));
         table.addCell(cell);
-        cell.setPhrase(new Phrase(transactionSuccessful.getAccount().getAlias(), font));
+        cell.setPhrase(new Phrase(transactionSuccessful.getAccount().getAlias(), fontNoBold));
         table.addCell(cell);
         cell.setPhrase(new Phrase("Available Balance", font));
         table.addCell(cell);
-        cell.setPhrase(new Phrase(String.valueOf(transactionSuccessful.getAccount().getAvailableBalance()), font));
+        cell.setPhrase(new Phrase("$".concat(String.valueOf(transactionSuccessful.getAccount().getAvailableBalance())), fontBlue));
         table.addCell(cell);
 
         document.add(table);
