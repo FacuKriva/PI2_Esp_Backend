@@ -4,14 +4,11 @@ import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.dto.*;
-import com.digital.money.msvc.api.account.model.projections.GetCVUOnly;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IAccountService extends ICheckId<Account> {
     //* ///////// ACCOUNT ///////// *//
@@ -33,7 +30,7 @@ public interface IAccountService extends ICheckId<Account> {
     void removeCardFromAccount(Long id, Long cardId, String token) throws ResourceNotFoundException, ForbiddenException, JSONException;
     CardTransactionGetDTO depositMoney(Long id, CardTransactionPostDTO cardTransactionPostDTO, String token) throws ResourceNotFoundException, PaymentRequiredException, ForbiddenException, BadRequestException, JSONException;
 
-    ResponseEntity<List <GetCVUOnly>> getLastFiveAccountsTransferred(Long id, String token)throws Exception;
+    ResponseEntity<List <Map<String,String>>> getLastFiveAccountsTransferred(Long id, String token)throws Exception;
     ResponseEntity<TransactionGetDto> transferMoney(Long id, String token, TransactionPostDto transactionPostDto) throws Exception;
 
 }

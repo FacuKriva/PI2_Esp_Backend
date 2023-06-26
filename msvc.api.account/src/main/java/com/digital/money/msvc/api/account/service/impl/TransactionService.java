@@ -6,7 +6,7 @@ import com.digital.money.msvc.api.account.model.Card;
 import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.TransactionType;
 import com.digital.money.msvc.api.account.model.dto.*;
-import com.digital.money.msvc.api.account.model.projections.GetCVUOnly;
+import com.digital.money.msvc.api.account.model.projections.GetLastCVUs;
 import com.digital.money.msvc.api.account.repository.IAccountRepository;
 import com.digital.money.msvc.api.account.repository.ICardRepository;
 import com.digital.money.msvc.api.account.repository.ITransactionRepository;
@@ -15,13 +15,10 @@ import com.digital.money.msvc.api.account.utils.mapper.AccountMapper;
 import com.digital.money.msvc.api.account.utils.mapper.CardMapper;
 import com.digital.money.msvc.api.account.utils.mapper.TransactionMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -349,7 +346,7 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
-    public List<GetCVUOnly> getLastFiveReceivers(Long id) throws Exception {
+    public List<GetLastCVUs> getLastFiveReceivers(Long id) throws Exception {
         return transactionRepository.findLastFiveReceivers(id, PageRequest.of(0,5));
     }
 
