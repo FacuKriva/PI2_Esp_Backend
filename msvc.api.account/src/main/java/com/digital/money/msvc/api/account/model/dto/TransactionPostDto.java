@@ -1,7 +1,5 @@
 package com.digital.money.msvc.api.account.model.dto;
 
-import com.digital.money.msvc.api.account.model.Account;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -10,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -22,6 +18,9 @@ public class TransactionPostDto {
     private Double amount;
 
     @JsonProperty("description")
+    @NotNull(message = "The description cannot be null")
+    @NotEmpty(message = "The description cannot be empty")
+    @Size(min = 5, max = 50, message = "Please enter a brief description for the transaction (between 5 to 50 characters)")
     private String description;
 
     @JsonProperty("from_account")

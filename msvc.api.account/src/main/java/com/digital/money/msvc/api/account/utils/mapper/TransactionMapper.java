@@ -1,7 +1,5 @@
 package com.digital.money.msvc.api.account.utils.mapper;
 
-import com.digital.money.msvc.api.account.handler.BadRequestException;
-import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.TransactionType;
 import com.digital.money.msvc.api.account.model.dto.CardTransactionGetDTO;
@@ -11,8 +9,6 @@ import com.digital.money.msvc.api.account.model.dto.TransactionPostDto;
 import org.json.JSONObject;
 import org.mapstruct.Mapper;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

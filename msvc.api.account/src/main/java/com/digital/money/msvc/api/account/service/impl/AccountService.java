@@ -323,6 +323,7 @@ public class AccountService implements IAccountService {
 
                     if (transactionPostDto.getToAccount().length() != 22) {
                         numericError = Boolean.TRUE;
+                        throw new Exception();
                     }
 
                     accountAux.setCvu(transactionPostDto.getToAccount());
@@ -331,7 +332,6 @@ public class AccountService implements IAccountService {
                     if (numericError) {
                         throw new BadRequestException("The account you are trying to send to does not meet the CVU/CBU rules. Please enter a 22 digit number");
                     }
-
 
                     Long hash = 0L;
                     for (char c : transactionPostDto.getToAccount().toCharArray()) {
