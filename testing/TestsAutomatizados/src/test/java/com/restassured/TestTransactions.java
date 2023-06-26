@@ -677,7 +677,7 @@ public class TestTransactions extends Variables {
                     .response();
     }
 
-    //**------------------ POST a transaction (add money from card) (/accounts/{id}/transferences) -----------------**
+    //**------------------ POST a transaction (add money from card) (/accounts/{id}/deposit) -----------------**
 
 
     //TC_Transactions_0015
@@ -703,7 +703,7 @@ public class TestTransactions extends Variables {
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
-                    .basePath("/accounts/{id}/transferences")
+                    .basePath("/accounts/{id}/deposit")
                     .pathParams("id", 2)
                     .body(transaction).
                 when().
@@ -754,7 +754,7 @@ public class TestTransactions extends Variables {
                         .header("Authorization", "Bearer " + token)
                         .header("Content-type", "application/json")
                         .contentType(ContentType.JSON)
-                        .basePath("/accounts/{id}/transferences")
+                        .basePath("/accounts/{id}/deposit")
                         .pathParams("id", 2)
                         .body(transaction).
                     when().
@@ -797,7 +797,7 @@ public class TestTransactions extends Variables {
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
-                    .basePath("/accounts/{id}/transferences")
+                    .basePath("/accounts/{id}/deposit")
                     .pathParams("id", 2)
                     .body(transaction).
                 when().
@@ -840,7 +840,7 @@ public class TestTransactions extends Variables {
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
-                    .basePath("/accounts/{id}/transferences")
+                    .basePath("/accounts/{id}/deposit")
                     .pathParams("id", 2)
                     .body(transaction).
                 when().
@@ -882,7 +882,7 @@ public class TestTransactions extends Variables {
         response = given()
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
-                    .basePath("/accounts/{id}/transferences")
+                    .basePath("/accounts/{id}/deposit")
                     .pathParams("id", 2)
                     .body(transaction).
                 when().
@@ -919,7 +919,7 @@ public class TestTransactions extends Variables {
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
-                    .basePath("/accounts/{id}/transferences")
+                    .basePath("/accounts/{id}/deposit")
                     .pathParams("id", 1)
                     .body(transaction).
                 when().
@@ -960,7 +960,7 @@ public class TestTransactions extends Variables {
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
-                    .basePath("/accounts/{id}/transferences")
+                    .basePath("/accounts/{id}/deposit")
                     .pathParams("id", 2)
                     .body(transaction).
                 when().
@@ -1001,7 +1001,7 @@ public class TestTransactions extends Variables {
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
-                    .basePath("/accounts/{id}/transferences")
+                    .basePath("/accounts/{id}/deposit")
                     .pathParams("id", 99)
                     .body(transaction).
                 when().
@@ -1041,7 +1041,7 @@ public class TestTransactions extends Variables {
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
-                    .basePath("/accounts/{id}/transferences")
+                    .basePath("/accounts/{id}/deposit")
                     .pathParams("id", 2)
                     .body(transaction).
                 when().
@@ -1081,7 +1081,7 @@ public class TestTransactions extends Variables {
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
-                    .basePath("/accounts/{id}/transferences")
+                    .basePath("/accounts/{id}/deposit")
                     .pathParams("id", 2)
                     .body(transaction).
                 when().
@@ -1123,7 +1123,7 @@ public class TestTransactions extends Variables {
                     .header("Authorization", "Bearer " + token)
                     .header("Content-type", "application/json")
                     .contentType(ContentType.JSON)
-                    .basePath("/accounts/{id}/transferences")
+                    .basePath("/accounts/{id}/deposit")
                     .pathParams("id", 2)
                     .body(transaction).
                 when().
@@ -1434,38 +1434,38 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                .header("Authorization", "Bearer " + token)
-                .basePath("/accounts/{id}/activity/filters")
-                .pathParams("id", 2)
-                .queryParams("startDate", "2022-01-01")
-                .queryParams("endDate", "2023-05-16")
-                .queryParams("amountRange", 3)
-                .queryParams("type", "INCOMING").
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/filters")
+                    .pathParams("id", 2)
+                    .queryParams("startDate", "2022-01-01")
+                    .queryParams("endDate", "2023-05-16")
+                    .queryParams("amountRange", 3)
+                    .queryParams("type", "INCOMING").
                 when().
-                get().
+                    get().
                 then()
-                .assertThat()
-                .statusCode(200)
-                .statusCode(HttpStatus.SC_OK)
-                .contentType(ContentType.JSON)
-                .body("$", Matchers.instanceOf(Map.class))
-                .body("$", hasKey("account"))
-                .body("$", hasKey("transactions"))
-                .body("transactions[0]", hasKey("amount"))
-                .body("transactions[0]", hasKey("realizationDate"))
-                .body("transactions[0]", hasKey("description"))
-                .body("transactions[0]", hasKey("fromCvu"))
-                .body("transactions[0]", hasKey("toCvu"))
-                .body("transactions[0]", hasKey("type"))
-                .body("transactions[0]", hasKey("transaction_id"))
-                .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
-                .body("transactions.type", Matchers.everyItem(equalTo("INCOMING")))
-                .body("transactions.amount", Matchers.everyItem(greaterThanOrEqualTo(5000F)))
-                .body("transactions.amount", Matchers.everyItem(lessThanOrEqualTo(20000F)))
-                .body("transactions.realizationDate", Matchers.everyItem(greaterThanOrEqualTo("2022-01-01")))
-                .body("transactions.realizationDate", Matchers.everyItem(lessThanOrEqualTo("2023-05-16")))
-                .log().all()
-                .extract().response();
+                    .assertThat()
+                    .statusCode(200)
+                    .statusCode(HttpStatus.SC_OK)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$", hasKey("account"))
+                    .body("$", hasKey("transactions"))
+                    .body("transactions[0]", hasKey("amount"))
+                    .body("transactions[0]", hasKey("realizationDate"))
+                    .body("transactions[0]", hasKey("description"))
+                    .body("transactions[0]", hasKey("fromCvu"))
+                    .body("transactions[0]", hasKey("toCvu"))
+                    .body("transactions[0]", hasKey("type"))
+                    .body("transactions[0]", hasKey("transaction_id"))
+                    .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                    .body("transactions.type", Matchers.everyItem(equalTo("INCOMING")))
+                    .body("transactions.amount", Matchers.everyItem(greaterThanOrEqualTo(5000F)))
+                    .body("transactions.amount", Matchers.everyItem(lessThanOrEqualTo(20000F)))
+                    .body("transactions.realizationDate", Matchers.everyItem(greaterThanOrEqualTo("2022-01-01")))
+                    .body("transactions.realizationDate", Matchers.everyItem(lessThanOrEqualTo("2023-05-16")))
+                    .log().all()
+                    .extract().response();
 
     }
 
@@ -1487,21 +1487,21 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                .header("Authorization", "Bearer " + token)
-                .basePath("/accounts/{id}/activity/filters")
-                .pathParams("id", 2)
-                .queryParams("startDate", "2022-01-01")
-                .queryParams("endDate", "2023-05-16")
-                .queryParams("amountRange", 2)
-                .queryParams("type", "INCOMING").
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/filters")
+                    .pathParams("id", 2)
+                    .queryParams("startDate", "2022-01-01")
+                    .queryParams("endDate", "2023-05-16")
+                    .queryParams("amountRange", 2)
+                    .queryParams("type", "INCOMING").
                 when().
-                get().
+                    get().
                 then()
-                .assertThat()
-                .statusCode(204)
-                .statusCode(HttpStatus.SC_NO_CONTENT)
-                .log().all()
-                .extract().response();
+                    .assertThat()
+                    .statusCode(204)
+                    .statusCode(HttpStatus.SC_NO_CONTENT)
+                    .log().all()
+                    .extract().response();
 
     }
 
@@ -1523,36 +1523,36 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                .header("Authorization", "Bearer " + token)
-                .basePath("/accounts/{id}/activity/filters")
-                .pathParams("id", 2)
-                .queryParams("startDate", "2022-01-01")
-                .queryParams("endDate", "2023-05-16")
-                .queryParams("amountRange", 3).
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/filters")
+                    .pathParams("id", 2)
+                    .queryParams("startDate", "2022-01-01")
+                    .queryParams("endDate", "2023-05-16")
+                    .queryParams("amountRange", 3).
                 when().
-                get().
+                    get().
                 then()
-                .assertThat()
-                .statusCode(200)
-                .statusCode(HttpStatus.SC_OK)
-                .contentType(ContentType.JSON)
-                .body("$", Matchers.instanceOf(Map.class))
-                .body("$", hasKey("account"))
-                .body("$", hasKey("transactions"))
-                .body("transactions[0]", hasKey("amount"))
-                .body("transactions[0]", hasKey("realizationDate"))
-                .body("transactions[0]", hasKey("description"))
-                .body("transactions[0]", hasKey("fromCvu"))
-                .body("transactions[0]", hasKey("toCvu"))
-                .body("transactions[0]", hasKey("type"))
-                .body("transactions[0]", hasKey("transaction_id"))
-                .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
-                .body("transactions.amount", Matchers.everyItem(greaterThanOrEqualTo(5000F)))
-                .body("transactions.amount", Matchers.everyItem(lessThanOrEqualTo(20000F)))
-                .body("transactions.realizationDate", Matchers.everyItem(greaterThanOrEqualTo("2022-01-01")))
-                .body("transactions.realizationDate", Matchers.everyItem(lessThanOrEqualTo("2023-05-16")))
-                .log().all()
-                .extract().response();
+                    .assertThat()
+                    .statusCode(200)
+                    .statusCode(HttpStatus.SC_OK)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$", hasKey("account"))
+                    .body("$", hasKey("transactions"))
+                    .body("transactions[0]", hasKey("amount"))
+                    .body("transactions[0]", hasKey("realizationDate"))
+                    .body("transactions[0]", hasKey("description"))
+                    .body("transactions[0]", hasKey("fromCvu"))
+                    .body("transactions[0]", hasKey("toCvu"))
+                    .body("transactions[0]", hasKey("type"))
+                    .body("transactions[0]", hasKey("transaction_id"))
+                    .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                    .body("transactions.amount", Matchers.everyItem(greaterThanOrEqualTo(5000F)))
+                    .body("transactions.amount", Matchers.everyItem(lessThanOrEqualTo(20000F)))
+                    .body("transactions.realizationDate", Matchers.everyItem(greaterThanOrEqualTo("2022-01-01")))
+                    .body("transactions.realizationDate", Matchers.everyItem(lessThanOrEqualTo("2023-05-16")))
+                    .log().all()
+                    .extract().response();
 
     }
 
@@ -1574,34 +1574,34 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                .header("Authorization", "Bearer " + token)
-                .basePath("/accounts/{id}/activity/filters")
-                .pathParams("id", 2)
-                .queryParams("type", "OUTGOING")
-                .queryParams("amountRange", 3).
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/filters")
+                    .pathParams("id", 2)
+                    .queryParams("type", "OUTGOING")
+                    .queryParams("amountRange", 3).
                 when().
-                get().
+                    get().
                 then()
-                .assertThat()
-                .statusCode(200)
-                .statusCode(HttpStatus.SC_OK)
-                .contentType(ContentType.JSON)
-                .body("$", Matchers.instanceOf(Map.class))
-                .body("$", hasKey("account"))
-                .body("$", hasKey("transactions"))
-                .body("transactions[0]", hasKey("amount"))
-                .body("transactions[0]", hasKey("realizationDate"))
-                .body("transactions[0]", hasKey("description"))
-                .body("transactions[0]", hasKey("fromCvu"))
-                .body("transactions[0]", hasKey("toCvu"))
-                .body("transactions[0]", hasKey("type"))
-                .body("transactions[0]", hasKey("transaction_id"))
-                .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
-                .body("transactions.amount", Matchers.everyItem(greaterThanOrEqualTo(5000F)))
-                .body("transactions.amount", Matchers.everyItem(lessThanOrEqualTo(20000F)))
-                .body("transactions.type", Matchers.everyItem(equalTo("OUTGOING")))
-                .log().all()
-                .extract().response();
+                    .assertThat()
+                    .statusCode(200)
+                    .statusCode(HttpStatus.SC_OK)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$", hasKey("account"))
+                    .body("$", hasKey("transactions"))
+                    .body("transactions[0]", hasKey("amount"))
+                    .body("transactions[0]", hasKey("realizationDate"))
+                    .body("transactions[0]", hasKey("description"))
+                    .body("transactions[0]", hasKey("fromCvu"))
+                    .body("transactions[0]", hasKey("toCvu"))
+                    .body("transactions[0]", hasKey("type"))
+                    .body("transactions[0]", hasKey("transaction_id"))
+                    .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                    .body("transactions.amount", Matchers.everyItem(greaterThanOrEqualTo(5000F)))
+                    .body("transactions.amount", Matchers.everyItem(lessThanOrEqualTo(20000F)))
+                    .body("transactions.type", Matchers.everyItem(equalTo("OUTGOING")))
+                    .log().all()
+                    .extract().response();
 
     }
 
@@ -1623,32 +1623,32 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                .header("Authorization", "Bearer " + token)
-                .basePath("/accounts/{id}/activity/filters")
-                .pathParams("id", 2)
-                .queryParams("amountRange", 3).
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/filters")
+                    .pathParams("id", 2)
+                    .queryParams("amountRange", 3).
                 when().
-                get().
+                    get().
                 then()
-                .assertThat()
-                .statusCode(200)
-                .statusCode(HttpStatus.SC_OK)
-                .contentType(ContentType.JSON)
-                .body("$", Matchers.instanceOf(Map.class))
-                .body("$", hasKey("account"))
-                .body("$", hasKey("transactions"))
-                .body("transactions[0]", hasKey("amount"))
-                .body("transactions[0]", hasKey("realizationDate"))
-                .body("transactions[0]", hasKey("description"))
-                .body("transactions[0]", hasKey("fromCvu"))
-                .body("transactions[0]", hasKey("toCvu"))
-                .body("transactions[0]", hasKey("type"))
-                .body("transactions[0]", hasKey("transaction_id"))
-                .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
-                .body("transactions.amount", Matchers.everyItem(greaterThanOrEqualTo(5000F)))
-                .body("transactions.amount", Matchers.everyItem(lessThanOrEqualTo(20000F)))
-                .log().all()
-                .extract().response();
+                    .assertThat()
+                    .statusCode(200)
+                    .statusCode(HttpStatus.SC_OK)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$", hasKey("account"))
+                    .body("$", hasKey("transactions"))
+                    .body("transactions[0]", hasKey("amount"))
+                    .body("transactions[0]", hasKey("realizationDate"))
+                    .body("transactions[0]", hasKey("description"))
+                    .body("transactions[0]", hasKey("fromCvu"))
+                    .body("transactions[0]", hasKey("toCvu"))
+                    .body("transactions[0]", hasKey("type"))
+                    .body("transactions[0]", hasKey("transaction_id"))
+                    .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                    .body("transactions.amount", Matchers.everyItem(greaterThanOrEqualTo(5000F)))
+                    .body("transactions.amount", Matchers.everyItem(lessThanOrEqualTo(20000F)))
+                    .log().all()
+                    .extract().response();
     }
 
     //TC_Transacciones_0039
@@ -1669,24 +1669,24 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                .header("Authorization", "Bearer " + token)
-                .basePath("/accounts/{id}/activity/filters")
-                .pathParams("id", 2)
-                .queryParams("amountRange", 6).
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/filters")
+                    .pathParams("id", 2)
+                    .queryParams("amountRange", 6).
                 when().
-                get().
+                    get().
                 then()
-                .assertThat()
-                .statusCode(400)
-                .statusCode(HttpStatus.SC_BAD_REQUEST)
-                .contentType(ContentType.JSON)
-                .body("$", Matchers.instanceOf(Map.class))
-                .body("$",hasKey("error"))
-                .body("error", Matchers.equalTo("Select index out of range"))
-                .body("$",hasKey("message"))
-                .body("message", Matchers.equalTo("Please select a option within the range"))
-                .log().all()
-                .extract().response();
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Select index out of range"))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("Please select a option within the range"))
+                    .log().all()
+                    .extract().response();
     }
 
 
@@ -1708,25 +1708,25 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                .header("Authorization", "Bearer " + token)
-                .basePath("/accounts/{id}/activity/filters")
-                .pathParams("id", 2)
-                .queryParams("amountRange", 0).
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/filters")
+                    .pathParams("id", 2)
+                    .queryParams("amountRange", 0).
                 when().
-                get().
+                    get().
                 then()
-                .assertThat()
-                .statusCode(400)
-                .statusCode(HttpStatus.SC_BAD_REQUEST)
-                .contentType(ContentType.JSON)
-                .body("$", Matchers.instanceOf(Map.class))
-                .body("$",hasKey("error"))
-                .body("error", Matchers.equalTo("Select index out of range"))
-                .body("$",hasKey("message"))
-                .body("message", Matchers.equalTo("Please select a option within the range"))
-                .log().all()
-                .extract().response();
-    }
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Select index out of range"))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("Please select a option within the range"))
+                    .log().all()
+                    .extract().response();
+        }
 
     //TC_Transacciones_0041
     @Tag("Smoke")
@@ -1746,35 +1746,35 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                .header("Authorization", "Bearer " + token)
-                .basePath("/accounts/{id}/activity/filters")
-                .pathParams("id", 2)
-                .queryParams("startDate", "2022-01-01")
-                .queryParams("endDate", "2023-05-16")
-                .queryParams("type", "INCOMING").
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/filters")
+                    .pathParams("id", 2)
+                    .queryParams("startDate", "2022-01-01")
+                    .queryParams("endDate", "2023-05-16")
+                    .queryParams("type", "INCOMING").
                 when().
-                get().
+                    get().
                 then()
-                .assertThat()
-                .statusCode(200)
-                .statusCode(HttpStatus.SC_OK)
-                .contentType(ContentType.JSON)
-                .body("$", Matchers.instanceOf(Map.class))
-                .body("$", hasKey("account"))
-                .body("$", hasKey("transactions"))
-                .body("transactions[0]", hasKey("amount"))
-                .body("transactions[0]", hasKey("realizationDate"))
-                .body("transactions[0]", hasKey("description"))
-                .body("transactions[0]", hasKey("fromCvu"))
-                .body("transactions[0]", hasKey("toCvu"))
-                .body("transactions[0]", hasKey("type"))
-                .body("transactions[0]", hasKey("transaction_id"))
-                .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
-                .body("transactions.realizationDate", Matchers.everyItem(greaterThanOrEqualTo("2022-01-01")))
-                .body("transactions.realizationDate", Matchers.everyItem(lessThanOrEqualTo("2023-05-16")))
-                .body("transactions.type", Matchers.everyItem(equalTo("INCOMING")))
-                .log().all()
-                .extract().response();
+                    .assertThat()
+                    .statusCode(200)
+                    .statusCode(HttpStatus.SC_OK)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$", hasKey("account"))
+                    .body("$", hasKey("transactions"))
+                    .body("transactions[0]", hasKey("amount"))
+                    .body("transactions[0]", hasKey("realizationDate"))
+                    .body("transactions[0]", hasKey("description"))
+                    .body("transactions[0]", hasKey("fromCvu"))
+                    .body("transactions[0]", hasKey("toCvu"))
+                    .body("transactions[0]", hasKey("type"))
+                    .body("transactions[0]", hasKey("transaction_id"))
+                    .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                    .body("transactions.realizationDate", Matchers.everyItem(greaterThanOrEqualTo("2022-01-01")))
+                    .body("transactions.realizationDate", Matchers.everyItem(lessThanOrEqualTo("2023-05-16")))
+                    .body("transactions.type", Matchers.everyItem(equalTo("INCOMING")))
+                    .log().all()
+                    .extract().response();
 
     }
 
@@ -1796,33 +1796,33 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                .header("Authorization", "Bearer " + token)
-                .basePath("/accounts/{id}/activity/filters")
-                .pathParams("id", 2)
-                .queryParams("startDate", "2023-01-01")
-                .queryParams("endDate", "2023-05-16").
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/filters")
+                    .pathParams("id", 2)
+                    .queryParams("startDate", "2023-01-01")
+                    .queryParams("endDate", "2023-05-16").
                 when().
-                get().
+                    get().
                 then()
-                .assertThat()
-                .statusCode(200)
-                .statusCode(HttpStatus.SC_OK)
-                .contentType(ContentType.JSON)
-                .body("$", Matchers.instanceOf(Map.class))
-                .body("$", hasKey("account"))
-                .body("$", hasKey("transactions"))
-                .body("transactions[0]", hasKey("amount"))
-                .body("transactions[0]", hasKey("realizationDate"))
-                .body("transactions[0]", hasKey("description"))
-                .body("transactions[0]", hasKey("fromCvu"))
-                .body("transactions[0]", hasKey("toCvu"))
-                .body("transactions[0]", hasKey("type"))
-                .body("transactions[0]", hasKey("transaction_id"))
-                .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
-                .body("transactions.realizationDate", Matchers.everyItem(greaterThanOrEqualTo("2023-01-01")))
-                .body("transactions.realizationDate", Matchers.everyItem(lessThanOrEqualTo("2023-05-16")))
-                .log().all()
-                .extract().response();
+                    .assertThat()
+                    .statusCode(200)
+                    .statusCode(HttpStatus.SC_OK)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$", hasKey("account"))
+                    .body("$", hasKey("transactions"))
+                    .body("transactions[0]", hasKey("amount"))
+                    .body("transactions[0]", hasKey("realizationDate"))
+                    .body("transactions[0]", hasKey("description"))
+                    .body("transactions[0]", hasKey("fromCvu"))
+                    .body("transactions[0]", hasKey("toCvu"))
+                    .body("transactions[0]", hasKey("type"))
+                    .body("transactions[0]", hasKey("transaction_id"))
+                    .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                    .body("transactions.realizationDate", Matchers.everyItem(greaterThanOrEqualTo("2023-01-01")))
+                    .body("transactions.realizationDate", Matchers.everyItem(lessThanOrEqualTo("2023-05-16")))
+                    .log().all()
+                    .extract().response();
 
     }
 
@@ -1844,25 +1844,25 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                .header("Authorization", "Bearer " + token)
-                .basePath("/accounts/{id}/activity/filters")
-                .pathParams("id", 2)
-                .queryParams("startDate", "2023-01-01")
-                .queryParams("endDate", "2022-05-16").
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/filters")
+                    .pathParams("id", 2)
+                    .queryParams("startDate", "2023-01-01")
+                    .queryParams("endDate", "2022-05-16").
                 when().
-                get().
+                    get().
                 then()
-                .assertThat()
-                .statusCode(400)
-                .statusCode(HttpStatus.SC_BAD_REQUEST)
-                .contentType(ContentType.JSON)
-                .body("$", Matchers.instanceOf(Map.class))
-                .body("$",hasKey("error"))
-                .body("error", Matchers.equalTo("Bad Request"))
-                .body("$",hasKey("message"))
-                .body("message", Matchers.equalTo("The start date must be before the end date"))
-                .log().all()
-                .extract().response();
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("The start date must be before the end date"))
+                    .log().all()
+                    .extract().response();
 
     }
 
@@ -1884,31 +1884,31 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                .header("Authorization", "Bearer " + token)
-                .basePath("/accounts/{id}/activity/filters")
-                .pathParams("id", 2)
-                .queryParams("startDate", "2023-01-01").
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/filters")
+                    .pathParams("id", 2)
+                    .queryParams("startDate", "2023-01-01").
                 when().
-                get().
+                     get().
                 then()
-                .assertThat()
-                .statusCode(200)
-                .statusCode(HttpStatus.SC_OK)
-                .contentType(ContentType.JSON)
-                .body("$", Matchers.instanceOf(Map.class))
-                .body("$", hasKey("account"))
-                .body("$", hasKey("transactions"))
-                .body("transactions[0]", hasKey("amount"))
-                .body("transactions[0]", hasKey("realizationDate"))
-                .body("transactions[0]", hasKey("description"))
-                .body("transactions[0]", hasKey("fromCvu"))
-                .body("transactions[0]", hasKey("toCvu"))
-                .body("transactions[0]", hasKey("type"))
-                .body("transactions[0]", hasKey("transaction_id"))
-                .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
-                .body("transactions.realizationDate", Matchers.everyItem(greaterThanOrEqualTo("2023-01-01")))
-                .log().all()
-                .extract().response();
+                    .assertThat()
+                    .statusCode(200)
+                    .statusCode(HttpStatus.SC_OK)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$", hasKey("account"))
+                    .body("$", hasKey("transactions"))
+                    .body("transactions[0]", hasKey("amount"))
+                    .body("transactions[0]", hasKey("realizationDate"))
+                    .body("transactions[0]", hasKey("description"))
+                    .body("transactions[0]", hasKey("fromCvu"))
+                    .body("transactions[0]", hasKey("toCvu"))
+                    .body("transactions[0]", hasKey("type"))
+                    .body("transactions[0]", hasKey("transaction_id"))
+                    .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                    .body("transactions.realizationDate", Matchers.everyItem(greaterThanOrEqualTo("2023-01-01")))
+                    .log().all()
+                    .extract().response();
     }
 
     //TC_Transacciones_0045
@@ -1929,24 +1929,24 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                .header("Authorization", "Bearer " + token)
-                .basePath("/accounts/{id}/activity/filters")
-                .pathParams("id", 2)
-                .queryParams("endDate", "2022-01-01").
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/filters")
+                    .pathParams("id", 2)
+                    .queryParams("endDate", "2022-01-01").
                 when().
-                get().
+                     get().
                 then()
-                .assertThat()
-                .statusCode(400)
-                .statusCode(HttpStatus.SC_BAD_REQUEST)
-                .contentType(ContentType.JSON)
-                .body("$", Matchers.instanceOf(Map.class))
-                .body("$",hasKey("error"))
-                .body("error", Matchers.equalTo("Bad Request"))
-                .body("$",hasKey("message"))
-                .body("message", Matchers.equalTo("Only an end date was entered. You must enter a start date."))
-                .log().all()
-                .extract().response();
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("Only an end date was entered. You must enter a start date."))
+                    .log().all()
+                    .extract().response();
     }
 
     //TC_Transacciones_0046
@@ -1967,31 +1967,31 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                .header("Authorization", "Bearer " + token)
-                .basePath("/accounts/{id}/activity/filters")
-                .pathParams("id", 2)
-                .queryParams("type", "INCOMING").
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/filters")
+                    .pathParams("id", 2)
+                    .queryParams("type", "INCOMING").
                 when().
-                get().
+                    get().
                 then()
-                .assertThat()
-                .statusCode(200)
-                .statusCode(HttpStatus.SC_OK)
-                .contentType(ContentType.JSON)
-                .body("$", Matchers.instanceOf(Map.class))
-                .body("$", hasKey("account"))
-                .body("$", hasKey("transactions"))
-                .body("transactions[0]", hasKey("amount"))
-                .body("transactions[0]", hasKey("realizationDate"))
-                .body("transactions[0]", hasKey("description"))
-                .body("transactions[0]", hasKey("fromCvu"))
-                .body("transactions[0]", hasKey("toCvu"))
-                .body("transactions[0]", hasKey("type"))
-                .body("transactions[0]", hasKey("transaction_id"))
-                .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
-                .body("transactions.type", Matchers.everyItem(equalTo("INCOMING")))
-                .log().all()
-                .extract().response();
+                    .assertThat()
+                    .statusCode(200)
+                    .statusCode(HttpStatus.SC_OK)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$", hasKey("account"))
+                    .body("$", hasKey("transactions"))
+                    .body("transactions[0]", hasKey("amount"))
+                    .body("transactions[0]", hasKey("realizationDate"))
+                    .body("transactions[0]", hasKey("description"))
+                    .body("transactions[0]", hasKey("fromCvu"))
+                    .body("transactions[0]", hasKey("toCvu"))
+                    .body("transactions[0]", hasKey("type"))
+                    .body("transactions[0]", hasKey("transaction_id"))
+                    .body("transactions.size()", Matchers.greaterThanOrEqualTo(1))
+                    .body("transactions.type", Matchers.everyItem(equalTo("INCOMING")))
+                    .log().all()
+                    .extract().response();
 
     }
 
@@ -2013,24 +2013,24 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                .header("Authorization", "Bearer " + token)
-                .basePath("/accounts/{id}/activity/filters")
-                .pathParams("id", 2)
-                .queryParams("type", "DEPOSIT").
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/filters")
+                    .pathParams("id", 2)
+                    .queryParams("type", "DEPOSIT").
                 when().
-                get().
+                    get().
                 then()
-                .assertThat()
-                .statusCode(400)
-                .statusCode(HttpStatus.SC_BAD_REQUEST)
-                .contentType(ContentType.JSON)
-                .body("$", Matchers.instanceOf(Map.class))
-                .body("$",hasKey("error"))
-                .body("error", Matchers.equalTo("Bad Request"))
-                .body("$",hasKey("message"))
-                .body("message", Matchers.equalTo("Incorrect transaction type. Please choose INCOMING or OUTGOING"))
-                .log().all()
-                .extract().response();
+                    .assertThat()
+                    .statusCode(400)
+                    .statusCode(HttpStatus.SC_BAD_REQUEST)
+                    .contentType(ContentType.JSON)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Bad Request"))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("Incorrect transaction type. Please choose INCOMING or OUTGOING"))
+                    .log().all()
+                    .extract().response();
     }
 
     //TC_Transacciones_0048
@@ -2051,20 +2051,20 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                .basePath("/accounts/{id}/activity/filters")
-                .pathParams("id", 2)
-                .queryParams("startDate", "2022-01-01")
-                .queryParams("endDate", "2023-05-16")
-                .queryParams("amountRange", 2)
-                .queryParams("type", "INCOMING").
+                    .basePath("/accounts/{id}/activity/filters")
+                    .pathParams("id", 2)
+                    .queryParams("startDate", "2022-01-01")
+                    .queryParams("endDate", "2023-05-16")
+                    .queryParams("amountRange", 2)
+                    .queryParams("type", "INCOMING").
                 when().
-                get().
+                     get().
                 then()
-                .assertThat()
-                .statusCode(401)
-                .statusCode(HttpStatus.SC_UNAUTHORIZED)
-                .log().all()
-                .extract().response();
+                    .assertThat()
+                    .statusCode(401)
+                    .statusCode(HttpStatus.SC_UNAUTHORIZED)
+                    .log().all()
+                    .extract().response();
 
     }
 
@@ -2086,26 +2086,26 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                .header("Authorization", "Bearer " + token)
-                .basePath("/accounts/{id}/activity/filters")
-                .pathParams("id", 1)
-                .queryParams("startDate", "2022-01-01")
-                .queryParams("endDate", "2023-05-16")
-                .queryParams("amountRange", 2)
-                .queryParams("type", "INCOMING").
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/filters")
+                    .pathParams("id", 1)
+                    .queryParams("startDate", "2022-01-01")
+                    .queryParams("endDate", "2023-05-16")
+                    .queryParams("amountRange", 2)
+                    .queryParams("type", "INCOMING").
                 when().
-                get().
+                    get().
                 then()
-                .assertThat()
-                .statusCode(403)
-                .statusCode(HttpStatus.SC_FORBIDDEN)
-                .body("$", Matchers.instanceOf(Map.class))
-                .body("$",hasKey("error"))
-                .body("error", Matchers.equalTo("Forbidden"))
-                .body("$",hasKey("message"))
-                .body("message", Matchers.equalTo("You don't have access to that account"))
-                .log().all()
-                .extract().response();
+                    .assertThat()
+                    .statusCode(403)
+                    .statusCode(HttpStatus.SC_FORBIDDEN)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Forbidden"))
+                    .body("$",hasKey("message"))
+                    .body("message", Matchers.equalTo("You don't have access to that account"))
+                    .log().all()
+                    .extract().response();
 
     }
 
@@ -2127,24 +2127,24 @@ public class TestTransactions extends Variables {
         Response response;
 
         response = given()
-                .header("Authorization", "Bearer " + token)
-                .basePath("/accounts/{id}/activity/filters")
-                .pathParams("id", 99)
-                .queryParams("startDate", "2022-01-01")
-                .queryParams("endDate", "2023-05-16")
-                .queryParams("amountRange", 2)
-                .queryParams("type", "DEPOSIT").
+                    .header("Authorization", "Bearer " + token)
+                    .basePath("/accounts/{id}/activity/filters")
+                    .pathParams("id", 99)
+                    .queryParams("startDate", "2022-01-01")
+                    .queryParams("endDate", "2023-05-16")
+                    .queryParams("amountRange", 2)
+                    .queryParams("type", "DEPOSIT").
                 when().
-                get().
+                    get().
                 then()
-                .assertThat()
-                .statusCode(404)
-                .statusCode(HttpStatus.SC_NOT_FOUND)
-                .body("$", Matchers.instanceOf(Map.class))
-                .body("$",hasKey("error"))
-                .body("error", Matchers.equalTo("Not Found"))
-                .log().all()
-                .extract().response();
+                    .assertThat()
+                    .statusCode(404)
+                    .statusCode(HttpStatus.SC_NOT_FOUND)
+                    .body("$", Matchers.instanceOf(Map.class))
+                    .body("$",hasKey("error"))
+                    .body("error", Matchers.equalTo("Not Found"))
+                    .log().all()
+                    .extract().response();
 
     }
 
@@ -2153,20 +2153,20 @@ public class TestTransactions extends Variables {
 
     public static void Login_Id_4() {
         token_id_4 = given()
-                .auth().preemptive()
-                .basic(client_id, client_secret)
-                .contentType("application/x-www-form-urlencoded")
-                .formParam("grant_type", "password")
-                //account_id: 4
-                .formParam("username", "amaria@mail.com")
-                .formParam("password", password)
-                .basePath("/security/oauth/token")
+                    .auth().preemptive()
+                    .basic(client_id, client_secret)
+                    .contentType("application/x-www-form-urlencoded")
+                    .formParam("grant_type", "password")
+                    //account_id: 4
+                    .formParam("username", "amaria@mail.com")
+                    .formParam("password", password)
+                    .basePath("/security/oauth/token")
                 .when()
-                .post()
+                    .post()
                 .then()
-                .log().all()
-                .extract()
-                .jsonPath().get("access_token");
+                    .log().all()
+                    .extract()
+                    .jsonPath().get("access_token");
     }
 
 }
