@@ -20,7 +20,6 @@ public class Card {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "account_id", nullable = false)
-    //@JsonIgnore
     @JsonProperty("account_id")
     private Account account;
 
@@ -47,9 +46,6 @@ public class Card {
 
     @Column(name = "cardNetwork", nullable = false)
     private String cardNetwork;
-//
-//    @Column(name = "cardBalance", nullable = false)
-//    private Double cardBalance;
 
     @Column(name = "isEnabled", nullable = false)
     private boolean isEnabled = true;
@@ -67,7 +63,6 @@ public class Card {
                 ", bank='" + bank + '\'' +
                 ", cardType='" + cardType + '\'' +
                 ", cardNetwork='" + cardNetwork + '\'' +
-                //", cardBalance=" + cardBalance +
                 ", enabled=" + isEnabled +
                 '}';
     }

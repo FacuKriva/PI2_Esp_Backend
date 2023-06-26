@@ -45,10 +45,6 @@ public class CardServices implements ICardService {
             throw new BadRequestException("The card you are trying to add is invalid. " +
                     "Please make sure the card number is valid.");
         }
-//        if (cardPostDTO.getCardBalance() < 0 ) {
-//            throw new BadRequestException("The card you are trying to add has a negative balance. " +
-//                    "Please make sure the card balance is valid.");
-//        }
 
         Card card = cardMapper.toCard(cardPostDTO);
         card.setCardNetwork(guessTheCardNetwork(cardPostDTO.getCardNumber()));
@@ -63,7 +59,6 @@ public class CardServices implements ICardService {
             }
         }
         card.setAccount(account);
-//        card.setCardBalance(cardPostDTO.getCardBalance());
         cardRepository.save(card);
 
         return cardMapper.toCardGetDTO(card);
