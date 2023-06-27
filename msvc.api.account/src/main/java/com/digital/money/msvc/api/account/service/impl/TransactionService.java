@@ -89,13 +89,18 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
-    public Transaction findTransactionById(Long accountId, Long transactionId) throws ResourceNotFoundException {
+    public Transaction findTransactionById(Long accountId, Long transactionId) throws Exception{
 
         Optional<Transaction> transaction = transactionRepository.findByAccount_AccountIdAndTransactionId(accountId,transactionId);
 
         if (transaction.isEmpty()) {
             throw new ResourceNotFoundException("Not transference found for that id");
         }
+
+        if(transaction.get().getAccount().getAccountId()!=accountId){
+            throw new BadRequestException("The account ");
+        }
+
         return transaction.get();
     }
 
@@ -345,6 +350,12 @@ public class TransactionService implements ITransactionService {
     @Override
     public List<GetLastCVUs> getLastFiveReceivers(Long id) throws Exception {
         return transactionRepository.findLastFiveReceivers(id, PageRequest.of(0,5));
+    }
+
+    @Override
+    public TransactionGetDto findTransactionDTO(Long id, Long transferenceID) throws Exception{
+        Transaction transaction = findTransactionById(id,transferenceID);
+        return transactionMapper.toTransactionGetDto(transaction);
     }
 
 }

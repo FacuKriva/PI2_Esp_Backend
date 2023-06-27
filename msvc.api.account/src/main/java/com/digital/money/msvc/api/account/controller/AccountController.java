@@ -4,7 +4,9 @@ import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.dto.*;
 import com.digital.money.msvc.api.account.service.impl.AccountService;
+import com.digital.money.msvc.api.account.utils.GeneratorPdf;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -73,7 +78,7 @@ public class AccountController {
     @GetMapping("/{id}/activity/{transferenceID}")
     public ResponseEntity<Transaction> oneActivity(@PathVariable("id") Long id,
                                                    @PathVariable("transferenceID") Long transferenceID,
-                                                   @RequestHeader("Authorization") String token) throws ForbiddenException, JSONException, ResourceNotFoundException {
+                                                   @RequestHeader("Authorization") String token) throws Exception {
         return ResponseEntity.ok(accountService.findTransactionById(id, transferenceID, token));
     }
 
@@ -141,9 +146,34 @@ public class AccountController {
 
     @PostMapping(value = "/{id}/transferences", consumes = "application/json", produces = "application/json")
     public ResponseEntity<TransactionGetDto> transferMoney(@PathVariable("id") Long id,
-                                          @RequestHeader("Authorization") String token,
-                                          @Valid @RequestBody TransactionPostDto transactionPostDto) throws Exception {
-        return accountService.transferMoney(id, token, transactionPostDto);
+                                                           @RequestHeader("Authorization") String token,
+                                                           @Valid @RequestBody TransactionPostDto transactionPostDto) throws Exception {
+
+        TransactionGetDto transactionSuccessful = accountService.transferMoney(id, token, transactionPostDto);
+        return new ResponseEntity<>(transactionSuccessful, HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/{id}/transferences/{transferenceID}/comprobante")
+    public ResponseEntity<?> viewPdf(@PathVariable("id") Long id,
+                                     @PathVariable("transferenceID") Long transferenceID,
+                                     @RequestHeader("Authorization") String token,
+                                     HttpServletResponse response) throws Exception {
+
+        //Headers..
+        response.setContentType("application/pdf");
+        DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD:HH:MM:SS");
+        String currentDateTime = dateFormat.format(new Date());
+        String headerkey = "Content-Disposition";
+        String headervalue = "attachment; filename=transfer_".concat(currentDateTime).concat(".pdf");
+        response.setHeader(headerkey, headervalue);
+
+        TransactionGetDto transaction = accountService.getTransactionDto(id, transferenceID,token);
+
+        GeneratorPdf generator = new GeneratorPdf();
+        generator.setTransactionSuccessful(transaction);
+        generator.generate(response);
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}/transferences/lastReceivers")
