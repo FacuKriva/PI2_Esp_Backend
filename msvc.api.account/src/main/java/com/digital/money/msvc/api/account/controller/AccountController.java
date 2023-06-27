@@ -78,7 +78,7 @@ public class AccountController {
     @GetMapping("/{id}/activity/{transferenceID}")
     public ResponseEntity<Transaction> oneActivity(@PathVariable("id") Long id,
                                                    @PathVariable("transferenceID") Long transferenceID,
-                                                   @RequestHeader("Authorization") String token) throws ForbiddenException, JSONException, ResourceNotFoundException {
+                                                   @RequestHeader("Authorization") String token) throws Exception {
         return ResponseEntity.ok(accountService.findTransactionById(id, transferenceID, token));
     }
 
@@ -157,10 +157,10 @@ public class AccountController {
         return new ResponseEntity<>(transactionSuccessful, HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "/{id}/transferences/pdf")
+    @GetMapping(value = "/{id}/transferences/{transferenceID}/comprobante")
     public ResponseEntity<?> viewPdf(@PathVariable("id") Long id,
+                                     @PathVariable("transferenceID") Long transferenceID,
                                      @RequestHeader("Authorization") String token,
-                                     @Valid @RequestBody TransactionPostDto transactionPostDto,
                                      HttpServletResponse response) throws Exception {
 
         //Headers..
@@ -171,7 +171,7 @@ public class AccountController {
         String headervalue = "attachment; filename=transfer_".concat(currentDateTime).concat(".pdf");
         response.setHeader(headerkey, headervalue);
 
-        TransactionGetDto transaction = accountService.transferMoney(id, token, transactionPostDto);
+        TransactionGetDto transaction = accountService.getTransactionDto(id, transferenceID,token);
 
         GeneratorPdf generator = new GeneratorPdf();
         generator.setTransactionSuccessful(transaction);

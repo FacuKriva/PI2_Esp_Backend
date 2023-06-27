@@ -33,4 +33,5 @@ public interface IAccountService extends ICheckId<Account> {
     ResponseEntity<List <Map<String,String>>> getLastFiveAccountsTransferred(Long id, String token)throws Exception;
     TransactionGetDto transferMoney(Long id, String token, TransactionPostDto transactionPostDto) throws Exception;
 
+    TransactionGetDto getTransactionDto(Long accountID, Long transferenceID, String token) throws Exception;
 }

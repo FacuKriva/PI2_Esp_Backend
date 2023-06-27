@@ -111,7 +111,7 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public Transaction findTransactionById(Long accountId, Long transactionId, String token) throws ResourceNotFoundException, ForbiddenException, JSONException {
+    public Transaction findTransactionById(Long accountId, Long transactionId, String token) throws Exception{
         Account account = checkId(accountId);
         validateAccountBelongsUser(account, token);
 
@@ -291,12 +291,8 @@ public class AccountService implements IAccountService {
 
         }
 
-        if (fromAccount.isEmpty()) {
-            throw new ResourceNotFoundException("The account from which you are sending money does not exist");
-        }
-
-        if (!accountGetDto.getAccountId().equals(fromAccount.get().getAccountId())) {
-            throw new ForbiddenException("The account from which you are sending money from does not belong to you");
+        if (!accountGetDto.getAccountId().equals(fromAccount.get().getAccountId()) || fromAccount.isEmpty()) {
+            throw new ForbiddenException("You do not have any associated account from which you are sending");
         }
 
         if (fromAccount.get().getAlias().equals(transactionPostDto.getToAccount()) || fromAccount.get().getCvu().equals(transactionPostDto.getToAccount())) {
@@ -362,4 +358,19 @@ public class AccountService implements IAccountService {
 
         return transactionService.save(transactionPostDto, fromAccount.get(), accountAux);
     }
+
+    @Override
+    public TransactionGetDto getTransactionDto(Long accountID, Long transferenceID, String token) throws Exception{
+        AccountGetDto accountGetDto = findById(accountID,token);
+
+        TransactionGetDto transactionGetDto = transactionService.findTransactionDTO(accountID,transferenceID);
+
+        if (!transactionGetDto.getAccount().getAccountId().equals(accountID)) {
+            throw new ForbiddenException("You don't have any account with that id");
+        }
+
+        return transactionService.findTransactionDTO(accountID,transferenceID);
+
+    }
+
 }

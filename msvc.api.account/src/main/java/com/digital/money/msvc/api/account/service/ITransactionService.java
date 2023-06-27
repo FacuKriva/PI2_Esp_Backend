@@ -20,7 +20,7 @@ public interface ITransactionService extends ICheckId<Transaction> {
     ListTransactionDto getLastFive(Long id, Account account);
 
     TransactionGetDto save(TransactionPostDto transactionPostDto,Account fromAccount, Account toAccount);
-    Transaction findTransactionById(Long accountId, Long transactionId) throws ResourceNotFoundException;
+    Transaction findTransactionById(Long accountId, Long transactionId) throws Exception;
     ListTransactionDto findAllSorted(Long id, Account account);
     CardTransactionGetDTO processCardTransaction(Long accountId, CardTransactionPostDTO cardTransactionPostDTO) throws ResourceNotFoundException, ForbiddenException, PaymentRequiredException, BadRequestException;
 
@@ -31,4 +31,5 @@ public interface ITransactionService extends ICheckId<Transaction> {
 
     List<GetLastCVUs> getLastFiveReceivers(Long id) throws Exception;
 
+    TransactionGetDto findTransactionDTO(Long id, Long transferenceID) throws Exception;
 }
