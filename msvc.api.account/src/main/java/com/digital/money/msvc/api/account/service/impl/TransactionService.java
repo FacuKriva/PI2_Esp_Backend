@@ -346,7 +346,7 @@ public class TransactionService implements ITransactionService {
 
     @Override
     public List<TransactionGetDto> getLastTenTransactions(Long id) throws Exception{
-        List<Transaction> transactions = transactionRepository.findByAccount_AccountIdOrderByRealizationDateDesc(id,PageRequest.of(0,10));
+        List<Transaction> transactions = transactionRepository.findByAccount_AccountIdAndTypeOrderByRealizationDateDesc(id,TransactionType.OUTGOING,PageRequest.of(0,10));
 
         return transactions.stream().map(transactionMapper::toTransactionGetDto).collect(Collectors.toList());
 
