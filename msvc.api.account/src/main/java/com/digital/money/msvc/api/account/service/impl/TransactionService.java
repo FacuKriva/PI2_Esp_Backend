@@ -97,10 +97,6 @@ public class TransactionService implements ITransactionService {
             throw new ResourceNotFoundException("Not transference found for that id");
         }
 
-        if(transaction.get().getAccount().getAccountId()!=accountId){
-            throw new BadRequestException("The account ");
-        }
-
         return transaction.get();
     }
 
