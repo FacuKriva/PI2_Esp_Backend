@@ -29,6 +29,8 @@ public interface ITransactionService extends ICheckId<Transaction> {
 
     List<Transaction> getTransactionsFromResultSet(ResultSet resultSet, Account account) throws Exception;
 
+    List<TransactionGetDto> getLastTenTransactions(Long id) throws Exception;
+
     List<GetLastCVUs> getLastFiveReceivers(Long id) throws Exception;
 
     TransactionGetDto findTransactionDTO(Long id, Long transferenceID) throws Exception;

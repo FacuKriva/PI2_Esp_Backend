@@ -32,6 +32,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -341,6 +342,14 @@ public class TransactionService implements ITransactionService {
         }
 
         return transactionList;
+    }
+
+    @Override
+    public List<TransactionGetDto> getLastTenTransactions(Long id) throws Exception{
+        List<Transaction> transactions = transactionRepository.findByAccount_AccountIdOrderByRealizationDateDesc(id,PageRequest.of(0,10));
+
+        return transactions.stream().map(transactionMapper::toTransactionGetDto).collect(Collectors.toList());
+
     }
 
     @Override

@@ -141,7 +141,10 @@ public class AccountController {
 
     }
 
-
+    @GetMapping("/{id}/transferences")
+    public ResponseEntity<List <TransactionGetDto>> getLastTransactions(@PathVariable("id") Long id,@RequestHeader("Authorization") String token)throws Exception{
+        return accountService.getLastTenTransactions(id, token);
+    }
 
 
     @PostMapping(value = "/{id}/transferences", consumes = "application/json", produces = "application/json")

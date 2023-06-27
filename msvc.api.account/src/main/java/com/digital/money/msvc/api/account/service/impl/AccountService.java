@@ -250,6 +250,20 @@ public class AccountService implements IAccountService {
     }
 
     @Override
+    public ResponseEntity<List<TransactionGetDto>> getLastTenTransactions(Long id, String token)throws Exception{
+        findById(id,token);
+
+        List<TransactionGetDto> transactionGetDtos = transactionService.getLastTenTransactions(id);
+
+        if(transactionGetDtos.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        }
+
+        return ResponseEntity.ok(transactionGetDtos);
+
+    }
+
+    @Override
     public TransactionGetDto transferMoney(Long id, String token, TransactionPostDto transactionPostDto) throws Exception {
         AccountGetDto accountGetDto = findById(id, token);
 

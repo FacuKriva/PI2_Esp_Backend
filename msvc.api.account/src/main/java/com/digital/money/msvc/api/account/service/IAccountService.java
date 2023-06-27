@@ -30,6 +30,8 @@ public interface IAccountService extends ICheckId<Account> {
     void removeCardFromAccount(Long id, Long cardId, String token) throws ResourceNotFoundException, ForbiddenException, JSONException;
     CardTransactionGetDTO depositMoney(Long id, CardTransactionPostDTO cardTransactionPostDTO, String token) throws ResourceNotFoundException, PaymentRequiredException, ForbiddenException, BadRequestException, JSONException;
 
+    ResponseEntity <List <TransactionGetDto> > getLastTenTransactions(Long id, String token) throws Exception;
+
     ResponseEntity<List <Map<String,String>>> getLastFiveAccountsTransferred(Long id, String token)throws Exception;
     TransactionGetDto transferMoney(Long id, String token, TransactionPostDto transactionPostDto) throws Exception;
 
