@@ -136,11 +136,7 @@ public class AccountController {
 
     }
 
-    @GetMapping(value = "/{id}/transferences")
-    public ResponseEntity<List <Map<String,String>>> getLastFiveAccountsTransferred(@PathVariable("id") Long id,
-                                                                                    @RequestHeader("Authorization") String token) throws Exception {
-        return accountService.getLastFiveAccountsTransferred(id, token);
-    }
+
 
 
     @PostMapping(value = "/{id}/transferences", consumes = "application/json", produces = "application/json")
@@ -148,5 +144,11 @@ public class AccountController {
                                           @RequestHeader("Authorization") String token,
                                           @Valid @RequestBody TransactionPostDto transactionPostDto) throws Exception {
         return accountService.transferMoney(id, token, transactionPostDto);
+    }
+
+    @GetMapping(value = "/{id}/transferences/lastReceivers")
+    public ResponseEntity<List <Map<String,String>>> getLastFiveAccountsTransferred(@PathVariable("id") Long id,
+                                                                                    @RequestHeader("Authorization") String token) throws Exception {
+        return accountService.getLastFiveAccountsTransferred(id, token);
     }
 }

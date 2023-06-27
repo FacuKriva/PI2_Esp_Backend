@@ -29,9 +29,4 @@ public interface ITransactionRepository extends JpaRepository<Transaction, Long>
     @Query(value = "SELECT to_cvu,realization_date,account_id,type FROM transactions GROUP by to_cvu HAVING account_id = ?1 AND type = 'OUTGOING' order by MAX(realization_date) DESC", nativeQuery = true)
     List<GetLastCVUs> findLastFiveReceivers(Long accountId, Pageable pageable);
 
-
-
-
-
-
 }
