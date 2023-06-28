@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.sql.ResultSet;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Slf4j
@@ -242,7 +243,11 @@ public class AccountService implements IAccountService {
         for (GetLastCVUs getLastCVUs : getLastCVUsList) {
             Map mapper = new HashMap<>();
             mapper.put("cvu", getLastCVUs.getTo_Cvu());
-            mapper.put("last_date:",getLastCVUs.getRealization_date().toString());
+
+            String dateForm = "dd-MM-yyyy HH:mm:ss";
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateForm);
+
+            mapper.put("last_date:",getLastCVUs.getRealization_date().format(dateTimeFormatter).toString());
 
             cvus.add(mapper);
         }

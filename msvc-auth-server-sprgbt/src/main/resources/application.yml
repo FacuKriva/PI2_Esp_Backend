@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: prod
   config:
     import: env.properties
   datasource:
@@ -8,17 +8,6 @@ spring:
     url: ${MYSQL_HOST_URL}
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
-
-  # JPA - Hibernate
-  jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    show-sql: false
-    hibernate:
-      ddl-auto: create-drop
-    defer-datasource-initialization: true
-  properties:
-    hibernate:
-      format_sql: false
 
   # Lectura del archivo sql
   sql:
