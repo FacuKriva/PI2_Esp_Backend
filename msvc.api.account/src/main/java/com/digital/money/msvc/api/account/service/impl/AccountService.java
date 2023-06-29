@@ -247,7 +247,7 @@ public class AccountService implements IAccountService {
             String dateForm = "dd-MM-yyyy HH:mm:ss";
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateForm);
 
-            mapper.put("last_date:",getLastCVUs.getRealization_date().format(dateTimeFormatter).toString());
+            mapper.put("last_date",getLastCVUs.getRealization_date().format(dateTimeFormatter).toString());
 
             cvus.add(mapper);
         }
