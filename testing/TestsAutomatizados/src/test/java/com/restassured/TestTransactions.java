@@ -2450,13 +2450,13 @@ public class TestTransactions extends Variables {
     @Tag("Smoke")
     @Test
     @Order(57)
-    public void AddTransferenceFailure404FromAccountAliasNotFound() throws InterruptedException {
+    public void AddTransferenceFailure403FromAccountAliasDoesntExist() throws InterruptedException {
 
-        test = extent.createTest("TC_Transactions_0057 - POST a transference (account to account) - Status Code: 404 - Not Found (from_account alias not found)");
+        test = extent.createTest("TC_Transactions_0057 - POST a transference (account to account) - Status Code: 403 - Forbidden (from_account alias)");
         test.assignCategory("Transferencias");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: POST");
-        test.assignCategory("Status Code: 404 - Not Found");
+        test.assignCategory("Status Code: 403 - Forbidden");
         test.assignCategory("Sprint: 4");
         test.assignAuthor("Ana Laura Fidalgo");
         test.info("Alta fallida de nueva transferencia (envío de dinero de una cuenta a otra). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. El alias de from_account no está registrado en Digital Money.");
@@ -2476,14 +2476,12 @@ public class TestTransactions extends Variables {
                 post().
                 then()
                 .assertThat()
-                .statusCode(404)
-                .statusCode(HttpStatus.SC_NOT_FOUND)
+                .statusCode(403)
+                .statusCode(HttpStatus.SC_FORBIDDEN)
                 .contentType(ContentType.JSON)
                 .body("$", Matchers.instanceOf(Map.class))
                 .body("$",hasKey("error"))
-                .body("error", Matchers.equalTo("Not Found"))
-                .body("$",hasKey("message"))
-                .body("message", Matchers.equalTo("The account from which you are sending money does not exist"))
+                .body("error", Matchers.equalTo("Forbidden"))
                 .log().all()
                 .extract()
                 .response();
@@ -2493,7 +2491,7 @@ public class TestTransactions extends Variables {
     @Tag("Regression")
     @Test
     @Order(58)
-    public void AddTransferenceFailure404FromAccountAliasWrongFormat() throws InterruptedException {
+    public void AddTransferenceFailure400FromAccountAliasWrongFormat() throws InterruptedException {
 
         test = extent.createTest("TC_Transactions_0058 - POST a transference (account to account) - Status Code: 400 - Bad Request (from_account alias wrong format)");
         test.assignCategory("Transferencias");
