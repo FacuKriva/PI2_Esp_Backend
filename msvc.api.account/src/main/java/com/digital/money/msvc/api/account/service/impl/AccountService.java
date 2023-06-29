@@ -311,7 +311,11 @@ public class AccountService implements IAccountService {
 
         }
 
-        if (!accountGetDto.getAccountId().equals(fromAccount.get().getAccountId()) || fromAccount.isEmpty()) {
+        if(fromAccount.isEmpty()){
+            throw new ForbiddenException("You do not have any associated account from which you are sending");
+        }
+
+        if (!accountGetDto.getAccountId().equals(fromAccount.get().getAccountId())) {
             throw new ForbiddenException("You do not have any associated account from which you are sending");
         }
 
