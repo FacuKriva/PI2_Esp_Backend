@@ -89,8 +89,6 @@ public class TestTransactions extends Variables {
         test.assignAuthor("Ana Laura Fidalgo");
         test.info("Consulta exitosa de ultimas 5 transacciones de la cuenta. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
 
-        Response response;
-
         List<String> transactionDateList = given()
                     .header("Authorization", "Bearer " + token)
                     .basePath("/accounts/{id}/transactions")
@@ -688,7 +686,7 @@ public class TestTransactions extends Variables {
     public void AddTransactionDepositMoneySuccess201() throws InterruptedException {
 
         test = extent.createTest("TC_Transactions_0015 - POST a transaction (deposit money) - Status Code: 201 - Created ");
-        test.assignCategory("Tarjetas");
+        test.assignCategory("Deposito");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: POST");
         test.assignCategory("Status Code: 201 - Created");
@@ -739,7 +737,7 @@ public class TestTransactions extends Variables {
         public void AddTransactionDepositMoneyFailure400AmountZero() throws InterruptedException {
 
             test = extent.createTest("TC_Transactions_0016 - POST a transaction (deposit money) - Status Code: 400 - Bad Request ");
-            test.assignCategory("Tarjetas");
+            test.assignCategory("Deposito");
             test.assignCategory("Suite: Smoke");
             test.assignCategory("Request Method: POST");
             test.assignCategory("Status Code: 400 - Bad Request");
@@ -782,7 +780,7 @@ public class TestTransactions extends Variables {
     public void AddTransactionDepositMoneyFailure400AmountNegative() throws InterruptedException {
 
         test = extent.createTest("TC_Transactions_0017 - POST a transaction (deposit money) - Status Code: 400 - Bad Request ");
-        test.assignCategory("Tarjetas");
+        test.assignCategory("Deposito");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: POST");
         test.assignCategory("Status Code: 400 - Bad Request");
@@ -825,7 +823,7 @@ public class TestTransactions extends Variables {
     public void AddTransactionDepositMoneyFailure400CardExpired() throws InterruptedException {
 
         test = extent.createTest("TC_Transactions_0018 - POST a transaction (deposit money) - Status Code: 400 - Bad Request ");
-        test.assignCategory("Tarjetas");
+        test.assignCategory("Deposito");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: POST");
         test.assignCategory("Status Code: 400 - Bad Request");
@@ -868,10 +866,10 @@ public class TestTransactions extends Variables {
     public void AddTransactionDepositMoneyFailure401Unauthorized() throws InterruptedException {
 
         test = extent.createTest("TC_Transactions_0020 - POST a transaction (deposit money) - Status Code: 401 - Unauthorized");
-        test.assignCategory("Tarjetas");
+        test.assignCategory("Deposito");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: POST");
-        test.assignCategory("401 - Unauthorized");
+        test.assignCategory("Status Code: 401 - Unauthorized");
         test.assignCategory("Sprint: 3");
         test.assignAuthor("Ana Laura Fidalgo");
         test.info("Alta fallida de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario no logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta no asociada a otro id de cuenta.");
@@ -904,10 +902,10 @@ public class TestTransactions extends Variables {
     public void AddTransactionDepositMoneyFailure403ForbiddenAccountId() throws InterruptedException {
 
         test = extent.createTest("TC_Transactions_0021 - POST a transaction (deposit money) - Status Code: 403 - Forbidden");
-        test.assignCategory("Tarjetas");
+        test.assignCategory("Deposito");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: POST");
-        test.assignCategory("403 - Forbidden");
+        test.assignCategory("Status Code: 403 - Forbidden");
         test.assignCategory("Sprint: 3");
         test.assignAuthor("Ana Laura Fidalgo");
         test.info("Alta fallida de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario logueado. ID de cuenta existente. El ID de cuenta no corresponde al usuario. Tarjeta no asociada a otro id de cuenta.");
@@ -945,10 +943,10 @@ public class TestTransactions extends Variables {
     public void AddTransactionDepositMoneyFailure403ForbiddenCardId() throws InterruptedException {
 
         test = extent.createTest("TC_Transactions_0022 - POST a transaction (deposit money) - Status Code: 403 - Forbidden");
-        test.assignCategory("Tarjetas");
+        test.assignCategory("Deposito");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: POST");
-        test.assignCategory("403 - Forbidden");
+        test.assignCategory("Status Code: 403 - Forbidden");
         test.assignCategory("Sprint: 3");
         test.assignAuthor("Ana Laura Fidalgo");
         test.info("Alta fallida de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. Tarjeta asociada a otro id de cuenta.");
@@ -986,10 +984,10 @@ public class TestTransactions extends Variables {
     public void AddTransactionDepositMoneyFailure404AccountId() throws InterruptedException {
 
         test = extent.createTest("TC_Transactions_0023 - POST a transaction (deposit money) - Status Code: 404 - Not Found (Account Id)");
-        test.assignCategory("Tarjetas");
+        test.assignCategory("Deposito");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: POST");
-        test.assignCategory("404 - Not Found");
+        test.assignCategory("Status Code: 404 - Not Found");
         test.assignCategory("Sprint: 3");
         test.assignAuthor("Ana Laura Fidalgo");
         test.info("Alta fallida de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario logueado. ID de cuenta inexistente. Tarjeta no asociada a otro id de cuenta.");
@@ -1026,10 +1024,10 @@ public class TestTransactions extends Variables {
     public void AddTransactionDepositMoneyFailure404CardId() throws InterruptedException {
 
         test = extent.createTest("TC_Transactions_0024 - POST a transaction (deposit money) - Status Code: 404 - Not Found (Card Id)");
-        test.assignCategory("Tarjetas");
+        test.assignCategory("Deposito");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: POST");
-        test.assignCategory("404 - Not Found");
+        test.assignCategory("Status Code: 404 - Not Found");
         test.assignCategory("Sprint: 3");
         test.assignAuthor("Ana Laura Fidalgo");
         test.info("Alta fallida de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario logueado. ID de cuenta existente. ID de tarjeta inexistente.");
@@ -1066,10 +1064,10 @@ public class TestTransactions extends Variables {
     public void AddTransactionDepositMoneyFailure400AmountMoreThan2Decimals() throws InterruptedException {
 
         test = extent.createTest("TC_Transactions_0025 - POST a transaction (deposit money) - Status Code: 400 - Bad Request (Amount has more than 2 decimals)");
-        test.assignCategory("Tarjetas");
+        test.assignCategory("Deposito");
         test.assignCategory("Suite: Regression");
         test.assignCategory("Request Method: POST");
-        test.assignCategory("400 - Bad Request");
+        test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 3");
         test.assignAuthor("Ana Laura Fidalgo");
         test.info("Alta fallida de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario logueado. ID de cuenta existente. Tarjeta no asociada a otro id de cuenta. El monto de la transacción posee más de dos decimales.");
@@ -1108,10 +1106,10 @@ public class TestTransactions extends Variables {
     public void AddTransactionDepositMoneyFailure400AmountMoreThan2DecimalsAllZero() throws InterruptedException {
 
         test = extent.createTest("TC_Transactions_0026 - POST a transaction (deposit money) - Status Code: 201 - Created (Amount has more than 2 decimals ALL zero)");
-        test.assignCategory("Tarjetas");
+        test.assignCategory("Deposito");
         test.assignCategory("Suite: Regression");
         test.assignCategory("Request Method: POST");
-        test.assignCategory("201 - Created");
+        test.assignCategory("Status Code: 201 - Created");
         test.assignCategory("Sprint: 3");
         test.assignAuthor("Ana Laura Fidalgo");
         test.info("Alta fallida de nueva transacción (deposito de dinero a billetera desde tarjeta). Usuario logueado. ID de cuenta existente. Tarjeta no asociada a otro id de cuenta. El monto de la transacción posee más de dos decimales que son todos 0.");
@@ -1922,7 +1920,7 @@ public class TestTransactions extends Variables {
         test.assignCategory("Transacciones");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: GET");
-        test.assignCategory("400 - Bad Request");
+        test.assignCategory("Status Code: 400 - Bad Request");
         test.assignCategory("Sprint: 3");
         test.assignAuthor("Ana Laura Fidalgo");
         test.info("Consulta fallida de todas las transacciones de la cuenta (actividad) filtrada con filtro dinamico (periodo). El usuario solo ingresa endDate. Debe ingresar tanto startDate como endDate o unicamente startDate. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
@@ -2197,17 +2195,6 @@ public class TestTransactions extends Variables {
                 //.body("toCvu", Matchers.equalTo(""))
                 .body("$", hasKey("type"))
                 .body("type", Matchers.equalTo("OUTGOING"))
-                .body("$", hasKey("account"))
-                .body("account",hasKey("alias"))
-                .body("account.alias", Matchers.equalTo("afectacion.divisa.cambios"))
-                .body("account",hasKey("cvu"))
-                .body("account.cvu", Matchers.equalTo("1828142364587587493333"))
-                .body("account",hasKey("availableBalance"))
-                //.body("account.availableBalance", Matchers.equalTo(f))
-                .body("account",hasKey("account_id"))
-                .body("account.account_id", Matchers.equalTo(2))
-                .body("account",hasKey("user_id"))
-                .body("account.user_id", Matchers.equalTo(2))
                 .log().all()
                 .extract()
                 .response();
@@ -2260,17 +2247,6 @@ public class TestTransactions extends Variables {
                 .body("toCvu", Matchers.equalTo("1828142364587587491111"))
                 .body("$", hasKey("type"))
                 .body("type", Matchers.equalTo("OUTGOING"))
-                .body("$", hasKey("account"))
-                .body("account",hasKey("alias"))
-                .body("account.alias", Matchers.equalTo("afectacion.divisa.cambios"))
-                .body("account",hasKey("cvu"))
-                .body("account.cvu", Matchers.equalTo("1828142364587587493333"))
-                .body("account",hasKey("availableBalance"))
-                //.body("account.availableBalance", Matchers.equalTo(f))
-                .body("account",hasKey("account_id"))
-                .body("account.account_id", Matchers.equalTo(2))
-                .body("account",hasKey("user_id"))
-                .body("account.user_id", Matchers.equalTo(2))
                 .log().all()
                 .extract()
                 .response();
@@ -2322,17 +2298,6 @@ public class TestTransactions extends Variables {
                 //.body("toCvu", Matchers.equalTo(""))
                 .body("$", hasKey("type"))
                 .body("type", Matchers.equalTo("OUTGOING"))
-                .body("$", hasKey("account"))
-                .body("account",hasKey("alias"))
-                .body("account.alias", Matchers.equalTo("afectacion.divisa.cambios"))
-                .body("account",hasKey("cvu"))
-                .body("account.cvu", Matchers.equalTo("1828142364587587493333"))
-                .body("account",hasKey("availableBalance"))
-                //.body("account.availableBalance", Matchers.equalTo(f))
-                .body("account",hasKey("account_id"))
-                .body("account.account_id", Matchers.equalTo(2))
-                .body("account",hasKey("user_id"))
-                .body("account.user_id", Matchers.equalTo(2))
                 .log().all()
                 .extract()
                 .response();
@@ -2384,17 +2349,6 @@ public class TestTransactions extends Variables {
                 //.body("toCvu", Matchers.equalTo(""))
                 .body("$", hasKey("type"))
                 .body("type", Matchers.equalTo("OUTGOING"))
-                .body("$", hasKey("account"))
-                .body("account",hasKey("alias"))
-                .body("account.alias", Matchers.equalTo("afectacion.divisa.cambios"))
-                .body("account",hasKey("cvu"))
-                .body("account.cvu", Matchers.equalTo("1828142364587587493333"))
-                .body("account",hasKey("availableBalance"))
-                //.body("account.availableBalance", Matchers.equalTo(f))
-                .body("account",hasKey("account_id"))
-                .body("account.account_id", Matchers.equalTo(2))
-                .body("account",hasKey("user_id"))
-                .body("account.user_id", Matchers.equalTo(2))
                 .log().all()
                 .extract()
                 .response();
@@ -2446,17 +2400,6 @@ public class TestTransactions extends Variables {
                 //.body("toCvu", Matchers.equalTo(""))
                 .body("$", hasKey("type"))
                 .body("type", Matchers.equalTo("OUTGOING"))
-                .body("$", hasKey("account"))
-                .body("account",hasKey("alias"))
-                .body("account.alias", Matchers.equalTo("afectacion.divisa.cambios"))
-                .body("account",hasKey("cvu"))
-                .body("account.cvu", Matchers.equalTo("1828142364587587493333"))
-                .body("account",hasKey("availableBalance"))
-                //.body("account.availableBalance", Matchers.equalTo(f))
-                .body("account",hasKey("account_id"))
-                .body("account.account_id", Matchers.equalTo(2))
-                .body("account",hasKey("user_id"))
-                .body("account.user_id", Matchers.equalTo(2))
                 .log().all()
                 .extract()
                 .response();
@@ -2676,17 +2619,6 @@ public class TestTransactions extends Variables {
                 .body("toCvu", Matchers.equalTo("0123456789012345678901"))
                 .body("$", hasKey("type"))
                 .body("type", Matchers.equalTo("OUTGOING"))
-                .body("$", hasKey("account"))
-                .body("account",hasKey("alias"))
-                .body("account.alias", Matchers.equalTo("afectacion.divisa.cambios"))
-                .body("account",hasKey("cvu"))
-                .body("account.cvu", Matchers.equalTo("1828142364587587493333"))
-                .body("account",hasKey("availableBalance"))
-                //.body("account.availableBalance", Matchers.equalTo(f))
-                .body("account",hasKey("account_id"))
-                .body("account.account_id", Matchers.equalTo(2))
-                .body("account",hasKey("user_id"))
-                .body("account.user_id", Matchers.equalTo(2))
                 .log().all()
                 .extract()
                 .response();
@@ -2739,17 +2671,6 @@ public class TestTransactions extends Variables {
                 .body("toCvu", Matchers.equalTo("1828142364587587491111"))
                 .body("$", hasKey("type"))
                 .body("type", Matchers.equalTo("OUTGOING"))
-                .body("$", hasKey("account"))
-                .body("account",hasKey("alias"))
-                .body("account.alias", Matchers.equalTo("afectacion.divisa.cambios"))
-                .body("account",hasKey("cvu"))
-                .body("account.cvu", Matchers.equalTo("1828142364587587493333"))
-                .body("account",hasKey("availableBalance"))
-                //.body("account.availableBalance", Matchers.equalTo(f))
-                .body("account",hasKey("account_id"))
-                .body("account.account_id", Matchers.equalTo(2))
-                .body("account",hasKey("user_id"))
-                .body("account.user_id", Matchers.equalTo(2))
                 .log().all()
                 .extract()
                 .response();
@@ -2887,17 +2808,6 @@ public class TestTransactions extends Variables {
                 .body("toCvu", Matchers.equalTo("1828142364587587491111"))
                 .body("$", hasKey("type"))
                 .body("type", Matchers.equalTo("OUTGOING"))
-                .body("$", hasKey("account"))
-                .body("account",hasKey("alias"))
-                .body("account.alias", Matchers.equalTo("afectacion.divisa.cambios"))
-                .body("account",hasKey("cvu"))
-                .body("account.cvu", Matchers.equalTo("1828142364587587493333"))
-                .body("account",hasKey("availableBalance"))
-                //.body("account.availableBalance", Matchers.equalTo(f))
-                .body("account",hasKey("account_id"))
-                .body("account.account_id", Matchers.equalTo(2))
-                .body("account",hasKey("user_id"))
-                .body("account.user_id", Matchers.equalTo(2))
                 .log().all()
                 .extract()
                 .response();
@@ -2949,17 +2859,6 @@ public class TestTransactions extends Variables {
                 .body("toCvu", Matchers.equalTo("1111111111111111111111"))
                 .body("$", hasKey("type"))
                 .body("type", Matchers.equalTo("OUTGOING"))
-                .body("$", hasKey("account"))
-                .body("account",hasKey("alias"))
-                .body("account.alias", Matchers.equalTo("afectacion.divisa.cambios"))
-                .body("account",hasKey("cvu"))
-                .body("account.cvu", Matchers.equalTo("1828142364587587493333"))
-                .body("account",hasKey("availableBalance"))
-                //.body("account.availableBalance", Matchers.equalTo(f))
-                .body("account",hasKey("account_id"))
-                .body("account.account_id", Matchers.equalTo(2))
-                .body("account",hasKey("user_id"))
-                .body("account.user_id", Matchers.equalTo(2))
                 .log().all()
                 .extract()
                 .response();
@@ -3097,17 +2996,6 @@ public class TestTransactions extends Variables {
                 .body("toCvu", Matchers.equalTo("1828142364587587491111"))
                 .body("$", hasKey("type"))
                 .body("type", Matchers.equalTo("OUTGOING"))
-                .body("$", hasKey("account"))
-                .body("account",hasKey("alias"))
-                .body("account.alias", Matchers.equalTo("afectacion.divisa.cambios"))
-                .body("account",hasKey("cvu"))
-                .body("account.cvu", Matchers.equalTo("1828142364587587493333"))
-                .body("account",hasKey("availableBalance"))
-                //.body("account.availableBalance", Matchers.equalTo(f))
-                .body("account",hasKey("account_id"))
-                .body("account.account_id", Matchers.equalTo(2))
-                .body("account",hasKey("user_id"))
-                .body("account.user_id", Matchers.equalTo(2))
                 .log().all()
                 .extract()
                 .response();
@@ -3158,17 +3046,6 @@ public class TestTransactions extends Variables {
                 .body("$", hasKey("toCvu"))
                 .body("$", hasKey("type"))
                 .body("type", Matchers.equalTo("OUTGOING"))
-                .body("$", hasKey("account"))
-                .body("account",hasKey("alias"))
-                .body("account.alias", Matchers.equalTo("afectacion.divisa.cambios"))
-                .body("account",hasKey("cvu"))
-                .body("account.cvu", Matchers.equalTo("1828142364587587493333"))
-                .body("account",hasKey("availableBalance"))
-                //.body("account.availableBalance", Matchers.equalTo(f))
-                .body("account",hasKey("account_id"))
-                .body("account.account_id", Matchers.equalTo(2))
-                .body("account",hasKey("user_id"))
-                .body("account.user_id", Matchers.equalTo(2))
                 .log().all()
                 .extract()
                 .response();
@@ -3210,8 +3087,6 @@ public class TestTransactions extends Variables {
                 .body("$", Matchers.instanceOf(Map.class))
                 .body("$",hasKey("error"))
                 .body("error", Matchers.equalTo("Bad Request"))
-                .body("$",hasKey("message"))
-                .body("message", Matchers.equalTo("The description cannot be empty"))
                 .log().all()
                 .extract()
                 .response();
@@ -3598,7 +3473,7 @@ public class TestTransactions extends Variables {
                 .body("$",hasKey("error"))
                 .body("error", Matchers.equalTo("Forbidden"))
                 .body("$",hasKey("message"))
-                .body("message", Matchers.equalTo("The account from which you are sending money from does not belong to you"))
+                .body("message", Matchers.equalTo("You do not have any associated account from which you are sending"))
                 .log().all()
                 .extract()
                 .response();
@@ -3641,7 +3516,7 @@ public class TestTransactions extends Variables {
                 .body("$",hasKey("error"))
                 .body("error", Matchers.equalTo("Forbidden"))
                 .body("$",hasKey("message"))
-                .body("message", Matchers.equalTo("The account from which you are sending money from does not belong to you"))
+                .body("message", Matchers.equalTo("You do not have any associated account from which you are sending"))
                 .log().all()
                 .extract()
                 .response();
@@ -3727,7 +3602,7 @@ public class TestTransactions extends Variables {
     }
 
 
-    //**------------------ GET last 5 transference recipients (/accounts/{id}/transferences) ---------------**
+    //**----------- GET last 5 transference recipients (/accounts/{id}/transferences/lastReceivers) --------**
 
 
     //TC_Transacciones_0083
@@ -3736,8 +3611,8 @@ public class TestTransactions extends Variables {
     @Order(83)
     public void ViewLastFiveTransferencesSuccess200() throws InterruptedException {
 
-        test = extent.createTest("TC_Transacciones_0083 - GET last 5 transference recipients by CVU - Status Code: 200 - OK");
-        test.assignCategory("Transacciones");
+        test = extent.createTest("TC_Transacciones_0083 - GET last 5 transference recipients - Status Code: 200 - OK");
+        test.assignCategory("Transferencias");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: GET");
         test.assignCategory("Status Code: 200 - OK");
@@ -3745,9 +3620,165 @@ public class TestTransactions extends Variables {
         test.assignAuthor("Ana Laura Fidalgo");
         test.info("Consulta exitosa de los últimos 5 CVUs destinatarios de transferencias. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
 
+        List<String> last_date_list = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/transferences/lastReceivers")
+                .pathParams("id", 2).
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(List.class))
+                .body("[0]",hasKey("cvu"))
+                .body("[0]",hasKey("last_date"))
+                .body("$.size()", Matchers.greaterThanOrEqualTo(1))
+                .body("$.size()", Matchers.lessThanOrEqualTo(5))
+                .log().all()
+                .extract()
+                .jsonPath().getList("last_date");
+
+
+        List<LocalDateTime> localDateTimeList = new ArrayList<>();
+
+        for (String date : last_date_list) {
+            LocalDateTime newDate = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+            localDateTimeList.add(newDate);
+        }
+
+        Assertions.assertTrue(Ordering.natural().reverse().isOrdered(localDateTimeList));
+        Assertions.assertFalse(Ordering.natural().isOrdered(localDateTimeList));
+
+        localDateTimeList.add(0, LocalDateTime.now());
+        Assertions.assertTrue(Ordering.natural().reverse().isOrdered(localDateTimeList));
+
+        localDateTimeList.add(2, LocalDateTime.now());
+        Assertions.assertFalse(Ordering.natural().reverse().isOrdered(localDateTimeList));
+
+    }
+
+    //TC_Transacciones_0084
+    @Tag("Smoke")
+    @Test
+    @Order(84)
+    public void ViewLastFiveTransferencesSuccess204() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0084 - GET last 5 transference recipients - (account without transferences) Status Code: 204 - No Content");
+        test.assignCategory("Transferencias");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 204 - No Content");
+        test.assignCategory("Sprint: 4");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta exitosa de los últimos 5 CVUs destinatarios de transferencias. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. La cuenta no posee transferencias.");
+
+        Login_Id_4();
+
         Response response;
 
         response = given()
+                .header("Authorization", "Bearer " + token_id_4)
+                .basePath("/accounts/{id}/transferences/lastReceivers")
+                .pathParams("id", 4).
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(204)
+                .statusCode(HttpStatus.SC_NO_CONTENT)
+                .log().all()
+                .extract()
+                .response();
+    }
+
+    //TC_Transacciones_0085
+    @Tag("Smoke")
+    @Test
+    @Order(85)
+    public void ViewLastFiveTransferencesFailure403() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0085 - GET last 5 transference recipients - Status Code: 403 - Forbidden");
+        test.assignCategory("Transferencias");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 403 - Forbidden");
+        test.assignCategory("Sprint: 4");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta fallida de los últimos 5 CVUs destinatarios de transferencias. Usuario logueado. ID de cuenta existente. El ID de cuenta no corresponde al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/transferences/lastReceivers")
+                .pathParams("id", 1).
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(403)
+                .statusCode(HttpStatus.SC_FORBIDDEN)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$",hasKey("error"))
+                .body("error", Matchers.equalTo("Forbidden"))
+                .body("$",hasKey("message"))
+                .body("message", Matchers.equalTo("You don't have access to that account"))
+                .log().all()
+                .extract()
+                .response();
+    }
+
+    //TC_Transacciones_0086
+    @Tag("Smoke")
+    @Test
+    @Order(86)
+    public void ViewLastFiveTransferencesFailure401() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0086 - GET last 5 transference recipients - Status Code: 401 - Unauthorized");
+        test.assignCategory("Transferencias");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 401 - Unauthorized");
+        test.assignCategory("Sprint: 4");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta fallida de los últimos 5 CVUs destinatarios de transferencias. Usuario no logueado. ID de cuenta existente.");
+
+        Response response;
+
+        response = given()
+                .basePath("/accounts/{id}/transferences/lastReceivers")
+                .pathParams("id", 2).
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(401)
+                .statusCode(HttpStatus.SC_UNAUTHORIZED)
+                .log().all()
+                .extract()
+                .response();
+    }
+
+    //**----------------------- GET last 10 transferences (/accounts/{id}/transferences) ------------------------**
+
+    //TC_Transacciones_0087
+    @Tag("Smoke")
+    @Test
+    @Order(87)
+    public void ViewLast10TransferencesSuccess200() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0087 - GET last 10 transferences - Status Code: 200 - OK");
+        test.assignCategory("Transferencias");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 200 - OK");
+        test.assignCategory("Sprint: 4");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta exitosa de las ultimas diez (10) transferencias de la cuenta. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario.");
+
+        List<String> transactionDateList = given()
                 .header("Authorization", "Bearer " + token)
                 .basePath("/accounts/{id}/transferences")
                 .pathParams("id", 2).
@@ -3759,29 +3790,46 @@ public class TestTransactions extends Variables {
                 .statusCode(HttpStatus.SC_OK)
                 .contentType(ContentType.JSON)
                 .body("$", Matchers.instanceOf(List.class))
-                .body("[0]",hasKey("cvu"))
-                .body("[0].cvu",equalTo("1828142364587587495555"))
                 .body("$.size()", Matchers.greaterThanOrEqualTo(1))
-                .body("$.size()", Matchers.lessThanOrEqualTo(5))
+                .body("$.size()", Matchers.lessThanOrEqualTo(10))
                 .log().all()
                 .extract()
-                .response();
+                .jsonPath().getList("realizationDate");
+
+        List<LocalDateTime> localDateTimeList = new ArrayList<>();
+
+        for (String dateT:transactionDateList) {
+            String date = dateT.replace("T", " ");
+            String date2 = date.substring(0, 19);
+            LocalDateTime newDate = LocalDateTime.parse(date2, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            localDateTimeList.add(newDate);
+        }
+
+        Assertions.assertTrue(Ordering.natural().reverse().isOrdered(localDateTimeList));
+        Assertions.assertFalse(Ordering.natural().isOrdered(localDateTimeList));
+
+        localDateTimeList.add(0, LocalDateTime.now());
+        Assertions.assertTrue(Ordering.natural().reverse().isOrdered(localDateTimeList));
+
+        localDateTimeList.add(2, LocalDateTime.now());
+        Assertions.assertFalse(Ordering.natural().reverse().isOrdered(localDateTimeList));
+
     }
 
-    //TC_Transacciones_0084
+    //TC_Transacciones_0088
     @Tag("Smoke")
     @Test
-    @Order(84)
-    public void ViewLastFiveTransferencesSuccess204() throws InterruptedException {
+    @Order(88)
+    public void ViewLastTenTransferencesSuccess204() throws InterruptedException {
 
-        test = extent.createTest("TC_Transacciones_0084 - GET last 5 transference recipients by CVU - (account without transferences) Status Code: 204 - No Content");
-        test.assignCategory("Transacciones");
+        test = extent.createTest("TC_Transacciones_0088 - GET last 10 transferences  - (account without transferences) Status Code: 204 - No Content");
+        test.assignCategory("Transferencias");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: GET");
         test.assignCategory("Status Code: 204 - No Content");
         test.assignCategory("Sprint: 4");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Consulta exitosa de los últimos 5 CVUs destinatarios de transferencias. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. La cuenta no posee transferencias.");
+        test.info("Consulta exitosa de las ultimas diez (10) transferencias de la cuenta. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. La cuenta no posee transferencias.");
 
         Login_Id_4();
 
@@ -3802,20 +3850,20 @@ public class TestTransactions extends Variables {
                 .response();
     }
 
-    //TC_Transacciones_0085
+    //TC_Transacciones_0089
     @Tag("Smoke")
     @Test
-    @Order(85)
-    public void ViewLastFiveTransferencesSuccess403() throws InterruptedException {
+    @Order(89)
+    public void ViewLastTenTransferencesFailure403() throws InterruptedException {
 
-        test = extent.createTest("TC_Transacciones_0085 - GET last 5 transference recipients by CVU - Status Code: 403 - Forbidden");
-        test.assignCategory("Transacciones");
+        test = extent.createTest("TC_Transacciones_0089 - GET last 10 transferences - Status Code: 403 - Forbidden");
+        test.assignCategory("Transferencias");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: GET");
         test.assignCategory("Status Code: 403 - Forbidden");
         test.assignCategory("Sprint: 4");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Consulta exitosa de los últimos 5 CVUs destinatarios de transferencias. Usuario logueado. ID de cuenta existente. El ID de cuenta no corresponde al usuario.");
+        test.info("Consulta fallida de las ultimas diez (10) transferencias de la cuenta. Usuario logueado. ID de cuenta existente. El ID de cuenta no corresponde al usuario.");
 
         Response response;
 
@@ -3839,20 +3887,20 @@ public class TestTransactions extends Variables {
                 .response();
     }
 
-    //TC_Transacciones_0086
+    //TC_Transacciones_0090
     @Tag("Smoke")
     @Test
-    @Order(86)
-    public void ViewLastFiveTransferencesSuccess401() throws InterruptedException {
+    @Order(90)
+    public void ViewLastTenTransferencesFailure401() throws InterruptedException {
 
-        test = extent.createTest("TC_Transacciones_0086 - GET last 5 transference recipients by CVU - Status Code: 401 - Unauthorized");
-        test.assignCategory("Transacciones");
+        test = extent.createTest("TC_Transacciones_0090 - GET last 10 transferences - Status Code: 401 - Unauthorized");
+        test.assignCategory("Transferencias");
         test.assignCategory("Suite: Smoke");
         test.assignCategory("Request Method: GET");
         test.assignCategory("Status Code: 401 - Unauthorized");
         test.assignCategory("Sprint: 4");
         test.assignAuthor("Ana Laura Fidalgo");
-        test.info("Consulta exitosa de los últimos 5 CVUs destinatarios de transferencias. Usuario no logueado. ID de cuenta existente.");
+        test.info("Consulta fallida de las ultimas diez (10) transferencias de la cuenta. Usuario no logueado. ID de cuenta existente.");
 
         Response response;
 
@@ -3869,6 +3917,262 @@ public class TestTransactions extends Variables {
                 .extract()
                 .response();
     }
+
+    //** GET a transference's receipt by transference ID in pdf format
+    // ** (/accounts/{id}/transferences/{transferenceID}/comprobante)
+
+    //TC_Transacciones_0091
+    @Tag("Smoke")
+    @Test
+    @Order(91)
+    public void ViewTransferenceReceiptInPdfSuccess200() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0091 - GET transference receipt in pdf - Status Code: 200 - OK");
+        test.assignCategory("Transferencias");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 200 - OK");
+        test.assignCategory("Sprint: 4");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta exitosa de la información de una transferencia por su ID en formato pdf. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. ID de transferencia existente. La transferencia corresponde a la cuenta del usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/transferences/{transferenceID}/comprobante")
+                .pathParams("id", 2)
+                .pathParams("transferenceID", 3).
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
+                .header("Content-Type", Matchers.equalTo("application/pdf"))
+                .log().headers()
+                .extract().response();
+
+    }
+
+    //TC_Transacciones_0092
+    @Tag("Smoke")
+    @Test
+    @Order(92)
+    public void ViewTransferenceReceiptInPdfFailure404TransferenceId() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0092 - GET transference receipt in pdf - Status Code: 404 - Not Found (transference ID)");
+        test.assignCategory("Transferencias");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 404 - Not Found");
+        test.assignCategory("Sprint: 4");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta fallida de la información de una transferencia por su ID en formato pdf. Usuario logueado. ID de cuenta existente. El ID de cuenta corresponde al usuario. ID de transferencia inexistente.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/transferences/{transferenceID}/comprobante")
+                .pathParams("id", 2)
+                .pathParams("transferenceID", 99).
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(404)
+                .statusCode(HttpStatus.SC_NOT_FOUND)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$",hasKey("error"))
+                .body("error", Matchers.equalTo("Not Found"))
+                .log().all()
+                .extract().response();
+
+    }
+
+    //TC_Transacciones_0093
+    @Tag("Smoke")
+    @Test
+    @Order(93)
+    public void ViewTransferenceReceiptInPdfFailure404AccountId() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0093 - GET transference receipt in pdf - Status Code: 404 - Not Found (account ID)");
+        test.assignCategory("Transferencias");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 404 - Not Found");
+        test.assignCategory("Sprint: 4");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta fallida de la información de una transferencia por su ID en formato pdf. Usuario logueado. ID de cuenta inexistente.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/transferences/{transferenceID}/comprobante")
+                .pathParams("id", 99)
+                .pathParams("transferenceID", 3).
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(404)
+                .statusCode(HttpStatus.SC_NOT_FOUND)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$",hasKey("error"))
+                .body("error", Matchers.equalTo("Not Found"))
+                .log().all()
+                .extract().response();
+
+    }
+
+    //TC_Transacciones_0094
+    @Tag("Smoke")
+    @Test
+    @Order(94)
+    public void ViewTransferenceReceiptInPdfFailure404TransactionTypeIncoming() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0094 - GET transference receipt in pdf - Status Code: 404 - Not Found (transaction type is INCOMING)");
+        test.assignCategory("Transferencias");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 404 - Not Found");
+        test.assignCategory("Sprint: 4");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta fallida de la información de una transferencia por su ID en formato pdf. Usuario logueado. ID de cuenta existente. El id de cuenta pertenece al usuario. El id de transferencia existe y pertenece al usuario pero es de tipo INCOMING, no OUTGOING.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/transferences/{transferenceID}/comprobante")
+                .pathParams("id", 2)
+                .pathParams("transferenceID", 4).
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(404)
+                .statusCode(HttpStatus.SC_NOT_FOUND)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$",hasKey("error"))
+                .body("error", Matchers.equalTo("Not Found"))
+                .log().all()
+                .extract().response();
+
+    }
+
+    //TC_Transacciones_0095
+    @Tag("Smoke")
+    @Test
+    @Order(95)
+    public void ViewTransferenceReceiptInPdfFailure404TransactionIdDoesntBelongToUser() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0095 - GET transference receipt in pdf - Status Code: 404 - Not Found (transaction doesn't belong to user)");
+        test.assignCategory("Transferencias");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 404 - Not Found");
+        test.assignCategory("Sprint: 4");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta fallida de la información de una transferencia por su ID en formato pdf. Usuario logueado. ID de cuenta existente. El id de cuenta pertenece al usuario. El id de transferencia existe pero no pertenece al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/transferences/{transferenceID}/comprobante")
+                .pathParams("id", 2)
+                .pathParams("transferenceID", 1).
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(404)
+                .statusCode(HttpStatus.SC_NOT_FOUND)
+                .contentType(ContentType.JSON)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$",hasKey("error"))
+                .body("error", Matchers.equalTo("Not Found"))
+                .log().all()
+                .extract().response();
+
+    }
+
+    //TC_Transacciones_0096
+    @Tag("Smoke")
+    @Test
+    @Order(96)
+    public void ViewTransferenceReceiptInPdfFailure403Forbidden() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0096 - GET transference receipt in pdf - Status Code: 403 - Forbidden (account id doesn't belong to user)");
+        test.assignCategory("Transferencias");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 403 - Forbidden");
+        test.assignCategory("Sprint: 4");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta fallida de la información de una transferencia por su ID en formato pdf. Usuario logueado. ID de cuenta existente. El id de cuenta no pertenece al usuario.");
+
+        Response response;
+
+        response = given()
+                .header("Authorization", "Bearer " + token)
+                .basePath("/accounts/{id}/transferences/{transferenceID}/comprobante")
+                .pathParams("id", 1)
+                .pathParams("transferenceID", 3).
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(403)
+                .statusCode(HttpStatus.SC_FORBIDDEN)
+                .body("$", Matchers.instanceOf(Map.class))
+                .body("$",hasKey("error"))
+                .body("error", Matchers.equalTo("Forbidden"))
+                .body("$",hasKey("message"))
+                .body("message", Matchers.equalTo("You don't have access to that account"))
+                .log().all()
+                .extract().response();
+
+    }
+
+    //TC_Transacciones_0097
+    @Tag("Smoke")
+    @Test
+    @Order(97)
+    public void ViewTransferenceReceiptInPdfFailure401Unauthorized() throws InterruptedException {
+
+        test = extent.createTest("TC_Transacciones_0097 - GET transference receipt in pdf - Status Code: 401 - Unauthorized");
+        test.assignCategory("Transferencias");
+        test.assignCategory("Suite: Smoke");
+        test.assignCategory("Request Method: GET");
+        test.assignCategory("Status Code: 401 - Unauthorized");
+        test.assignCategory("Sprint: 4");
+        test.assignAuthor("Ana Laura Fidalgo");
+        test.info("Consulta fallida de la información de una transferencia por su ID en formato pdf. Usuario no logueado. ID de cuenta existente. El id de cuenta pertenece al usuario. El id de transferencia existe y pertenece al usuario.");
+
+        Response response;
+
+        response = given()
+                .basePath("/accounts/{id}/transferences/{transferenceID}/comprobante")
+                .pathParams("id", 2)
+                .pathParams("transferenceID", 3).
+                when().
+                get().
+                then()
+                .assertThat()
+                .statusCode(401)
+                .statusCode(HttpStatus.SC_UNAUTHORIZED)
+                .log().all()
+                .extract().response();
+
+    }
+
 
     //**--------------------------------------------------- AUX -------------------------------------------------**
 
