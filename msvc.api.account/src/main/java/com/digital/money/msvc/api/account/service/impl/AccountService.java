@@ -3,15 +3,13 @@ package com.digital.money.msvc.api.account.service.impl;
 import com.digital.money.msvc.api.account.handler.*;
 import com.digital.money.msvc.api.account.model.Account;
 import com.digital.money.msvc.api.account.model.Transaction;
-import com.digital.money.msvc.api.account.model.TransactionType;
 import com.digital.money.msvc.api.account.model.dto.*;
+import com.digital.money.msvc.api.account.model.projections.GetLastCVUs;
 import com.digital.money.msvc.api.account.repository.IAccountRepository;
 import com.digital.money.msvc.api.account.service.IAccountService;
 import com.digital.money.msvc.api.account.utils.GeneratorKeys;
 import com.digital.money.msvc.api.account.utils.mapper.AccountMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.sql.ResultSet;
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Slf4j
@@ -113,7 +112,7 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public Transaction findTransactionById(Long accountId, Long transactionId, String token) throws ResourceNotFoundException, ForbiddenException, JSONException {
+    public Transaction findTransactionById(Long accountId, Long transactionId, String token) throws Exception{
         Account account = checkId(accountId);
         validateAccountBelongsUser(account, token);
 
@@ -186,37 +185,40 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public ResponseEntity <?> getTransactionsByAmountRange(Long accountId, Integer rangoSelected, String token) throws Exception{
+    public ResponseEntity<?> getTransactionsByAmountRange(Long accountId, Integer rangoSelected, String token) throws Exception {
 
         Account account = checkId(accountId);
         validateAccountBelongsUser(account, token);
 
         ListTransactionDto listTransactionDto = new ListTransactionDto();
 
-        List <Transaction> transactions = transactionService.getAllTransactionsByAmountRange(rangoSelected,accountId);
+        List<Transaction> transactions = transactionService.getAllTransactionsByAmountRange(rangoSelected, accountId);
 
-        if (transactions.isEmpty()){
+        if (transactions.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Lo sentimos. No se encontró contenido para este rango");
         }
 
         listTransactionDto.setTransactions(transactions);
-        listTransactionDto.setAccount(findById(accountId,token));
+        listTransactionDto.setAccount(findById(accountId, token));
 
         return ResponseEntity.status(HttpStatus.OK).body(listTransactionDto);
     }
 
     @Override
-    public ResponseEntity<ListTransactionDto> getTransactionsWithFilters(Long accountId, String startDate, String endDate, Integer rangeSelect, String type, String token) throws Exception{
+    public ResponseEntity<ListTransactionDto> getTransactionsWithFilters(Long accountId, String startDate, String endDate, Integer rangeSelect, String type, String token) throws Exception {
         Account account = checkId(accountId);
-        validateAccountBelongsUser(account,token);
+        validateAccountBelongsUser(account, token);
 
-        ResultSet resultSet = transactionService.getTransactionsFromDB(accountId,startDate,endDate,rangeSelect,type);
+        ResultSet resultSet = transactionService.getTransactionsFromDB(accountId, startDate, endDate, rangeSelect, type);
 
-        List <Transaction> transactions = transactionService.getTransactionsFromResultSet(resultSet, account);
+        List<Transaction> transactions = transactionService.getTransactionsFromResultSet(resultSet, account);
 
-        if(transactions.isEmpty()){
+        if (transactions.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         }
+
+        accountRepository.findAll();
+
 
         ListTransactionDto listTransactionDto = new ListTransactionDto();
 
@@ -224,6 +226,175 @@ public class AccountService implements IAccountService {
         listTransactionDto.setAccount(accountMapper.toAccountGetDto(account));
 
         return ResponseEntity.status(HttpStatus.OK).body(listTransactionDto);
+    }
+
+    @Override
+    public ResponseEntity<List<Map<String, String>>> getLastFiveAccountsTransferred(Long id, String token) throws Exception {
+
+        findById(id, token);
+        List<GetLastCVUs> getLastCVUsList = transactionService.getLastFiveReceivers(id);
+
+        if (getLastCVUsList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        }
+
+        List<Map<String, String>> cvus = new ArrayList<>();
+
+        for (GetLastCVUs getLastCVUs : getLastCVUsList) {
+            Map mapper = new HashMap<>();
+            mapper.put("cvu", getLastCVUs.getTo_Cvu());
+
+            String dateForm = "dd-MM-yyyy HH:mm:ss";
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateForm);
+
+            mapper.put("last_date",getLastCVUs.getRealization_date().format(dateTimeFormatter).toString());
+
+            cvus.add(mapper);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(cvus);
+    }
+
+    @Override
+    public ResponseEntity<List<TransactionGetDto>> getLastTenTransactions(Long id, String token)throws Exception{
+        findById(id,token);
+
+        List<TransactionGetDto> transactionGetDtos = transactionService.getLastTenTransactions(id);
+
+        if(transactionGetDtos.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        }
+
+        return ResponseEntity.ok(transactionGetDtos);
+
+    }
+
+    @Override
+    public TransactionGetDto transferMoney(Long id, String token, TransactionPostDto transactionPostDto) throws Exception {
+        AccountGetDto accountGetDto = findById(id, token);
+
+        if (transactionPostDto.getAmount() < 1) {
+            throw new BadRequestException("Amount cannot be less than 1");
+        }
+
+        Optional<Account> fromAccount;
+
+        Boolean numericError = Boolean.FALSE;
+        try {
+            new BigInteger(transactionPostDto.getFromAccount());
+
+            if (transactionPostDto.getFromAccount().length() != 22) {
+                numericError = Boolean.TRUE;
+                throw new Exception();
+            }
+
+            fromAccount = accountRepository.findByCvu(transactionPostDto.getFromAccount());
+
+        } catch (Exception e) {
+
+            if (numericError) {
+                throw new BadRequestException("The account from which you want to send that you have entered does not comply with CVU/CBU rules. Please enter a 22 digit number");
+            }
+
+            int posPunto1 = 0, posPunto2 = 0;
+
+            posPunto1 = transactionPostDto.getFromAccount().indexOf(".");
+            posPunto2 = transactionPostDto.getFromAccount().indexOf(".", posPunto1 + 1);
+
+            int aux = transactionPostDto.getFromAccount().length() - 1;
+
+            if (posPunto2 == -1 || posPunto1 == -1 || posPunto1 == 0 || transactionPostDto.getFromAccount().charAt(aux) == '.') {
+                throw new BadRequestException("The account from which you want to send that you have entered does not comply with the alias rules");
+            } else {
+                fromAccount = accountRepository.findByAlias(transactionPostDto.getFromAccount());
+            }
+
+        }
+
+        if(fromAccount.isEmpty()){
+            throw new ForbiddenException("You do not have any associated account from which you are sending");
+        }
+
+        if (!accountGetDto.getAccountId().equals(fromAccount.get().getAccountId())) {
+            throw new ForbiddenException("You do not have any associated account from which you are sending");
+        }
+
+        if (fromAccount.get().getAlias().equals(transactionPostDto.getToAccount()) || fromAccount.get().getCvu().equals(transactionPostDto.getToAccount())) {
+            throw new BadRequestException("You can't transfer money to the same account");
+        }
+
+        if (transactionPostDto.getAmount() > fromAccount.get().getAvailableBalance()) {
+            throw new AmountOfMoneyException("Account balance less than the chosen amount");
+        }
+
+        Optional<Account> toAccount = accountRepository.findByCvu(transactionPostDto.getToAccount());
+        Account accountAux = new Account();
+
+        if (toAccount.isEmpty()) {
+            toAccount = accountRepository.findByAlias(transactionPostDto.getToAccount());
+
+            if (toAccount.isEmpty()) {
+                accountAux.setAccountId(-1L);
+
+                numericError = Boolean.FALSE;
+
+                try {
+                    new BigInteger(transactionPostDto.getToAccount());
+
+                    if (transactionPostDto.getToAccount().length() != 22) {
+                        numericError = Boolean.TRUE;
+                        throw new Exception();
+                    }
+
+                    accountAux.setCvu(transactionPostDto.getToAccount());
+                } catch (Exception e) {
+
+                    if (numericError) {
+                        throw new BadRequestException("The account you are trying to send to does not meet the CVU/CBU rules. Please enter a 22 digit number");
+                    }
+
+                    Long hash = 0L;
+                    for (char c : transactionPostDto.getToAccount().toCharArray()) {
+                        hash = 31L * hash + c;
+                    }
+
+                    Random random = new Random(hash);
+                    String cvu = "";
+                    for (int f = 1; f <= 22; f++) {
+                        cvu += String.valueOf(random.nextInt(9));
+                    }
+
+                    accountAux.setCvu(cvu);
+                }
+
+
+            }
+        }
+
+        fromAccount.get().setAvailableBalance(fromAccount.get().getAvailableBalance() - transactionPostDto.getAmount());
+        accountRepository.save(fromAccount.get());
+
+        if (toAccount.isPresent()) {
+            toAccount.get().setAvailableBalance(toAccount.get().getAvailableBalance() + transactionPostDto.getAmount());
+            accountAux = toAccount.get();
+            accountRepository.save(toAccount.get());
+        }
+
+        return transactionService.save(transactionPostDto, fromAccount.get(), accountAux);
+    }
+
+    @Override
+    public TransactionGetDto getTransactionDto(Long accountID, Long transferenceID, String token) throws Exception{
+        AccountGetDto accountGetDto = findById(accountID,token);
+
+        TransactionGetDto transactionGetDto = transactionService.findTransactionDTO(accountID,transferenceID);
+
+        if (!transactionGetDto.getAccount().getAccountId().equals(accountID)) {
+            throw new ForbiddenException("You don't have any account with that id");
+        }
+
+        return transactionService.findTransactionDTO(accountID,transferenceID);
+
     }
 
 }

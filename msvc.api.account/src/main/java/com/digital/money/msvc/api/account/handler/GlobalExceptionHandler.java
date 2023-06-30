@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import com.digital.money.msvc.api.account.handler.responseError.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -79,5 +80,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> processSelectOutOfBound(SelectOutOfBoundException ex, HttpServletRequest request){
         log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new SelectOutOfBoundResponse(ex.getMessage(), request.getRequestURI()));
+    }
+
+    @ExceptionHandler({AmountOfMoneyException.class})
+    public ResponseEntity<Object> processAmountOfMoneyException(AmountOfMoneyException ex, HttpServletRequest request){
+        log.error(ex.getMessage());
+        return ResponseEntity.status(HttpStatusCode.valueOf(410)).body(new AmountOfMoneyResponse(ex.getMessage(), request.getRequestURI()));
     }
 }

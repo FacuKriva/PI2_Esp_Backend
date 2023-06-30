@@ -1,6 +1,9 @@
 package com.digital.money.msvc.api.account.repository;
 
 import com.digital.money.msvc.api.account.model.Transaction;
+import com.digital.money.msvc.api.account.model.TransactionType;
+import com.digital.money.msvc.api.account.model.projections.GetLastCVUs;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,5 +26,12 @@ public interface ITransactionRepository extends JpaRepository<Transaction, Long>
 
     @Query("select t from Transaction t where t.amount >= ?1 and t.account.accountId = ?2")
     List<Transaction> findByAmountGreaterThanEqualAndAccount_AccountId(Double amount, Long accountId);
+
+    List<Transaction> findByAccount_AccountIdAndTypeOrderByRealizationDateDesc(Long accountId, TransactionType type, Pageable pageable);
+
+
+
+    @Query(value = "SELECT to_cvu,MAX(realization_date) as realization_date,account_id,type FROM transactions GROUP by to_cvu HAVING account_id = ?1 AND type = 'OUTGOING' order by MAX(realization_date) DESC", nativeQuery = true)
+    List<GetLastCVUs> findLastFiveReceivers(Long accountId, Pageable pageable);
 
 }

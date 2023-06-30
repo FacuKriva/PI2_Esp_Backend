@@ -14,3 +14,9 @@ https://docs.google.com/spreadsheets/d/1DJy0ZeScOy-pOA58itMwGnd9VQIj5H3lyV7cM15Z
 
 Reporte Testing:
 https://docs.google.com/spreadsheets/d/1HOt1BrVWLWsM00EWdXlSdVkIeBGn8IuvENwKZd1sXEk/edit?usp=sharing
+
+Reportes de Tests Automatizados: 
+https://drive.google.com/drive/folders/14pkl9rwQC6ieaFtnH0--3UeYtcIGECgD?usp=sharing
+
+QA Sign Off:
+https://docs.google.com/document/d/18sUGWyhOO2J9N0ZvoN0CTyQ0Mrx_mJyM1REpSZlELFg/edit?usp=sharing

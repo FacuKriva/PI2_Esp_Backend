@@ -14,4 +14,6 @@ import java.util.Optional;
         Optional<Account> findByAlias(String alias);
         @Query("SELECT a FROM Account a WHERE a.alias = ?1 AND a.accountId != ?2")
         Optional<Account> aliasUnique(String alias, long id);
+
+
     }

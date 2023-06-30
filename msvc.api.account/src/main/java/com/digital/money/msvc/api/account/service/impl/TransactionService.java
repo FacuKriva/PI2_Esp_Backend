@@ -6,6 +6,7 @@ import com.digital.money.msvc.api.account.model.Card;
 import com.digital.money.msvc.api.account.model.Transaction;
 import com.digital.money.msvc.api.account.model.TransactionType;
 import com.digital.money.msvc.api.account.model.dto.*;
+import com.digital.money.msvc.api.account.model.projections.GetLastCVUs;
 import com.digital.money.msvc.api.account.repository.IAccountRepository;
 import com.digital.money.msvc.api.account.repository.ICardRepository;
 import com.digital.money.msvc.api.account.repository.ITransactionRepository;
@@ -14,11 +15,10 @@ import com.digital.money.msvc.api.account.utils.mapper.AccountMapper;
 import com.digital.money.msvc.api.account.utils.mapper.CardMapper;
 import com.digital.money.msvc.api.account.utils.mapper.TransactionMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +32,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -56,15 +57,29 @@ public class TransactionService implements ITransactionService {
 
     @Transactional
     @Override
-    public TransactionGetDto save(TransactionPostDto transactionPostDto) {
-        Transaction transaction = transactionMapper.toTransaction(transactionPostDto);
-        if (accountRepository.findByCvu(transaction.getToCvu()).get().getAccountId() == transaction.getAccount().getAccountId()) {
-            transaction.setType(TransactionType.INCOMING);
-        } else {
-            transaction.setType(TransactionType.OUTGOING);
+    public TransactionGetDto save(TransactionPostDto transactionPostDto, Account fromAccount, Account toAccount) {
+        Transaction transactionFromUser = transactionMapper.transactionPostToTransaction(transactionPostDto);
+
+        transactionFromUser.setFromCvu(fromAccount.getCvu());
+        transactionFromUser.setToCvu(toAccount.getCvu());
+
+        transactionFromUser.setType(TransactionType.OUTGOING);
+        transactionFromUser.setAccount(fromAccount);
+        transactionRepository.save(transactionFromUser);
+
+        if(!toAccount.getAccountId().equals(-1L)) {
+
+            Transaction transactionToUser = transactionMapper.transactionPostToTransaction(transactionPostDto);
+
+            transactionToUser.setFromCvu(fromAccount.getCvu());
+            transactionToUser.setToCvu(toAccount.getCvu());
+
+            transactionToUser.setType(TransactionType.INCOMING);
+            transactionToUser.setAccount(toAccount);
+            transactionRepository.save(transactionToUser);
         }
-        transactionRepository.save(transaction);
-        return transactionMapper.toTransactionGetDto(transaction);
+
+        return transactionMapper.toTransactionGetDto(transactionFromUser);
     }
 
     @Transactional(readOnly = true)
@@ -75,13 +90,14 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
-    public Transaction findTransactionById(Long accountId, Long transactionId) throws ResourceNotFoundException {
+    public Transaction findTransactionById(Long accountId, Long transactionId) throws Exception{
 
         Optional<Transaction> transaction = transactionRepository.findByAccount_AccountIdAndTransactionId(accountId,transactionId);
 
         if (transaction.isEmpty()) {
             throw new ResourceNotFoundException("Not transference found for that id");
         }
+
         return transaction.get();
     }
 
@@ -126,9 +142,6 @@ public class TransactionService implements ITransactionService {
         if (!card.getAccount().getAccountId().equals(id)) {
             throw new ForbiddenException("The card doesn't belong to the account");
         }
-//        if (card.getCardBalance() < cardTransactionPostDTO.getAmount()) {
-//            throw new PaymentRequiredException("The card doesn't have enough balance");
-//        }
 
        if (!isExpirationDateValid(card.getExpirationDate())) {
            throw new BadRequestException("The card you are trying to use is expired. ");
@@ -331,5 +344,23 @@ public class TransactionService implements ITransactionService {
         return transactionList;
     }
 
+    @Override
+    public List<TransactionGetDto> getLastTenTransactions(Long id) throws Exception{
+        List<Transaction> transactions = transactionRepository.findByAccount_AccountIdAndTypeOrderByRealizationDateDesc(id,TransactionType.OUTGOING,PageRequest.of(0,10));
+
+        return transactions.stream().map(transactionMapper::toTransactionGetDto).collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<GetLastCVUs> getLastFiveReceivers(Long id) throws Exception {
+        return transactionRepository.findLastFiveReceivers(id, PageRequest.of(0,5));
+    }
+
+    @Override
+    public TransactionGetDto findTransactionDTO(Long id, Long transferenceID) throws Exception{
+        Transaction transaction = findTransactionById(id,transferenceID);
+        return transactionMapper.toTransactionGetDto(transaction);
+    }
 
 }
