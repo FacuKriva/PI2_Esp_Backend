@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "8ca7a27a-5a07-4652-8f3d-1f99daa6bfd9",
+		"_postman_id": "a1f70a9b-68b6-4672-ba6d-8a046e141efd",
 		"name": "EQ1",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "18046022",
-		"_collection_link": "https://interstellar-sunset-989828.postman.co/workspace/EQ1~84043697-4b5e-46cd-bbc0-11ab183d4da0/collection/18046022-8ca7a27a-5a07-4652-8f3d-1f99daa6bfd9?action=share&creator=18046022&source=collection_link"
+		"_collection_link": "https://interstellar-sunset-989828.postman.co/workspace/EQ1~84043697-4b5e-46cd-bbc0-11ab183d4da0/collection/18046022-a1f70a9b-68b6-4672-ba6d-8a046e141efd?action=share&creator=18046022&source=collection_link"
 	},
 	"item": [
 		{
@@ -896,6 +896,40 @@
 					"response": []
 				},
 				{
+					"name": "Get user by ID 403 Forbidden",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URI}}/users/:id",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Patch user by ID",
 					"request": {
 						"auth": {
@@ -932,6 +966,49 @@
 								{
 									"key": "id",
 									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patch user by ID 403 Forbidden",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"name\": \"Juan Carlos\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URI}}/users/:id",
+							"host": [
+								"{{URI}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
 								}
 							]
 						}
@@ -2117,8 +2194,8 @@
 										"exec": [
 											"pm.test(\"Setear Tokens\", () => {",
 											"    const jsonData = pm.response.json();",
-											"   pm.globals.set(\"ACCESS_TOKEN\", jsonData.access_token);",
-											"   pm.globals.set(\"REFRESH_TOKEN\", jsonData.refresh_token);",
+											"   pm.globals.set(\"ACCESS_TOKEN_ACCOUNTS\", jsonData.access_token);",
+											"   pm.globals.set(\"REFRESH_TOKEN\", jsonData.refresh_token)",
 											"   pm.globals.set(\"TOKEN_TYPE\", jsonData.token_type);",
 											"});"
 										],
@@ -2152,7 +2229,7 @@
 									"urlencoded": [
 										{
 											"key": "username",
-											"value": "admin@mail.com",
+											"value": "user1@mail.com",
 											"type": "text"
 										},
 										{
@@ -2808,7 +2885,7 @@
 											"raw": "{\r\n    \"amount\": 222.000,\r\n    \"cardId\": 3\r\n}"
 										},
 										"url": {
-											"raw": "http://localhost:8080/accounts/:id/transferences",
+											"raw": "http://localhost:8080/accounts/:id/deposit",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -2817,7 +2894,7 @@
 											"path": [
 												"accounts",
 												":id",
-												"transferences"
+												"deposit"
 											],
 											"variable": [
 												{
@@ -2855,7 +2932,7 @@
 											"raw": "{\r\n    \"amount\": 0,\r\n    \"cardId\": 3\r\n}"
 										},
 										"url": {
-											"raw": "http://localhost:8080/accounts/:id/transferences",
+											"raw": "http://localhost:8080/accounts/:id/deposit",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -2864,7 +2941,7 @@
 											"path": [
 												"accounts",
 												":id",
-												"transferences"
+												"deposit"
 											],
 											"variable": [
 												{
@@ -2902,7 +2979,7 @@
 											"raw": "{\r\n    \"amount\": -45,\r\n    \"cardId\": 3\r\n}"
 										},
 										"url": {
-											"raw": "http://localhost:8080/accounts/:id/transferences",
+											"raw": "http://localhost:8080/accounts/:id/deposit",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -2911,7 +2988,7 @@
 											"path": [
 												"accounts",
 												":id",
-												"transferences"
+												"deposit"
 											],
 											"variable": [
 												{
@@ -2949,7 +3026,7 @@
 											"raw": "{\r\n    \"amount\": 100,\r\n    \"cardId\": 3\r\n}"
 										},
 										"url": {
-											"raw": "http://localhost:8080/accounts/:id/transferences",
+											"raw": "http://localhost:8080/accounts/:id/deposit",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -2958,7 +3035,7 @@
 											"path": [
 												"accounts",
 												":id",
-												"transferences"
+												"deposit"
 											],
 											"variable": [
 												{
@@ -2996,7 +3073,7 @@
 											"raw": "{\r\n    \"amount\": 100,\r\n    \"cardId\": 1\r\n}"
 										},
 										"url": {
-											"raw": "http://localhost:8080/accounts/:id/transferences",
+											"raw": "http://localhost:8080/accounts/:id/deposit",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -3005,7 +3082,7 @@
 											"path": [
 												"accounts",
 												":id",
-												"transferences"
+												"deposit"
 											],
 											"variable": [
 												{
@@ -3043,7 +3120,7 @@
 											"raw": "{\r\n    \"amount\": 100,\r\n    \"cardId\": 3\r\n}"
 										},
 										"url": {
-											"raw": "http://localhost:8080/accounts/:id/transferences",
+											"raw": "http://localhost:8080/accounts/:id/deposit",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -3052,7 +3129,7 @@
 											"path": [
 												"accounts",
 												":id",
-												"transferences"
+												"deposit"
 											],
 											"variable": [
 												{
@@ -3090,7 +3167,7 @@
 											"raw": "{\r\n    \"amount\": 100,\r\n    \"cardId\": 99\r\n}"
 										},
 										"url": {
-											"raw": "http://localhost:8080/accounts/:id/transferences",
+											"raw": "http://localhost:8080/accounts/:id/deposit",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -3099,7 +3176,7 @@
 											"path": [
 												"accounts",
 												":id",
-												"transferences"
+												"deposit"
 											],
 											"variable": [
 												{
@@ -3137,7 +3214,7 @@
 											"raw": "{\r\n    \"amount\": 222.012,\r\n    \"cardId\": 3\r\n}"
 										},
 										"url": {
-											"raw": "http://localhost:8080/accounts/:id/transferences",
+											"raw": "http://localhost:8080/accounts/:id/deposit",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -3146,7 +3223,7 @@
 											"path": [
 												"accounts",
 												":id",
-												"transferences"
+												"deposit"
 											],
 											"variable": [
 												{
@@ -3184,7 +3261,7 @@
 											"raw": "{\r\n    \"amount\": 100,\r\n    \"cardId\": 3\r\n}"
 										},
 										"url": {
-											"raw": "http://localhost:8080/accounts/:id/transferences",
+											"raw": "http://localhost:8080/accounts/:id/deposit",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -3193,7 +3270,7 @@
 											"path": [
 												"accounts",
 												":id",
-												"transferences"
+												"deposit"
 											],
 											"variable": [
 												{
@@ -3231,7 +3308,7 @@
 											"raw": "{\r\n    \"amount\": 100,\r\n    \"cardId\": #3\r\n}"
 										},
 										"url": {
-											"raw": "http://localhost:8080/accounts/:id/transferences",
+											"raw": "http://localhost:8080/accounts/:id/deposit",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -3240,7 +3317,7 @@
 											"path": [
 												"accounts",
 												":id",
-												"transferences"
+												"deposit"
 											],
 											"variable": [
 												{
@@ -3314,7 +3391,7 @@
 									"raw": "{\r\n    \"amount\": 100,\r\n    \"cardId\": 3\r\n}"
 								},
 								"url": {
-									"raw": "http://localhost:8080/accounts/:id/transferences",
+									"raw": "http://localhost:8080/accounts/:id/deposit",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -3323,7 +3400,7 @@
 									"path": [
 										"accounts",
 										":id",
-										"transferences"
+										"deposit"
 									],
 									"variable": [
 										{
@@ -3430,7 +3507,7 @@
 									"raw": "{\r\n    \"amount\": 100,\r\n    \"cardId\": 5\r\n}"
 								},
 								"url": {
-									"raw": "http://localhost:8080/accounts/:id/transferences",
+									"raw": "http://localhost:8080/accounts/:id/deposit",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -3439,7 +3516,7 @@
 									"path": [
 										"accounts",
 										":id",
-										"transferences"
+										"deposit"
 									],
 									"variable": [
 										{
@@ -3477,7 +3554,7 @@
 									"raw": "{\r\n    \"amount\": -10,\r\n    \"cardId\": 3\r\n}"
 								},
 								"url": {
-									"raw": "http://localhost:8080/accounts/:id/transferences",
+									"raw": "http://localhost:8080/accounts/:id/deposit",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -3486,7 +3563,7 @@
 									"path": [
 										"accounts",
 										":id",
-										"transferences"
+										"deposit"
 									],
 									"variable": [
 										{
@@ -3803,7 +3880,7 @@
 									"bearer": [
 										{
 											"key": "token",
-											"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+											"value": "{{ACCESS_TOKEN_TRANSACTIONS}}",
 											"type": "string"
 										}
 									]
@@ -3928,7 +4005,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{URI}}/accounts/:id/activity/filters",
+									"raw": "{{URI}}/accounts/:id/activity/filters?startDate=2022-01-01&endDate=2023-05-20&amountRange=3&type=INCOMING",
 									"host": [
 										"{{URI}}"
 									],
@@ -3941,23 +4018,19 @@
 									"query": [
 										{
 											"key": "startDate",
-											"value": "2022-02-18",
-											"disabled": true
+											"value": "2022-01-01"
 										},
 										{
 											"key": "endDate",
-											"value": "2023-05-20",
-											"disabled": true
+											"value": "2023-05-20"
 										},
 										{
 											"key": "amountRange",
-											"value": "3",
-											"disabled": true
+											"value": "3"
 										},
 										{
 											"key": "type",
-											"value": "INCOMING",
-											"disabled": true
+											"value": "INCOMING"
 										},
 										{
 											"key": "type",
@@ -4441,7 +4514,2123 @@
 		},
 		{
 			"name": "Sprint 4",
-			"item": []
+			"item": [
+				{
+					"name": "#00 Login",
+					"item": [
+						{
+							"name": "Login user 2",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Setear Tokens\", () => {",
+											"    const jsonData = pm.response.json();",
+											"   pm.globals.set(\"ACCESS_TOKEN_ACCOUNTS\", jsonData.access_token);",
+											"   pm.globals.set(\"REFRESH_TOKEN\", jsonData.refresh_token);",
+											"   pm.globals.set(\"TOKEN_TYPE\", jsonData.token_type);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{CLIENT_SECRET}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{CLIENT_ID}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "user1@mail.com",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "123456789",
+											"type": "text"
+										},
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "111",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{URI}}/security/oauth/token",
+									"host": [
+										"{{URI}}"
+									],
+									"path": [
+										"security",
+										"oauth",
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login user 4",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Setear Tokens\", () => {",
+											"    const jsonData = pm.response.json();",
+											"   pm.globals.set(\"ACCESS_TOKEN_TRANSACTIONS\", jsonData.access_token);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {}
+							},
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{CLIENT_SECRET}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{CLIENT_ID}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "amaria@mail.com",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "123456789",
+											"type": "text"
+										},
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "111",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{URI}}/security/oauth/token",
+									"host": [
+										"{{URI}}"
+									],
+									"path": [
+										"security",
+										"oauth",
+										"token"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "#26 Como usuario quiero poder enviar/transferir dinero a un CBU/CVU/alias desde mi saldo disponible en mi billetera Digital Money House.",
+					"item": [
+						{
+							"name": "Otros",
+							"item": [
+								{
+									"name": "POST transaction (account to account) 201 Created with to_account alias & from_account alias",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"afectacion.divisa.cambios\",\r\n    \"to_account\" :  \"riqueza.dineros.devaluacion\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 201 Created with to_account cvu & from_account CVU",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"1828142364587587493333\",\r\n    \"to_account\" :  \"1828142364587587495555\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 201 Created to_account alias only 1 word 1 dot Copy",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"afectacion.divisa.cambios\",\r\n    \"to_account\" :  \"asd.asd.asd\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 201 Created to_account alias only 1 word",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"afectacion.divisa.cambios\",\r\n    \"to_account\" :  \"cazador\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 201 Created to_account alias only 1 word 1 dot",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"afectacion.divisa.cambios\",\r\n    \"to_account\" :  \"cazador.\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 400 Bad Request from_account empty",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"\",\r\n    \"to_account\" :  \"cazador.sapo.rosa\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 400 Bad Request to_account CVU more than 22 digits",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"afectacion.divisa.cambios\",\r\n    \"to_account\" :  \"12345678912345678912345\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 201 Created with to_account cvu & from_account alias (alias 2 words, one dot, starts with number)",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"1828142364587587493333\",\r\n    \"to_account\" :  \"2arbol.sol\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 201 Created with to_account cvu & from_account alias (to_account exists in the wallet)",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"1828142364587587493333\",\r\n    \"to_account\" :  \"accion.adeudar.afianzamiento\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 400 Bad Request Empty Description",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"\",\r\n    \"from_account\": \"afectacion.divisa.cambios\",\r\n    \"to_account\" :  \"asd.asd.asd\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 400 Bad Request Amount Negative",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": -100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"afectacion.divisa.cambios\",\r\n    \"to_account\" :  \"riqueza.dineros.devaluacion\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 400 Bad Request to_account and from_account are the same account (alias)",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"afectacion.divisa.cambios\",\r\n    \"to_account\" :  \"afectacion.divisa.cambios\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 400 Bad Request to_account and from_account are the same account (CVU)",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"1828142364587587493333\",\r\n    \"to_account\" :  \"1828142364587587493333\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 400 Bad Request to_account and from_account are the same account (from_account CVU & to_account alias)",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"1828142364587587493333\",\r\n    \"to_account\" :  \"afectacion.divisa.cambios\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 403 Forbidden Account doesnt belong to the user",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"afectacion.divisa.cambios\",\r\n    \"to_account\" :  \"asd.asd.asd\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 403 Forbidden from_account alias doesnt belong to the account",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"accion.adeudar.afianzamiento\",\r\n    \"to_account\" :  \"asd.asd.asd\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 403 Forbidden from_account CVU doesnt belong to the account",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"1828142364587587491111\",\r\n    \"to_account\" :  \"asd.asd.asd\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 404 Not Found from_account alias does not exist",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"afectacion.divisa.flor\",\r\n    \"to_account\" :  \"cazador.zapato.avion\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 404 Not Found from_account CVU does not exist",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"2117829111929191117811\",\r\n    \"to_account\" :  \"cazador.zapato.avion\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 404 Not Found (account id)",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"afectacion.divisa.cambios\",\r\n    \"to_account\" :  \"asd.asd.asd\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "99"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 401 Unauthorized",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"afectacion.divisa.cambios\",\r\n    \"to_account\" :  \"arbol.sol.casa\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST transaction (account to account) 400 Bad Request to_account empty",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"afectacion.divisa.cambios\",\r\n    \"to_account\" :  \"\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "POST transaction (account to account) 201 Created with to_account cvu & from_account alias",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"1828142364587587493333\",\r\n    \"to_account\" :  \"asd.asd.asd\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URI}}/accounts/:id/transferences",
+									"host": [
+										"{{URI}}"
+									],
+									"path": [
+										"accounts",
+										":id",
+										"transferences"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST transaction (account to account) 400 Bad Request  to_account CVU less than 22 digits",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"afectacion.divisa.cambios\",\r\n    \"to_account\" :  \"11111\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URI}}/accounts/:id/transferences",
+									"host": [
+										"{{URI}}"
+									],
+									"path": [
+										"accounts",
+										":id",
+										"transferences"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST transaction (account to account) 400 Bad Request Amount 0",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"amount\": 0,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"afectacion.divisa.cambios\",\r\n    \"to_account\" :  \"asd.asd.asd\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URI}}/accounts/:id/transferences",
+									"host": [
+										"{{URI}}"
+									],
+									"path": [
+										"accounts",
+										":id",
+										"transferences"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST transaction (account to account) 400 Bad Request to_account and from_account are the same account (from_account alias & to_account CVU))",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"amount\": 100,\r\n    \"description\": \"Prueba de transaccion\",\r\n    \"from_account\": \"afectacion.divisa.cambios\",\r\n    \"to_account\" :  \"1828142364587587493333\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URI}}/accounts/:id/transferences",
+									"host": [
+										"{{URI}}"
+									],
+									"path": [
+										"accounts",
+										":id",
+										"transferences"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST transaction (account to account) 410 Insufficient Funds",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"amount\": 220001,\r\n    \"description\": \"Transaccion 1\",\r\n    \"from_account\": \"afectacion.divisa.cambios\",\r\n    \"to_account\" :  \"asd.asd.asd\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URI}}/accounts/:id/transferences",
+									"host": [
+										"{{URI}}"
+									],
+									"path": [
+										"accounts",
+										":id",
+										"transferences"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "#27 Como usuario quiero poder ver las últimas 10 transferencias desde la más reciente a la más antigua.",
+					"item": [
+						{
+							"name": "Otros",
+							"item": [
+								{
+									"name": "Get las 10 transferences 403 Forbidden",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get las 10 transferences 404 Not Found",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "99"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get las 10 transferences 401 Unauthorized",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "99"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Get las 10 transferences 200 OK",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URI}}/accounts/:id/transferences",
+									"host": [
+										"{{URI}}"
+									],
+									"path": [
+										"accounts",
+										":id",
+										"transferences"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get las 10 transferences 204 No Content",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN_TRANSACTIONS}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URI}}/accounts/:id/transferences",
+									"host": [
+										"{{URI}}"
+									],
+									"path": [
+										"accounts",
+										":id",
+										"transferences"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "#31 Como usuario quiero ver las últimas 5 cuentas a las que transferí dinero",
+					"item": [
+						{
+							"name": "Otros",
+							"item": [
+								{
+									"name": "Get last 5 receivers 404 Not Found",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences/lastReceivers",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences",
+												"lastReceivers"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "99"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get last 5 receivers 403 Forbidden",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences/lastReceivers",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences",
+												"lastReceivers"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get last 5 receivers 401 Unauthorized",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences/lastReceivers",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences",
+												"lastReceivers"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Get last 5 receivers 200 OK",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URI}}/accounts/:id/transferences/lastReceivers",
+									"host": [
+										"{{URI}}"
+									],
+									"path": [
+										"accounts",
+										":id",
+										"transferences",
+										"lastReceivers"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get last 5 receivers 204 No Content",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN_TRANSACTIONS}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URI}}/accounts/:id/transferences/lastReceivers",
+									"host": [
+										"{{URI}}"
+									],
+									"path": [
+										"accounts",
+										":id",
+										"transferences",
+										"lastReceivers"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "#32 Como usuario quiero descargar un archivo como comprobante de la transferencia.",
+					"item": [
+						{
+							"name": "Otros",
+							"item": [
+								{
+									"name": "GET comprobante de transferencia en pdf 404 Not Found (transferenceID)",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences/:transferenceID/comprobante",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences",
+												":transferenceID",
+												"comprobante"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												},
+												{
+													"key": "transferenceID",
+													"value": "99"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "GET comprobante de transferencia en pdf 404 Not Found (accound id)",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences/:transferenceID/comprobante",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences",
+												":transferenceID",
+												"comprobante"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "99"
+												},
+												{
+													"key": "transferenceID",
+													"value": "3"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "GET comprobante de transferencia en pdf 404 Not Found (transferenceID --> type incoming)",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences/:transferenceID/comprobante",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences",
+												":transferenceID",
+												"comprobante"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												},
+												{
+													"key": "transferenceID",
+													"value": "4"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "GET comprobante de transferencia en pdf 404 (transferenceID not found --> belongs to another account)",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences/:transferenceID/comprobante",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences",
+												":transferenceID",
+												"comprobante"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												},
+												{
+													"key": "transferenceID",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "GET comprobante de transferencia en pdf 403 Forbidden",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences/:transferenceID/comprobante",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences",
+												":transferenceID",
+												"comprobante"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "1"
+												},
+												{
+													"key": "transferenceID",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "GET comprobante de transferencia en pdf 401 Unauthorized",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URI}}/accounts/:id/transferences/:transferenceID/comprobante",
+											"host": [
+												"{{URI}}"
+											],
+											"path": [
+												"accounts",
+												":id",
+												"transferences",
+												":transferenceID",
+												"comprobante"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "2"
+												},
+												{
+													"key": "transferenceID",
+													"value": "2"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "GET comprobante de transferencia en pdf 200 OK",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{ACCESS_TOKEN_ACCOUNTS}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URI}}/accounts/:id/transferences/:transferenceID/comprobante",
+									"host": [
+										"{{URI}}"
+									],
+									"path": [
+										"accounts",
+										":id",
+										"transferences",
+										":transferenceID",
+										"comprobante"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "2"
+										},
+										{
+											"key": "transferenceID",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
 		}
 	],
 	"event": [
@@ -4462,62 +6651,6 @@
 					""
 				]
 			}
-		}
-	],
-	"variable": [
-		{
-			"key": "ACCESS_TOKEN",
-			"value": "",
-			"type": "string",
-			"disabled": true
-		},
-		{
-			"key": "TOKEN_TYPE",
-			"value": "",
-			"type": "string",
-			"disabled": true
-		},
-		{
-			"key": "REFRESH_TOKEN",
-			"value": "",
-			"type": "string",
-			"disabled": true
-		},
-		{
-			"key": "CLIENT_ID",
-			"value": "$2a$12$Du/D2SkKtqAG1F8YV9TxDuXOweFBWcowP2ZYe5i3ZP45ZofIwHg9C",
-			"type": "string",
-			"disabled": true
-		},
-		{
-			"key": "CLIENT_SECRET",
-			"value": "$2a$12$BNJJmvJLOCL3lcsPHfc47eHuhPK77kiEZ4HMtiuSFgaxF/3ByeAbO",
-			"type": "string",
-			"disabled": true
-		},
-		{
-			"key": "ACCESS_TOKEN_MAIL",
-			"value": "",
-			"type": "string",
-			"disabled": true
-		},
-		{
-			"key": "ACCESS_TOKEN_ACCOUNTS",
-			"value": "",
-			"type": "string",
-			"disabled": true
-		},
-		{
-			"key": "ACCESS_TOKEN",
-			"value": ""
-		},
-		{
-			"key": "REFRESH_TOKEN",
-			"value": ""
-		},
-		{
-			"key": "TOKEN_TYPE",
-			"value": ""
 		}
 	]
 }
